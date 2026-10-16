@@ -1,0 +1,56 @@
+{
+  "title_secure": "أمن",
+  "title_your": " حمايتك ",
+  "title_protection": "الخاصة",
+  "vehicle_service_details": "تفاصيل السيارة والخدمة",
+  "car_brand": "ماركة السيارة",
+  "select_brand": "اختر الماركة",
+  "car_model": "موديل السيارة",
+  "select_model": "اختر الموديل",
+  "car_year": "سنة الصنع",
+  "select_year": "اختر السنة",
+  "select_service": "اختر الخدمة",
+  "service_placeholder": "مثال: حماية كاملة",
+  "service_package": "باقة الخدمة",
+  "package_placeholder": "مثال: ألتيميت",
+  "customer_information": "معلومات العميل",
+  "full_name": "الاسم الكامل",
+  "full_name_placeholder": "جون دو",
+  "phone_number": "رقم الهاتف",
+  "email_address": "البريد الإلكتروني",
+  "email_placeholder": "john@example.com",
+  "preferred_date": "التاريخ المفضل",
+  "preferred_time": "الوقت المفضل",
+  "contact_summary": "ملخص التواصل",
+  "selected_vehicle": "السيارة المختارة",
+  "brand": "الماركة",
+  "model": "الموديل",
+  "year": "السنة",
+  "selected_service": "الخدمة المختارة",
+  "service_type": "نوع الخدمة",
+  "package": "الباقة",
+  "confirm_contact": "تأكيد التواصل",
+  "contact_confirmed": "تم تأكيد التواصل!",
+  "brands": {
+    "porsche": "بورشه",
+    "audi": "أودي",
+    "bmw": "بي إم دبليو",
+    "mercedes": "مرسيدس"
+  },
+  "models": {
+    "gt3": "911 GT3 RS",
+    "r8": "R8",
+    "m4": "M4",
+    "cayenne": "كايين"
+  },
+  "services": {
+    "ppf": "حماية كاملة (PPF)",
+    "ceramic": "نانو سيراميك",
+    "thermal": "عزل حراري"
+  },
+  "packages": {
+    "ultimate": "ألتيميت",
+    "premium": "بريميوم",
+    "standard": "ستاندرد"
+  }
+}

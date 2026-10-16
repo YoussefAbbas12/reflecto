@@ -1,0 +1,19 @@
+{
+  "specVersion": "1.0",
+  "entries": [
+    {
+      "identifier": "urn:air:reflecto.com.sa:business:reflecto-premium",
+      "displayName": "Reflecto Premium",
+      "description": "Reflecto Premium is a premier specialized automotive paint protection, ceramic coating, window tinting, and commercial glass tinting center in Jeddah and Riyadh, Saudi Arabia.",
+      "type": "application/ai-catalog+json",
+      "url": "https://www.reflecto.com.sa/",
+      "representativeQueries": [
+        "book car protection service in Saudi Arabia",
+        "find PPF installer in Jeddah",
+        "find PPF installer in Riyadh",
+        "ceramic coating near me Saudi Arabia",
+        "حماية سيارة جدة والرياض"
+      ]
+    }
+  ]
+}

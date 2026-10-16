@@ -1,0 +1,8 @@
+{
+  "success_title": "Payment Successful",
+  "success_message": "Thank you for your purchase. Your transaction was completed successfully. We look forward to servicing your vehicle.",
+  "cancel_title": "Payment Cancelled",
+  "cancel_message": "Your transaction was cancelled or failed. No charges were made to your account.",
+  "go_to_dashboard": "Go to Dashboard",
+  "return_to_pricing": "Return to Pricing"
+}

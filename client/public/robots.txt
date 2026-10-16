@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /clientDashboard
+Disallow: /clientsDashboard
+Disallow: /technician
+Disallow: /checkout
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+
+# AI Crawlers
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /checkout
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+Disallow: /checkout
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://www.reflecto.com.sa/sitemap.xml

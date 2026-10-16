@@ -1,0 +1,24 @@
+{
+  "short_name": "Reflecto",
+  "name": "Reflecto Premium | Luxury Car Protection",
+  "icons": [
+    {
+      "src": "/assets/photo/small-logo.png",
+      "type": "image/png",
+      "sizes": "89x88",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/photo/logo.png",
+      "type": "image/png",
+      "sizes": "100x100",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "display": "standalone",
+  "orientation": "portrait",
+  "description": "مركز ريفليكتو بريميوم لحماية السيارات - افلام حماية الطلاء PPF، نانو سيراميك وتظليل النوافذ العازل"
+}

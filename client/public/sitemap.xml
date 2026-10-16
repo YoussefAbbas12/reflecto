@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://www.reflecto.com.sa/</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/services/ppf</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/services/ppf" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/services/ppf?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/services/ppf" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/services/nano-ceramic</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/services/nano-ceramic" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/services/nano-ceramic?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/services/nano-ceramic" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/services/window-tint</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/services/window-tint" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/services/window-tint?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/services/window-tint" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/services/paint-correction</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/services/paint-correction" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/services/paint-correction?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/services/paint-correction" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/services/dash-cam</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/services/dash-cam" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/services/dash-cam?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/services/dash-cam" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/services/commercial-tint</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/services/commercial-tint" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/services/commercial-tint?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/services/commercial-tint" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/branches</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/branches" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/branches?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/branches" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/pricing</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/pricing?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/pricing" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.reflecto.com.sa/contact</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.reflecto.com.sa/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.reflecto.com.sa/contact?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.reflecto.com.sa/contact" />
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>

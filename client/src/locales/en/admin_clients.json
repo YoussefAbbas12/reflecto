@@ -1,0 +1,56 @@
+{
+  "welcomeBack": "Welcome back",
+  "memberSince": "Member since {{date}}",
+  "logout": "Log out",
+  "inProgress": "In progress",
+  "progress": "Progress",
+  "estimatedDelivery": "Estimated Delivery",
+  "checklists": {
+    "paint_protection": "Paint Protection",
+    "nano_ceramic": "Nano Ceramic",
+    "paint_correction": "Paint Correction",
+    "thermal_insulation": "Thermal Insulation",
+    "dash_cam": "Dash Cam"
+  },
+  "activeWarranty": "Active Warranty",
+  "labels": {
+    "service": "Service",
+    "startDate": "Start Date",
+    "coveragePeriod": "Coverage Period",
+    "timeRemaining": "Time Remaining"
+  },
+  "loyaltyPoints": {
+    "title": "Loyalty Points",
+    "available": "Available points",
+    "nextReward": "Next Reward",
+    "redeem": "Redeem Points",
+    "gift": "Gift Points"
+  },
+  "serviceHistory": "Service History",
+  "servicesCount": {
+    "one": "{{count}} Service",
+    "other": "{{count}} Services"
+  },
+  "currency": "SAR",
+  "carModel": "Mercedes-Benz S-Class",
+  "stats": {
+    "totalServices": "Total Services",
+    "totalWarranty": "Total Warranty",
+    "totalPoints": "Total Points",
+    "totalSpent": "Total Spent"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  }
+}

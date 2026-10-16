@@ -1,0 +1,80 @@
+{
+  "hero_line1": "PREMIUM CAR",
+  "hero_line2": "PROTECTION",
+  "hero_subtitle": "Advanced protection, exceptional precision, lasting appearance",
+  "services_subtitle_highlight": "Premium",
+  "services_subtitle_rest": " protection packages tailored to your needs",
+  "services_subtitle": "OUR SERVICES",
+  "services_title": "Our Services",
+  "standards_prefix": "The ",
+  "standards_highlight": "Reflecto",
+  "standards_suffix": " Standard",
+  "standards_subtitle": "Why thousands of car enthusiasts trust us with their vehicles",
+  "standards": {
+    "badge": "OUR STANDARDS",
+    "title": "The Reflecto Standard",
+    "desc": "Why thousands of car enthusiasts trust us with their vehicles",
+    "iso": "ISO-Certified Dust-Free Environment",
+    "warranty": "5-Year Comprehensive Warranty",
+    "materials": "US & Canadian Premium Materials Only",
+    "installers": "Certified Master Installers"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "(FAQ)",
+    "not_found": "Couldn't find the answer you're looking for?",
+    "contact_here": "Contact us here",
+    "q1": {
+      "q": "What is PPF and what are its benefits for a vehicle?",
+      "a": "PPF (Paint Protection Film) is a transparent protective film applied to selected areas of a vehicle’s exterior to protect the original paint from surface scratches, everyday friction, stone chips, and external elements. It helps preserve the vehicle’s appearance and paint value for longer."
+    },
+    "q2": {
+      "q": "What is the difference between PPF and Nano Ceramic Coating?",
+      "a": "PPF is a protective film that provides physical protection against scratches, friction, and external elements, while Nano Ceramic Coating is a liquid protective layer that enhances the paint’s gloss, helps resist contaminants, and makes the vehicle easier to clean.\n\nFor comprehensive protection, PPF and Nano Ceramic Coating can be combined to benefit from the advantages of both."
+    },
+    "q3": {
+      "q": "What is Nano Ceramic Coating and what are its benefits?",
+      "a": "Nano Ceramic Coating is a protective layer applied to the vehicle’s surface after proper preparation. It helps enhance the paint’s gloss, resist contaminants, reduce dirt adhesion, and make cleaning and maintenance easier.\n\nSpecialized Nano Ceramic Coatings can also be applied to other surfaces, such as wheels and interior surfaces, depending on the nature of each surface."
+    },
+    "q4": {
+      "q": "What is automotive heat insulation film?",
+      "a": "Automotive heat insulation film is a specialized film installed on vehicle windows to help reduce heat transfer and solar radiation into the cabin, contributing to greater comfort and reducing the load on the air-conditioning system.\n\nAt Reflecto, we use Apeax products for our automotive heat insulation solutions."
+    },
+    "q5": {
+      "q": "Who is Reflecto?",
+      "a": "Reflecto is a company specializing in vehicle protection and care solutions, offering a comprehensive range of services including PPF, heat insulation film, Nano Ceramic Coating, paint polishing and correction, and protection for vehicle interiors and wheels.\n\nAt Reflecto, we focus on combining product quality, meticulous preparation and installation, and professional service to provide comprehensive vehicle protection solutions."
+    },
+    "q6": {
+      "q": "What products does Reflecto use?",
+      "a": "Reflecto uses Apeax products across a range of vehicle protection services, including PPF, heat insulation film, and Nano Ceramic Coating.\n\nWe are committed to using genuine products and applying them according to professional installation procedures, carried out by specialized technicians."
+    },
+    "q7": {
+      "q": "What makes Apeax products different?",
+      "a": "Apeax is a British brand specializing in automotive protection technologies. It is known for developing specialized vehicle protection technologies and products, with patents covering some of its technologies and products.\n\nThe Apeax system combines advanced protection technologies with high-quality materials, while Reflecto focuses on delivering these products through professional installation and comprehensive service."
+    },
+    "q8": {
+      "q": "Is Reflecto the exclusive distributor of Apeax in Saudi Arabia?",
+      "a": "Yes. Reflecto is the exclusive distributor of Apeax products in the Kingdom of Saudi Arabia, allowing us to provide genuine Apeax products and professional installation services to customers throughout the Kingdom."
+    },
+    "q9": {
+      "q": "Do Reflecto’s services come with a warranty?",
+      "a": "Yes. Reflecto provides warranties on its protection products and services according to the type of product, service, package selected, and applicable warranty terms and conditions.\n\nSome protection services are covered for up to 5 years, with the warranty duration and coverage varying depending on the product and service."
+    },
+    "q10": {
+      "q": "Why is Reflecto's PPF warranty 5 years, while some other companies offer warranties of up to 10 years?",
+      "a": "At Reflecto, we believe that a warranty is not just a marketing number, but a real commitment to the customer.\n\nYou may find PPF protection films on the market advertising a warranty of up to 10 years or more, which in many cases is because the manufacturer's warranty is specified for up to 10 years under testing, usage, and climate conditions set by the manufacturer. However, warranty duration alone does not necessarily mean that all film properties will remain at the same level of performance throughout this period, and film performance is heavily affected by climate, usage, and care.\n\nProtection products may be tested under different climatic conditions, whereas the Gulf environment is characterized by very high temperatures, strong UV exposure, dust, and sand—factors that must be considered when determining the expected operational life of the film.\n\nTherefore, at Reflecto, we chose our warranty to be 5 years, a period we see as more conservative and realistic for usage conditions in the Kingdom, rather than offering a longer duration just to be more marketing-attractive.\n\nOur goal is not a one-time sale, but building a long-term relationship with the customer. That is why we prefer to be upfront about what we guarantee, and to maintain the customer's trust and the quality of their experience with Reflecto in the long run.\n\nReflecto: We sell what we trust, and we guarantee what we can commit to.\n\n\"PPF is not just a film that stays on the car; the most important thing is that the properties you paid for remain and perform their function.\""
+    },
+    "q11": {
+      "q": "How much does vehicle protection cost?",
+      "a": "Pricing varies depending on the vehicle make, model, and size, as well as the type of protection, coverage area, and product used.\n\nTherefore, the appropriate price is determined based on your vehicle details and protection requirements. The Reflecto team can help you choose the package that best suits your vehicle."
+    },
+    "q12": {
+      "q": "Does Reflecto offer comprehensive vehicle protection packages?",
+      "a": "Yes. Reflecto offers comprehensive protection packages that can combine multiple services into one package, such as:\n\n* PPF for paint protection.\n* Heat insulation film.\n* Nano Ceramic Coating for the exterior.\n* Nano Ceramic Coating for wheels.\n* Nano Ceramic Coating for the interior.\n* Paint polishing and correction, depending on the vehicle’s condition.\n\nPackage components are selected based on the vehicle type and the customer’s specific requirements."
+    },
+    "q13": {
+      "q": "How can I book an appointment?",
+      "a": "You can contact Reflecto through the communication and booking channels available on our website. Simply provide your vehicle make, model, and the service you are interested in.\n\nOur team will assist you in selecting the most suitable service or package and arranging an appointment at the most convenient branch for you."
+    }
+  }
+}

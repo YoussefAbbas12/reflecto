@@ -1,0 +1,90 @@
+{
+  "hero_highlight": "Protection Shield",
+  "hero_rest": "Nano Ceramic CX",
+  "hero_subtitle": "Advanced glass nano-coating technology to protect your vehicle's paint and provide a long-lasting diamond shine.",
+  "metrics_title": "Ceramic CX Performance Metrics",
+  "metrics": {
+    "9h": {
+      "badge": "SUPERIOR 9H HARDNESS",
+      "title": "9H Hardness Level",
+      "subtitle": "Swirl & Scratch Resistance",
+      "desc": "The ceramic coating provides solid protection against light surface scratches caused by dust and improper washing."
+    },
+    "hydro": {
+      "badge": "SUPER HYDROPHOBIC EFFECT",
+      "title": "Water Repellency",
+      "subtitle": "Contact Angle exceeds 110°",
+      "desc": "A feature that makes liquids slide off easily, preventing dust and road grime from adhering to the surface."
+    },
+    "uv": {
+      "badge": "SUN SHIELD PROTECTION",
+      "title": "Full UV Protection",
+      "subtitle": "Prevents Paint Fading",
+      "desc": "Prevents paint oxidation and preserves the shine and reflection of the original car color, keeping it looking brand new."
+    }
+  },
+  "tiers_title_highlight": "Ceramic CX",
+  "tiers_title_rest": " Protection Levels",
+  "tiers": {
+    "lite": {
+      "years": "Lite (1 Year)",
+      "name": "Quick Protection",
+      "desc": "Light nano ceramic layer to enhance shine and basic protection for a limited time."
+    },
+    "pro": {
+      "years": "Pro (3 Years)",
+      "name": "Advanced Protection",
+      "desc": "Multi-layer nano ceramic coating that effectively isolates the exterior paint."
+    },
+    "ultra": {
+      "years": "Ultra (5 Years)",
+      "name": "Premium Full Protection",
+      "desc": "Complete coverage including windows, wheels, and interior cabin for a stunning vehicle look."
+    },
+    "elite": {
+      "years": "Elite (Golden Warranty)",
+      "name": "Ultimate Protection",
+      "desc": "Maximum thickness and hardness to guarantee the longest period of shine and full barrier protection."
+    }
+  },
+  "slider": {
+    "before": "Before",
+    "vs": "vs",
+    "after": "After",
+    "subtitle": "The reflection and shine difference after applying Ceramic CX",
+    "btn_before": "Before Ceramic",
+    "btn_after": "After Ceramic CX",
+    "slide_to_compare": "SLIDE TO COMPARE"
+  },
+  "packages_title_1": "Nano Ceramic",
+  "packages_title_2": "CX",
+  "packages_title_rest": " Real Packages",
+  "packages_subtitle": "Select the ideal package for your vehicle size and type to protect and preserve its value",
+  "pkg_book": "Book Service",
+  "packages": [
+    {
+      "label": "Ceramic CX Basic Package",
+      "price": 2440,
+      "note": "(Full exterior body coverage - 3-year warranty)",
+      "features": [
+        "Application of 3 layers of Ceramic CX on the entire vehicle body",
+        "Provides crystal-clear shine and deep diamond-like reflection",
+        "Super hydrophobic layer repelling water, dust, and grime",
+        "Protects car paint from sun oxidation and color fading",
+        "Resists minor surface scratches and swirl marks from washing"
+      ]
+    },
+    {
+      "label": "Ceramic CX Golden Package (Interior/Exterior)",
+      "price": 3800,
+      "note": "(Comprehensive body and interior cabin protection - 5-year warranty)",
+      "features": [
+        "Application of 5 layers of ultra-hard Ceramic CX on the exterior body",
+        "Specialized wheel protective coating to prevent brake dust adhesion",
+        "Glass and headlight protection coating for rain and water spots resistance",
+        "Full interior nano-protection for seats, leather, and dashboard against spills and cracking",
+        "Maximum resistance against environmental acids, rain, and stubborn bird droppings"
+      ]
+    }
+  ]
+}

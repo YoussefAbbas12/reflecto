@@ -1,0 +1,73 @@
+{
+  "title_highlight": "Transparent",
+  "title_rest": "Packages",
+  "subtitle": "Choose the perfect package for your vehicle. All prices include materials, labor, and warranty.",
+  "basic_name": "Basic",
+  "basic_tagline": "Essential protection for daily drivers",
+  "basic_price": "1,200 SAR",
+  "silver_name": "Silver",
+  "silver_tagline": "Enhanced protection for discerning owners",
+  "silver_price": "1,400 SAR",
+  "diamond_name": "Diamond",
+  "diamond_tagline": "Premium protection for luxury vehicles",
+  "diamond_price": "1,800 SAR",
+  "payment_title_prefix": "Flexible",
+  "payment_title_highlight": "Payment",
+  "payment_title_suffix": "Options",
+  "payment_subtitle": "Buy now, pay later with Tamara & Tabby. Divide your payment into interest-free installments.",
+  "payment_options_tamara": "Tamara",
+  "payment_options_tabby": "Tabby",
+  "payment_options_credit_card": "Credit Card",
+  "payment_options_bank_transfer": "Bank Transfer",
+  "tiers": {
+    "basic": {
+      "name": "Basic",
+      "tagline": "Essential protection for daily drivers",
+      "price": {
+        "amount": 1200,
+        "currency": "SAR"
+      },
+      "features": [
+        "9H Surface Hardness",
+        "Advanced Hydrophobic Effect",
+        "5-Year Warranty",
+        "Paint Sealant Protection",
+        "Basic Window Tinting"
+      ]
+    },
+    "silver": {
+      "name": "Silver",
+      "tagline": "Enhanced protection for discerning owners",
+      "price": {
+        "amount": 1400,
+        "currency": "SAR"
+      },
+      "features": [
+        "9H Surface Hardness",
+        "Advanced Hydrophobic Effect",
+        "7-Year Warranty",
+        "Paint Sealant & Polishing",
+        "Premium Window Tinting",
+        "Front Bumper Protection"
+      ],
+      "popular": true
+    },
+    "diamond": {
+      "name": "Diamond",
+      "tagline": "Premium protection for luxury vehicles",
+      "price": {
+        "amount": 1800,
+        "currency": "SAR"
+      },
+      "features": [
+        "9H Surface Hardness",
+        "Ultimate Hydrophobic Effect",
+        "10-Year Warranty",
+        "Full Paint Correction",
+        "Premium Ceramic Window Tinting",
+        "Complete Vehicle Coverage",
+        "VIP Maintenance Package"
+      ]
+    }
+  }
+}

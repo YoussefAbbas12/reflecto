@@ -1,0 +1,76 @@
+# Reflecto Premium - Automotive & Commercial Protection
+
+> Reflecto Premium (https://reflecto.com.sa) is a premier specialized automotive paint protection, ceramic coating, window tinting, and commercial protection center in the Kingdom of Saudi Arabia.
+
+## Summary
+Reflecto Premium provides state-of-the-art paint protection film (PPF), multi-layer nano-ceramic & graphene coating, high-rejection thermal insulation window tinting, paint correction, smart dashcam installation, and commercial architectural tinting using top-tier US & Canadian materials with up to 10-year official warranties.
+
+---
+
+## Key Services
+
+- [Paint Protection Film (PPF)](https://reflecto.com.sa/services/ppf): Self-healing clear and matte paint protection films protecting vehicles from rock chips, scratches, and harsh environmental elements.
+- [Thermal Insulation Window Tint](https://reflecto.com.sa/services/tint): High heat-rejection nano-ceramic window tinting providing up to 99% UV blockage and 95% infrared heat rejection.
+- [Nano Ceramic & Graphene Coating](https://reflecto.com.sa/services/nano-ceramic): Hydrophobic multi-layer ceramic and graphene body coatings delivering deep gloss, scratch resistance, and self-cleaning properties.
+- [Paint Correction & Polish](https://reflecto.com.sa/services/paint-correction): Professional multi-stage machine polishing removing swirl marks, scratches, oxidation, and restoring paint depth.
+- [Smart Dash Cam Installation](https://reflecto.com.sa/services/dash-cam): 4K front and rear smart dash camera installation with parking surveillance, motion detection, and cloud connectivity.
+- [Commercial & Architectural Tinting](https://reflecto.com.sa/services/commercial-tinting): Building and storefront heat-rejection glass tinting reducing energy bills and UV exposure.
+- [All Services Index](https://reflecto.com.sa/services): Complete index of automotive protection and detailing solutions.
+
+---
+
+## Public Navigation & Pages
+
+- [Homepage](https://reflecto.com.sa/): Overview of services, promotional hero video, standards, customer reviews, and floating AI assistant.
+- [Pricing & Packages](https://reflecto.com.sa/pricing): Transparent pricing catalog, package breakdowns, warranty durations, and direct booking.
+- [Branch Locations](https://reflecto.com.sa/branches): Direct Google Maps links, operating hours, phone numbers, and address details for Jeddah & Riyadh branches.
+- [Book Appointment](https://reflecto.com.sa/book-service): Online booking system for scheduling installation, inspections, and maintenance appointments.
+- [Contact Us](https://reflecto.com.sa/contact): Support form, WhatsApp direct chat (+966558722444), and customer care hotline.
+- [Customer Login](https://reflecto.com.sa/login): Client authentication for accessing vehicle job cards, warranty cards, and order tracking.
+- [Register Account](https://reflecto.com.sa/register): New customer registration via mobile number and SMS OTP verification.
+
+---
+
+## Customer Portal & Features
+
+- [Client Dashboard](https://reflecto.com.sa/clientDashboard): Self-service portal for tracking active car jobs, inspecting digital vehicle condition reports (5-View interactive car diagrams), downloading digital warranty certificates, viewing invoices, and paying remaining balances.
+
+---
+
+## Administrative & Operations System (Internal)
+
+- [Admin Overview](https://reflecto.com.sa/admin): Comprehensive analytics overview tracking revenue, daily work orders, active vehicle jobs, branch performance, and technician schedules.
+- [Work Orders Management](https://reflecto.com.sa/admin/orders): Digital job creation with interactive 5-view car inspection diagram, body damage marking, material assignment, technician dispatch, and status updates.
+- [Client & Corporate Management](https://reflecto.com.sa/admin/clients): CRM database managing individual clients, corporate fleet accounts, custom pricing lists, and quotation previews.
+- [Branch & Appointment Scheduler](https://reflecto.com.sa/admin/scheduling): Interactive branch calendar managing daily capacity, bay assignments, and appointment notifications.
+- [Roles & Permissions](https://reflecto.com.sa/admin/permissions): Granular access control for admins, branch managers, cashiers, and technicians.
+
+---
+
+## Quality Standards & Warranties
+
+- **ISO Certified Standards**: Strict ISO-certified application processes and dust-free climate-controlled installation bays.
+- **US & Canadian Materials**: Highest grade TPU paint protection films and ceramic formulas imported directly from certified manufacturers.
+- **Official Electronic Warranties**: Up to 10 years warranty registered electronically in the customer portal covering yellowing, peeling, cracking, and adhesive failure.
+- **Free Periodic Maintenance**: Scheduled inspection and maintenance washes included with protection packages.
+
+---
+
+## Branch Locations & Contact Information
+
+- **Main Hotline**: +966 55 872 2444
+- **Official Email**: info@reflecto.com.sa
+- **Website**: https://reflecto.com.sa
+- **Backend API**: https://back.reflecto.com.sa/api/v1
+- **Primary Branches**:
+  - **Jeddah Branch**: Al-Madinah Al-Munawwarah Road, Jeddah, Saudi Arabia.
+  - **Riyadh Branch**: King Abdulaziz Road, Riyadh, Saudi Arabia.
+- **Working Hours**: Saturday to Thursday: 9:00 AM - 10:00 PM (Friday Closed).
+
+---
+
+## Technical Architecture
+
+- **Frontend**: React 18, Vite, React Router 6, TanStack React Query v5, TailwindCSS, i18next (Arabic RTL & English LTR).
+- **Backend**: Node.js, Express.js, MySQL (`reflecto_db`), JWT Authentication, Taqnyat SMS OTP Integration.
+- **PWA & Performance**: Optimized web font loading, lazy-loaded routes, dynamic asset caching, and responsive cross-platform layout.

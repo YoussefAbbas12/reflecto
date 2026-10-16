@@ -1,0 +1,102 @@
+{
+  "hero_welcome_prefix": "Welcome to",
+  "hero_welcome_name": "",
+  "hero_welcome_highlight": "Services",
+
+  "tint_title": "Window Film Ultimate Thermal Insulation",
+  "tint_subtitle": "Protect yourself and your car with the highest levels of heat and harmful radiation rejection using Ultimate film series, powered by advanced nano-ceramic technology.",
+  "select_tint_level": "Select Tint Level",
+  "premium_film": "Premium Film",
+
+  "tint_levels": {
+    "00": "00 - Clear (ULTIMATE 70)",
+    "01": "01 - Light (ULTIMATE 50)",
+    "02": "02 - Medium (ULTIMATE 35)",
+    "03": "03 - Dark (ULTIMATE 20)",
+    "04": "04 - Limo (ULTIMATE 05)"
+  },
+
+  "stats": {
+    "heat_reduction": "IR Heat Rejection",
+    "uv_protection": "UV Ray Rejection",
+    "privacy_level": "Privacy Level",
+    "tser": "Total Solar Energy Rejected (TSER)"
+  },
+
+  "visual_guide": "Visual Guide",
+  "transparency_scale_highlight": "Transparency",
+  "transparency_scale_rest": " Scale (VLT)",
+  "transparency_desc": "Visible Light Transmission (VLT) percentages determine how dark your tint appears and the level of privacy.",
+
+  "vlt_levels": [
+    { "p": "5%", "l": "Limo ULTIMATE 05" },
+    { "p": "20%", "l": "Dark ULTIMATE 20" },
+    { "p": "35%", "l": "Medium ULTIMATE 35" },
+    { "p": "50%", "l": "Light ULTIMATE 50" },
+    { "p": "70%", "l": "Clear ULTIMATE 70" }
+  ],
+
+  "visual_impact_prefix": "Visual",
+  "visual_impact_highlight": "Impact",
+  "visual_impact_subtitle": "See the real visual difference our premium window films make on your vehicle's interior and exterior.",
+  "slider_after": "After Tinting",
+  "slider_before": "Before Tinting",
+
+  "thermal_tint_title": "Ultimate Thermal Insulation",
+  "thermal_tint_subtitle": "Window Film Ultimate Series",
+  "recommended": "Recommended",
+  "thermal_features": [
+    "Rejects up to 99% of Infrared Rays (IR)",
+    "Blocks 99% of harmful Ultraviolet Rays (UV)",
+    "Doubles the efficiency and performance of car A/C",
+    "Perfectly clear vision without glare or eye strain",
+    "Extended 10-year warranty against fading or peeling"
+  ],
+  "thermal_stats": {
+    "heat_block": "IR Heat Block",
+    "uv_protection": "UV Protection",
+    "privacy": "Privacy"
+  },
+
+  "regular_tint_title": "Classic Thermal Tint",
+  "regular_tint_subtitle": "Dyed Standard Film Classic",
+  "regular_features": [
+    "Good heat rejection suitable for daily use",
+    "Blocks 99% of Ultraviolet Rays (UV)",
+    "Premium classic black exterior look",
+    "Protects seats and dashboard from fading & damage",
+    "Extended 5-year warranty"
+  ],
+
+  "packages_title_highlight_1": "Select",
+  "packages_title_rest": " Your Real Tinting ",
+  "packages_title_highlight_2": "Package",
+
+  "packages": [
+    {
+      "name": "Nano Ceramic Tint Ultimate",
+      "price": 1180,
+      "note": "(Includes 4 side windows and rear glass - 10-year warranty)",
+      "features": [
+        "Rejects up to 99% of Infrared Rays (IR)",
+        "Blocks 99% of Ultraviolet Rays (UV)",
+        "Full skin and eye protection from sun glare",
+        "Does not interfere with cell signals or GPS navigation",
+        "Luxurious look that enhances cabin privacy"
+      ]
+    },
+    {
+      "name": "Classic Thermal Tint",
+      "price": 750,
+      "note": "(Budget-friendly and practical option - 5-year warranty)",
+      "features": [
+        "Moderate heat rejection suitable for tight budgets",
+        "Blocks 99% of Ultraviolet Rays (UV)",
+        "Elegant black exterior finish and scratch-resistant",
+        "Protects car interior from fading and cracking",
+        "Good and comfortable night visibility"
+      ]
+    }
+  ],
+  "book_service": "Book Service"
+}

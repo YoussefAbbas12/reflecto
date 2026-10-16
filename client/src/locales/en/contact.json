@@ -1,0 +1,56 @@
+{
+  "title_secure": "Secure",
+  "title_your": " Your ",
+  "title_protection": "Protection",
+  "vehicle_service_details": "Vehicle & Service Details",
+  "car_brand": "Car Brand",
+  "select_brand": "Select Brand",
+  "car_model": "Car Model",
+  "select_model": "Select Model",
+  "car_year": "Car Year",
+  "select_year": "Select Year",
+  "select_service": "Select Service",
+  "service_placeholder": "e.g. Full Protection",
+  "service_package": "Service Package",
+  "package_placeholder": "e.g. Ultimate",
+  "customer_information": "Customer Information",
+  "full_name": "Full Name",
+  "full_name_placeholder": "John Doe",
+  "phone_number": "Phone Number",
+  "email_address": "Email Address",
+  "email_placeholder": "john@example.com",
+  "preferred_date": "Preferred Date",
+  "preferred_time": "Preferred Time",
+  "contact_summary": "Contact Summary",
+  "selected_vehicle": "Selected Vehicle",
+  "brand": "Brand",
+  "model": "Model",
+  "year": "Year",
+  "selected_service": "Selected Service",
+  "service_type": "Service Type",
+  "package": "Package",
+  "confirm_contact": "Confirm Contact",
+  "contact_confirmed": "Contact Confirmed!",
+  "brands": {
+    "porsche": "Porsche",
+    "audi": "Audi",
+    "bmw": "BMW",
+    "mercedes": "Mercedes"
+  },
+  "models": {
+    "gt3": "911 GT3 RS",
+    "r8": "R8",
+    "m4": "M4",
+    "cayenne": "Cayenne"
+  },
+  "services": {
+    "ppf": "Full Protection (PPF)",
+    "ceramic": "Ceramic Coating",
+    "thermal": "Thermal Defense"
+  },
+  "packages": {
+    "ultimate": "Ultimate",
+    "premium": "Premium",
+    "standard": "Standard"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "hero": {
+    "badge": "Precision Engineering",
+    "title": "ARCHITECTURAL",
+    "subtitle": "OBSIDIAN.",
+    "description": "Superior heat rejection and visual privacy for elite residences and high-stakes commercial environments.",
+    "explore": "EXPLORE SOLUTIONS",
+    "case_studies": "VIEW CASE STUDIES"
+  },
+  "stats": {
+    "heat_rejection": "Heat Rejection",
+    "uv_protection": "UV Protection",
+    "ir_blocking": "IR Blocking"
+  },
+  "residential": {
+    "title": "RESIDENTIAL SOLUTIONS",
+    "description": "Elevate your living space with films that protect your interior while maintaining perfect clarity. We treat your home like a gallery.",
+    "heat_reduction": {
+      "title": "HEAT REDUCTION",
+      "desc": "Advanced ceramic technology blocks up to 98% of solar heat, significantly lowering energy costs and increasing comfort."
+    },
+    "privacy": {
+      "title": "PRIVACY CONTROL",
+      "desc": "Achieve complete visual security during the day without sacrificing your view of the outside world."
+    },
+    "uv_protection": {
+      "title": "UV PROTECTION",
+      "desc": "Stop 99.9% of harmful UV rays that cause furniture fading and skin damage. Total interior preservation."
+    }
+  },
+  "commercial": {
+    "enterprise": "Enterprise Grade",
+    "title": "COMMERCIAL",
+    "subtitle": "EXPERTISE",
+    "leed_certified": "LEED CERTIFIED",
+    "leed_standard": "ENERGY EFFICIENCY STANDARD",
+    "security": {
+      "title": "Security & Blast Mitigation",
+      "desc": "Thick safety films designed to hold glass together upon impact, protecting assets and employees from intrusion or natural disasters."
+    },
+    "energy": {
+      "title": "Energy Optimization",
+      "desc": "Slash cooling costs by up to 30%. Our films pay for themselves through operational savings within 24-36 months."
+    },
+    "glare": {
+      "title": "Glare Reduction",
+      "desc": "Eliminate screen glare and eye strain in the workspace, boosting employee productivity and visual comfort."
+    }
+  },
+  "portfolio": {
+    "title": "The Portfolio",
+    "private_residence": "Private Residence",
+    "commercial": "Commercial",
+    "obsidian_flat": "THE OBSIDIAN FLAT",
+    "axon_center": "AXON CENTER",
+    "zenith_poolhouse": "ZENITH POOLHOUSE",
+    "virtue_labs": "VIRTUE LABS"
+  },
+  "cta": {
+    "title": "READY FOR",
+    "subtitle": "PRECISION?",
+    "description": "Our consultants provide on-site diagnostics and heat-map analysis to determine the optimal film for your specific architecture.",
+    "step1": "CHOOSE YOUR PACKAGE",
+    "step2": "VIRTUAL CONSULTATION",
+    "step3": "PRECISION INSTALLATION"
+  },
+  "form": {
+    "title": "GET A CUSTOM QUOTE",
+    "name": "FULL NAME",
+    "email": "EMAIL ADDRESS",
+    "phone": "PHONE NUMBER",
+    "project_type": "PROJECT TYPE",
+    "residential": "RESIDENTIAL",
+    "commercial": "COMMERCIAL",
+    "government": "GOVERNMENT",
+    "details": "PROJECT DETAILS",
+    "submit": "REQUEST ANALYSIS",
+    "success_message": "Quote request submitted! Our team will contact you within 24 hours."
+  }
+}

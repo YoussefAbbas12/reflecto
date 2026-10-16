@@ -1,0 +1,56 @@
+{
+  "welcomeBack": "مرحباً بعودتك",
+  "memberSince": "عضو منذ {{date}}",
+  "logout": "تسجيل الخروج",
+  "inProgress": "قيد التنفيذ",
+  "progress": "التقدم",
+  "estimatedDelivery": "التسليم المتوقع",
+  "checklists": {
+    "paint_protection": "حماية الطلاء",
+    "nano_ceramic": "النانو سيراميك",
+    "paint_correction": "تصحيح الطلاء",
+    "thermal_insulation": "العزل الحراري",
+    "dash_cam": "كاميرا المراقبة"
+  },
+  "activeWarranty": "الضمان الفعال",
+  "labels": {
+    "service": "الخدمة",
+    "startDate": "تاريخ البدء",
+    "coveragePeriod": "فترة التغطية",
+    "timeRemaining": "الوقت المتبقي"
+  },
+  "loyaltyPoints": {
+    "title": "نقاط الولاء",
+    "available": "النقاط المتاحة",
+    "nextReward": "المكافأة التالية",
+    "redeem": "استرداد النقاط",
+    "gift": "إهداء النقاط"
+  },
+  "serviceHistory": "سجل الخدمات",
+  "servicesCount": {
+    "one": "{{count}} خدمة",
+    "other": "{{count}} خدمات"
+  },
+  "currency": "ر.س",
+  "carModel": "مرسيدس بنز الفئة S",
+  "stats": {
+    "totalServices": "إجمالي الخدمات",
+    "totalWarranty": "إجمالي الضمان",
+    "totalPoints": "إجمالي النقاط",
+    "totalSpent": "إجمالي المصروفات"
+  },
+  "months": {
+    "january": "يناير",
+    "february": "فبراير",
+    "march": "مارس",
+    "april": "أبريل",
+    "may": "مايو",
+    "june": "يونيو",
+    "july": "يوليو",
+    "august": "أغسطس",
+    "september": "سبتمبر",
+    "october": "أكتوبر",
+    "november": "نوفمبر",
+    "december": "ديسمبر"
+  }
+}

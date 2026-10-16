@@ -1,0 +1,62 @@
+{
+  "hero_highlight": "Welcome to",
+  "hero_name": "",
+  "hero_rest": "Services",
+
+  "card_title": "Car Dash Cam",
+  "card_subtitle": "Advanced front dashcam technology that ensures high quality 4K video, features collision, and enhanced parking monitor options. a leading industry.",
+  "select_dash_level": "Select Dash Level",
+  "premium_warranty": "Premium Panther Warranty",
+
+  "dash_levels": ["Basic", "Dash", "Cam", "Pro", "Wi-Fi", "Professional", "Loop", "Parking"],
+
+  "cooling_factor": "Cooling Factor",
+  "heat_rejection": "HEAT REJECTION",
+
+  "stats": [
+    { "l": "Resolution", "v": "92%" },
+    { "l": "Lens & Field", "v": "96%" },
+    { "l": "Features", "v": "80%" },
+    { "l": "Storage", "v": "85%" },
+    { "l": "Night", "v": "90%" },
+    { "l": "Ease of Use", "v": "85%" },
+    { "l": "Advanced", "v": "95%" },
+    { "l": "Value", "v": "90%" },
+    { "l": "Connectivity", "v": "80%" }
+  ],
+
+  "popular_title_1": "The Most",
+  "popular_title_2": "Popular",
+  "popular_title_3": "Dash",
+  "popular_title_4": "cam",
+  "popular_subtitle": "from a light gloss enhancement to complete multi-stage restoration, we offer varying levels of correction to suit your vehicle's needs.",
+
+  "popular_cams": [
+    { "l": "REDTIGER 4K" },
+    { "l": "GALPHI 4K" },
+    { "l": "70MAI" },
+    { "l": "BASEUS VD1 PRO" }
+  ],
+
+  "difference_1": "The",
+  "difference_2": "Difference",
+  "difference_3": "is",
+  "difference_4": "Clear",
+  "slider_before": "BEFORE",
+  "slider_after": "AFTER",
+
+  "packages_title_1": "Select",
+  "packages_title_rest": "Your",
+  "packages_title_2": "Package",
+
+  "pkg_title": "Enhancement",
+  "pkg_price": "$850+",
+  "pkg_features": [
+    "Deep Wheel Cleaning",
+    "Iron Fallout Removal",
+    "2-Stage Correction",
+    "1-Year Ceramic Life",
+    "Est. Time: 3 Days"
+  ],
+  "book_service": "Book Service"
+}

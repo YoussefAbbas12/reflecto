@@ -1,0 +1,73 @@
+{
+  "hero_highlight": "Protection Shield",
+  "hero_rest": "PPF Paint Protection",
+  "hero_tagline": "The ultimate invisible barrier against road hazards and rock chips, engineered with PPF's advanced self-healing technology.",
+
+  "annotations": {
+    "top_coat": "Self-Healing Top Coat",
+    "impact_core": "Impact Absorbing Core",
+    "nano_adhesive": "Nano-Adhesive Layer",
+    "thickness_8": "8-mil Thickness",
+    "thickness_10": "10-mil Thickness"
+  },
+
+  "anatomy_title_highlight": "PPF",
+  "anatomy_title_rest": " Anatomy (PPF)",
+  "anatomy_subtitle": "Flexible and durable thermoplastic urethane designed to absorb road impact and protect your vehicle's most vulnerable surfaces.",
+  "anatomy_layers": [
+    {
+      "title": "Self-Healing Top Coat",
+      "desc": "Elastomeric polymers automatically heal surface scratches when exposed to sun or heat."
+    },
+    {
+      "title": "PPF Impact Core",
+      "desc": "Absorbs energy from sand, flying gravel, and insects, preventing them from reaching the original paint."
+    },
+    {
+      "title": "Non-Yellowing Nano-Adhesive",
+      "desc": "Strong bonding agent that prevents edge peeling and is unaffected by heat, preserving vehicle paint."
+    }
+  ],
+  "anatomy_overlay_labels": [
+    "Self-Healing Paint Protection Top Coat",
+    "Impact Absorbing Polyurethane Layer"
+  ],
+  "anatomy_bottom_label": "Custom-Adhesive Urethane for Automotive",
+
+  "visual_title_prefix": "Aesthetic",
+  "visual_title_highlight": "Finish",
+  "visual_subtitle": "See the aesthetic difference between crystal-clear Glossy finish and elegant Matte finish.",
+  "gloss_finish": "GLOSS FINISH (Glossy)",
+  "matte_finish": "MATTE FINISH (Matte)",
+
+  "packages_title_prefix": "Select",
+  "packages_title_highlight": "Your PPF Package",
+  "packages": [
+    {
+      "name": "PPF Front-End Protection",
+      "price": 2480,
+      "note": "(Includes bumper, fenders, hood, mirrors, and headlights - 5-year warranty)",
+      "features": [
+        "Full coverage of front areas most exposed to highway rock chips",
+        "Heat-activated self-healing technology for surface scratches",
+        "Excellent crystal clarity that preserves original paint color",
+        "High resistance to UV rays and film yellowing",
+        "Extended 5-year warranty"
+      ]
+    },
+    {
+      "name": "PPF Full-Body Protection",
+      "price": 7800,
+      "note": "(Includes full exterior painted surfaces - 10-year warranty)",
+      "features": [
+        "100% full coverage of all exterior painted car parts",
+        "Choices between crystal Glossy finish or premium Matte finish",
+        "Ultimate resistance against scratches, light impacts, and bird droppings",
+        "Hydrophobic and dust-repellent technology for easier washing",
+        "Extended golden 10-year warranty"
+      ]
+    }
+  ],
+
+  "book_service": "Book Service"
+}

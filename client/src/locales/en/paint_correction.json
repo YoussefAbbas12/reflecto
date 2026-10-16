@@ -1,0 +1,75 @@
+{
+  "hero_highlight": "Paint Correction & Polishing",
+  "hero_rest": "FACTORY FINISH",
+  "hero_subtitle": "Restore your vehicle's original paint color and shine with our professional polishing and correction packages using natural, safe materials.",
+
+  "premium_services_prefix": "Premium ",
+  "premium_services_highlight": "Paint Correction",
+  "premium_services_suffix": " & Polishing",
+
+  "service_cards": [
+    { "icon": "chair", "title": "Interior Detailing & Polish", "subtitle": "Restore leather softness and fabric clarity" },
+    { "icon": "directions_car", "title": "Exterior Paint Correction", "subtitle": "Remove swirls and light surface scratches" },
+    { "icon": "auto_awesome", "title": "Complete Renewal (In & Out)", "subtitle": "Factory finish for both interior and exterior" }
+  ],
+
+  "technical_highlight": "Technical",
+  "technical_rest": " Correction Performance",
+  "stat_bars": [
+    { "label": "Wash Swirl Marks Removal", "value": "95%+", "numericValue": 95 },
+    { "label": "Paint Depth & Reflection", "value": "98%+", "numericValue": 98 },
+    { "label": "Surface Optical Clarity", "value": "96%+", "numericValue": 96 }
+  ],
+
+  "intensity_title_1_highlight": "Polishing",
+  "intensity_title_1_rest": " Intensity ",
+  "intensity_title_2": "Levels",
+  "intensity_title_3": "  ",
+  "intensity_title_4_highlight": "",
+  "intensity_title_4_rest": " Technology",
+  "intensity_subtitle": "From light gloss enhancements to deep multi-stage corrections, we ensure the best results customized to your car's paint condition.",
+  "intensity_levels": [
+    { "label": "Light Polish & Oxidation Removal" },
+    { "label": "Single-Stage Paint Correction" },
+    { "label": "Deep Multi-Stage Restoration" },
+    { "label": "Factory Diamond Mirror Finish" }
+  ],
+
+  "slider_title_prefix": "See ",
+  "slider_title_highlight_1": "The Transformation",
+  "slider_title_rest": " & Paint ",
+  "slider_title_highlight_2": "Depth",
+  "slider_after": "After Paint Correction",
+  "slider_before": "Before Paint Correction",
+
+  "packages_title_highlight": "Select",
+  "packages_title_rest": " Your Polishing Package",
+
+  "packages": [
+    {
+      "name": "Exterior Paint Correction (Factory Finish)",
+      "price": 950,
+      "note": "(Complete exterior paint correction and detailing)",
+      "features": [
+        "100% silicone-free and fillers-free natural correction compounds",
+        "Removes wash swirl marks and oxidation up to 95%",
+        "Restores car's deep original paint color and reflection",
+        "Polishes headlights, wheels, and chrome trim to look like new"
+      ]
+    },
+    {
+      "name": "Complete Detail (Interior & Exterior)",
+      "price": 1800,
+      "note": "(Comprehensive exterior and interior car rejuvenation)",
+      "features": [
+        "Full exterior paint correction removing swirls, oxidation, and scratches",
+        "Deep interior detailing and steam sterilization",
+        "Restores leather softness, shine, and protects from cracking",
+        "Deep cleans carpets, roof liner, and upholstery with safe cleaners",
+        "Odor removal and cabin scenting with natural materials"
+      ]
+    }
+  ],
+
+  "book_service": "Book Service"
+}

@@ -1,0 +1,50 @@
+{
+  "paint_protection_title": "PPF Paint Protection Film (PPF)",
+  "paint_protection_description": "Invisible armor and self-healing shield to absorb road impacts and rock chips.",
+  "paint_protection_cta": "Discover PPF Paint Protection",
+  "paint_protection_feature_0": "Advanced self-healing scratch technology",
+  "paint_protection_feature_1": "Extended warranty up to 10 years",
+  "paint_protection_feature_2": "Superior protection against flying gravel and sand",
+
+  "nano_ceramic_title": "Nano Ceramic Coating CX",
+  "nano_ceramic_description": "Advanced glass nano-coating that gives your vehicle a diamond shine and super water-repellent layer.",
+  "nano_ceramic_cta": "Discover Ceramic Coating CX",
+  "nano_ceramic_feature_0": "Deep gloss and diamond reflection",
+  "nano_ceramic_feature_1": "Super hydrophobic effect for easy washing",
+  "nano_ceramic_feature_2": "Complete interior/exterior protection with 5-year warranty",
+
+  "paint_correction_title": "Paint Correction & Polishing",
+  "paint_correction_description": "Restore your vehicle's factory paint depth and showroom shine with professional FACTORY FINISH polishing.",
+  "paint_correction_cta": "Explore Polishing & Detailing",
+  "paint_correction_feature_0": "Removes wash swirls and oxidation up to 95%",
+  "paint_correction_feature_1": "Restores deep, factory-original paint color",
+  "paint_correction_feature_2": "Safe, silicon-free premium detailing products",
+
+  "thermal_insulation_title": "Thermal Window Tinting",
+  "thermal_insulation_description": "Highly efficient heat rejection to resist harsh sun rays, keeping your cabin cool and private.",
+  "thermal_insulation_cta": "Explore Thermal Insulation",
+  "thermal_insulation_feature_0": "Blocks up to 99% of Infrared Rays (IR)",
+  "thermal_insulation_feature_1": "Blocks 99% of harmful Ultraviolet Rays (UV)",
+  "thermal_insulation_feature_2": "10-year warranty against peeling and fading",
+
+  "ppf_title": "PPF Paint Protection",
+  "ppf_description": "Durable gloss or matte protective film shielding your entire car body from scratches and weathering.",
+  "ppf_cta": "View PPF Packages",
+  "ppf_feature_0": "Full protection from scratches and minor dents",
+  "ppf_feature_1": "Heat-activated self-healing technology",
+  "ppf_feature_2": "Warranty coverage up to 10 years",
+
+  "dash_cam_title": "Dash Cam Systems",
+  "dash_cam_description": "Record your journeys and keep your vehicle safe with high-definition 24/7 surveillance.",
+  "dash_cam_cta": "Explore Dash Cam Systems",
+  "dash_cam_feature_0": "Ultra HD 4K resolution with clear night vision",
+  "dash_cam_feature_1": "Cloud connectivity and real-time mobile app access",
+  "dash_cam_feature_2": "24/7 parking mode monitoring with G-sensor",
+
+  "window_tinting_title": "Commercial & Residential Window Tinting",
+  "window_tinting_description": "Professional architectural window films to reduce energy costs and increase indoor comfort.",
+  "window_tinting_cta": "View Window Tinting Options",
+  "window_tinting_feature_0": "Superior heat rejection for buildings",
+  "window_tinting_feature_1": "Saves energy and reduces A/C power consumption",
+  "window_tinting_feature_2": "Protects interior furnishings from sun damage and fading"
+}

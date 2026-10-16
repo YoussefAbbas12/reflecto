@@ -1,0 +1,43 @@
+{
+  "title": "Kingdom Branches",
+  "subtitle": "Our strategic network of branches covering 100% of the key regions in Saudi Arabia.",
+  "strategic_assets": "Strategic Assets",
+  "kingdom_network": "Kingdom Network",
+  "logistics_desc": "Deploying cutting-edge logistics infrastructure across the Kingdom's vital economic zones.",
+  "stat_branches": "Strategic Branches",
+  "stat_regions": "Regions Covered",
+  "stat_availability": "KSA Availability",
+  "view_details": "View Details",
+  "view_location": "Location on Map",
+  "supervisor": "Supervisor",
+  "supervisor_both": "Supervisor (Mecca + Taif)",
+  "taif": {
+    "name": "Taif",
+    "location": "Taif, Saudi Arabia"
+  },
+  "makkah": {
+    "name": "Mecca",
+    "location": "Mecca, Saudi Arabia"
+  },
+  "jeddah": {
+    "name": "Jeddah",
+    "location": "Jeddah, Saudi Arabia"
+  },
+  "riyadh_faisaliah_2": {
+    "name": "Riyadh - Al Faisaliah 2",
+    "location": "Al Faisaliah Dist., Riyadh, Saudi Arabia",
+    "tag": "New"
+  },
+  "riyadh_faisaliah_1": {
+    "name": "Riyadh - Al Faisaliah 1",
+    "location": "Al Faisaliah Dist., Riyadh, Saudi Arabia"
+  },
+  "dammam": {
+    "name": "Dammam",
+    "location": "Dammam, Eastern Province, Saudi Arabia"
+  },
+  "almadina": {
+    "name": "Al Madina",
+    "location": "Al Madina, Saudi Arabia"
+  }
+}
