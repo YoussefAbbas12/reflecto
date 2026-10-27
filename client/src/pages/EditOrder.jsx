@@ -346,7 +346,7 @@ const EditOrder = React.memo(() => {
     updateMutation.mutate(payload);
   }, [formData, price, vat_amount, total_amount, paid_amount, remaining_amount, updateMutation, toast]);
 
-  const inputStyle = "w-full bg-white/[0.05] border-0 shadow-inner rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder:text-gray-500";
+  const inputStyle = "w-full bg-white/[0.05] border-0 shadow-inner rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder:text-gray-500";
   const labelStyle = "block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2";
 
   if (!canEdit) {
@@ -357,7 +357,7 @@ const EditOrder = React.memo(() => {
           <span className="material-symbols-outlined text-6xl text-red-500">lock</span>
           <h1 className="text-2xl font-bold text-white">عفواً، لا تملك صلاحية تعديل أوامر العمل</h1>
           <p className="text-gray-400 text-sm">تواصل مع السوبر أدمن للحصول على صلاحية (edit_checklist)</p>
-          <button onClick={() => navigate('/admin/orders')} className="px-6 py-2 bg-[#FF5C35] text-white rounded-xl font-bold text-xs cursor-pointer">
+          <button onClick={() => navigate('/admin/orders')} className="px-6 py-2 bg-[#5C24EB] text-white rounded-xl font-bold text-xs cursor-pointer">
             العودة لأوامر العمل
           </button>
         </main>
@@ -366,7 +366,7 @@ const EditOrder = React.memo(() => {
   }
 
   return (
-    <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-24 md:pt-8 selection:bg-[#FF5C35]/30">
+    <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-24 md:pt-8 selection:bg-[#5C24EB]/30">
       <AdminSidebar />
 
       <main className="flex-1 overflow-y-auto p-6 lg:p-12 pt-8 space-y-8">
@@ -375,10 +375,10 @@ const EditOrder = React.memo(() => {
             <div className="flex items-center gap-2 text-gray-500 mb-2 text-xs font-bold uppercase tracking-wider">
               <button type="button" onClick={() => navigate('/admin/orders')} className="hover:text-white transition-colors">Orders</button>
               <span className="material-symbols-outlined text-xs">chevron_right</span>
-              <span className="text-[#FF5C35]">Edit Order</span>
+              <span className="text-[#8B5CF6]">Edit Order</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-display font-black text-white tracking-tight flex items-center gap-3">
-              <span className="material-symbols-outlined text-3xl md:text-4xl text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-2xl border border-[#FF5C35]/20 shadow-inner">edit_note</span>
+            <h1 className="text-2xl md:text-3xl font-display font-black text-white tracking-tight flex items-center gap-3">
+              <span className="material-symbols-outlined text-2xl md:text-3xl text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-2xl border border-[#5C24EB]/20 shadow-inner">edit_note</span>
               <span>تعديل طلب الفحص والاستلام ({formData.work_order_number || 'Edit Order'})</span>
             </h1>
             <p className="text-gray-400 text-sm mt-1">تعديل بيانات النموذج الرسمي لطلب الخدمة والفحص المالي والمركبة</p>
@@ -387,14 +387,14 @@ const EditOrder = React.memo(() => {
 
         {isOrderLoading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-10 h-10 border-4 border-[#FF5C35] border-t-transparent rounded-full animate-spin" />
+            <div className="w-10 h-10 border-4 border-[#5C24EB] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Section 1: Work Order & Client Info */}
             <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
               <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-                <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">badge</span>
+                <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">badge</span>
                 1. بيانات أمر العمل والعميل (Work Order & Client)
               </legend>
 
@@ -406,7 +406,7 @@ const EditOrder = React.memo(() => {
                     name="work_order_number"
                     value={formData.work_order_number}
                     onChange={handleInputChange}
-                    className={`${inputStyle} font-mono font-bold text-[#FF5C35]`}
+                    className={`${inputStyle} font-mono font-bold text-[#8B5CF6]`}
                     readOnly
                   />
                 </div>
@@ -496,19 +496,19 @@ const EditOrder = React.memo(() => {
             {/* Section 2: Services Check List */}
             <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
               <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-                <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">checklist</span>
+                <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">checklist</span>
                 خدمات الفحص المطلوبة (Check List Options)
               </legend>
 
               <div className="space-y-8">
               {/* Heat Insulation */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">عازل حراري (Heat Insulation)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">عازل حراري (Heat Insulation)</h4>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {['امامي', 'سائق وركاب', 'خلف السائق', 'مثلث', 'خلفي شنطه', 'بنوراما', 'سيكورتي'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.heat_insulation.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.heat_insulation.includes(opt)} onChange={() => handleCheckboxToggle('heat_insulation', opt)} />
@@ -517,15 +517,15 @@ const EditOrder = React.memo(() => {
                   ))}
                 </div>
                 {formData.heat_insulation.length > 0 && (
-                  <div className="p-4 bg-white/[0.03] border border-[#FF5C35]/30 rounded-xl space-y-3 mb-3">
-                    <p className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider mb-1">درجة العزل الحراري لكل خيار</p>
+                  <div className="p-4 bg-white/[0.03] border border-[#5C24EB]/30 rounded-xl space-y-3 mb-3">
+                    <p className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider mb-1">درجة العزل الحراري لكل خيار</p>
                     {formData.heat_insulation.map(opt => (
                       <div key={opt} className="flex items-center gap-3">
                         <span className="text-xs font-bold text-white min-w-[90px]">{opt}</span>
                         <select
                           value={formData.heat_insulation_details?.[opt] || ''}
                           onChange={(e) => handleHeatInsulationDetail(opt, e.target.value)}
-                          className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35] transition-colors"
+                          className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB] transition-colors"
                         >
                           <option value="" className="bg-[#121212]">-- اختر الدرجة --</option>
                           {['00', '01', '02', '03', '04', '05'].map(grade => (
@@ -560,13 +560,13 @@ const EditOrder = React.memo(() => {
                         <option value="months" className="bg-[#121212]">أشهر</option>
                       </select>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                      <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                      <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني العازل الحراري:</span>
+                    <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                      <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                      <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني العازل الحراري:</span>
                       <select
                         value={formData.service_technicians['heat_insulation'] || ''}
                         onChange={e => handleServiceTechnicianChange('heat_insulation', e.target.value)}
-                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                       >
                         <option value="">اختر الفني...</option>
                         {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -611,12 +611,12 @@ const EditOrder = React.memo(() => {
 
               {/* Polishing */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">تلميع (Polishing)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">تلميع (Polishing)</h4>
                 <div className="flex flex-wrap gap-3">
                   {['خارجي', 'داخلي', 'مقاعد', 'مائي'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.polishing.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.polishing.includes(opt)} onChange={() => handleCheckboxToggle('polishing', opt)} />
@@ -647,13 +647,13 @@ const EditOrder = React.memo(() => {
                         <option value="months" className="bg-[#121212]">أشهر</option>
                       </select>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                      <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                      <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني التلميع:</span>
+                    <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                      <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                      <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني التلميع:</span>
                       <select
                         value={formData.service_technicians['polishing'] || ''}
                         onChange={e => handleServiceTechnicianChange('polishing', e.target.value)}
-                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                       >
                         <option value="">اختر الفني...</option>
                         {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -698,12 +698,12 @@ const EditOrder = React.memo(() => {
 
               {/* Nano Ceramic */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">نانو سيراميك (Nano Ceramic)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">نانو سيراميك (Nano Ceramic)</h4>
                 <div className="flex flex-wrap gap-3">
                   {['داخلي', 'طبلون + أبواب', 'جنوط', 'خارجي (طبقة واحدة)', 'خارجي (طبقتين)', 'خارجي (3 طبقات)'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.nano_ceramic.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.nano_ceramic.includes(opt)} onChange={() => handleCheckboxToggle('nano_ceramic', opt)} />
@@ -734,13 +734,13 @@ const EditOrder = React.memo(() => {
                         <option value="months" className="bg-[#121212]">أشهر</option>
                       </select>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                      <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                      <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني النانو سيراميك:</span>
+                    <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                      <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                      <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني النانو سيراميك:</span>
                       <select
                         value={formData.service_technicians['nano_ceramic'] || ''}
                         onChange={e => handleServiceTechnicianChange('nano_ceramic', e.target.value)}
-                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                       >
                         <option value="">اختر الفني...</option>
                         {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -785,12 +785,12 @@ const EditOrder = React.memo(() => {
 
               {/* PPF */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">حماية PPF</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">حماية PPF</h4>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {['شمعات', 'أطراف الأبواب + تحت المقابض', 'مرايا', 'جزئي', 'كامل'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.ppf.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.ppf.includes(opt)} onChange={() => handleCheckboxToggle('ppf', opt)} />
@@ -799,7 +799,7 @@ const EditOrder = React.memo(() => {
                   ))}
                 </div>
                 {formData.ppf.includes('جزئي') && (
-                  <div className="p-4 bg-white/[0.03] border border-[#FF5C35]/30 rounded-xl">
+                  <div className="p-4 bg-white/[0.03] border border-[#5C24EB]/30 rounded-xl">
                     <label className={labelStyle}>تفاصيل الجزئي (Partial PPF Coverage Details)</label>
                     <input
                       type="text"
@@ -833,13 +833,13 @@ const EditOrder = React.memo(() => {
                         <option value="months" className="bg-[#121212]">أشهر</option>
                       </select>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                      <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                      <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني حماية PPF:</span>
+                    <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                      <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                      <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني حماية PPF:</span>
                       <select
                         value={formData.service_technicians['ppf'] || ''}
                         onChange={e => handleServiceTechnicianChange('ppf', e.target.value)}
-                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                       >
                         <option value="">اختر الفني...</option>
                         {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -885,12 +885,12 @@ const EditOrder = React.memo(() => {
 
               {/* Removal */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">إزالة (Removal Services)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">إزالة (Removal Services)</h4>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {['عازل كامل', 'عازل جزئي', 'سيكورتي زجاج', 'ستيكرات', 'كامل PPF', 'جزئي PPF'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.removal_services.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.removal_services.includes(opt)} onChange={() => handleCheckboxToggle('removal_services', opt)} />
@@ -899,13 +899,13 @@ const EditOrder = React.memo(() => {
                   ))}
                 </div>
                 {formData.removal_services.length > 0 && (
-                  <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                    <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                    <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني خدمات الإزالة:</span>
+                  <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                    <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                    <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني خدمات الإزالة:</span>
                     <select
                       value={formData.service_technicians['removal_services'] || ''}
                       onChange={e => handleServiceTechnicianChange('removal_services', e.target.value)}
-                      className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                      className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                     >
                       <option value="">اختر الفني...</option>
                       {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -919,25 +919,25 @@ const EditOrder = React.memo(() => {
             {/* Section 3: Financial Details */}
             <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
               <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-                <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">payments</span>
+                <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">payments</span>
                 3. التكلفة والحسابات (Financial Breakdown)
               </legend>
 
               <div className="grid grid-cols-1 md:grid-cols-6 gap-4 bg-white/[0.03] p-6 rounded-2xl border border-white/10">
                 {clientCompany && (
-                  <div className="md:col-span-6 bg-[#FF5C35]/10 border border-[#FF5C35]/30 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
+                  <div className="md:col-span-6 bg-[#5C24EB]/10 border border-[#5C24EB]/30 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-white/10 p-1 flex items-center justify-center border border-white/20 shrink-0">
                         {clientCompany.logo_url ? (
                           <img src={getCompanyLogoUrl(clientCompany.logo_url)} alt="" className="w-full h-full object-contain" />
                         ) : (
-                          <span className="material-symbols-outlined text-[#FF5C35]">domain</span>
+                          <span className="material-symbols-outlined text-[#8B5CF6]">domain</span>
                         )}
                       </div>
                       <div>
                         <h4 className="text-xs font-bold text-white flex items-center gap-2">
                           <span>العميل تابع لجهة / شركة: {clientCompany.name}</span>
-                          <span className="bg-[#FF5C35] text-white px-2 py-0.5 rounded text-[10px]">خصم {clientCompany.discount_percent}%</span>
+                          <span className="bg-[#5C24EB] text-white px-2 py-0.5 rounded text-[10px]">خصم {clientCompany.discount_percent}%</span>
                         </h4>
                         {clientCompany.custom_message && (
                           <p className="text-[11px] text-amber-200 mt-0.5">{clientCompany.custom_message}</p>
@@ -968,7 +968,7 @@ const EditOrder = React.memo(() => {
                             toast.warning('يرجى كتابة السعر الأصلي أولاً لتطبيق نسبة الخصم');
                           }
                         }}
-                        className="px-4 py-2 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer whitespace-nowrap"
+                        className="px-4 py-2 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer whitespace-nowrap"
                       >
                         تطبيق خصم الشركة ({clientCompany.discount_percent}%)
                       </button>
@@ -1054,7 +1054,7 @@ const EditOrder = React.memo(() => {
             {/* Section 4: Vehicle Details */}
             <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
               <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-                <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">directions_car</span>
+                <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">directions_car</span>
                 4. بيانات المركبة والفحص الفني (Vehicle Details)
               </legend>
 
@@ -1118,7 +1118,7 @@ const EditOrder = React.memo(() => {
             {/* Section 5: Signatures & Warranty */}
             <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
               <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-                <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">verified</span>
+                <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">verified</span>
                 5. التوقيعات والضمان (Signatures & Warranty)
               </legend>
 
@@ -1144,7 +1144,7 @@ const EditOrder = React.memo(() => {
                     name="has_warranty"
                     checked={formData.has_warranty}
                     onChange={handleInputChange}
-                    className="w-5 h-5 accent-[#FF5C35] rounded"
+                    className="w-5 h-5 accent-[#5C24EB] rounded"
                   />
                   <span className="text-sm font-bold text-white">إضافة ضمان رقمي للخدمة (Issue Warranty Certificate)</span>
                 </label>
@@ -1176,7 +1176,7 @@ const EditOrder = React.memo(() => {
               <button
                 type="submit"
                 disabled={updateMutation.isPending}
-                className="px-10 py-4 bg-gradient-to-r from-[#FF5C35] to-[#ff8060] hover:brightness-110 text-white font-bold text-sm rounded-2xl shadow-xl transition-all flex items-center gap-3 cursor-pointer disabled:opacity-50"
+                className="px-10 py-4 bg-gradient-to-r from-[#5C24EB] to-[#7C3AED] hover:brightness-110 text-white font-bold text-sm rounded-2xl shadow-xl transition-all flex items-center gap-3 cursor-pointer disabled:opacity-50"
               >
                 {updateMutation.isPending ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

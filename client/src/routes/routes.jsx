@@ -63,6 +63,7 @@ const BookService = lazy(() => import('../pages/BookService'));
 const PayRemainingBalance = lazy(() => import('../pages/PayRemainingBalance'));
 const AdminLoginView = lazy(() => import('../pages/AdminLoginView'));
 const TechLoginView = lazy(() => import('../pages/TechLoginView'));
+const AboutSeeda = lazy(() => import('../pages/AboutSeeda'));
 const NotFound = lazy(() => import('../error-page/notFound'));
 
 const PageFallback = () => (
@@ -92,41 +93,16 @@ const AppRoutes = () => {
 
   const portal = getSubdomainPortal();
 
-  return (
-    <Suspense fallback={<PageFallback />}>
-      <Routes location={location} key={location.pathname}>
-          {/* Dynamic Root Route based on active Subdomain Portal */}
-          <Route 
-            path="/" 
-            element={
-              <AnimatedRoute>
-                {portal === 'admin' ? (
-                  <AdminLoginView />
-                ) : portal === 'technical' ? (
-                  <TechLoginView />
-                ) : (
-                  <HomeView />
-                )}
-              </AnimatedRoute>
-            } 
-          />
+  // If on public Client portal (reflecto.com.sa / www.reflecto.com.sa), render ONLY client routes
+  if (portal === 'client') {
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<AnimatedRoute><HomeView /></AnimatedRoute>} />
           <Route path="/branches" element={<AnimatedRoute><BranchesView /></AnimatedRoute>} />
           <Route path="/pricing" element={<AnimatedRoute><PricingView /></AnimatedRoute>} />
           <Route path="/contact" element={<AnimatedRoute><Contact /></AnimatedRoute>} />
-          <Route path="/login" element={
-            <AnimatedRoute>
-              {portal === 'admin' ? (
-                <Navigate to="/admin/login" replace />
-              ) : portal === 'technical' ? (
-                <Navigate to="/technical/login" replace />
-              ) : (
-                <LoginView />
-              )}
-            </AnimatedRoute>
-          } />
-          <Route path="/admin/login" element={<AnimatedRoute><AdminLoginView /></AnimatedRoute>} />
-          <Route path="/technical/login" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
-          <Route path="/tech/login" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
+          <Route path="/login" element={<AnimatedRoute><LoginView /></AnimatedRoute>} />
           <Route path="/otp" element={<AnimatedRoute><OTPView /></AnimatedRoute>} />
           <Route path="/register" element={<AnimatedRoute><RegisterView /></AnimatedRoute>} />
           <Route path="/register/otp" element={<AnimatedRoute><RegisterOTPView /></AnimatedRoute>} />
@@ -138,13 +114,6 @@ const AppRoutes = () => {
             <AnimatedRoute>
               <ProtectedRoute requiredRole="client">
                 <DashboardView />
-              </ProtectedRoute>
-            </AnimatedRoute>
-          } />
-          <Route path="/technician" element={
-            <AnimatedRoute>
-              <ProtectedRoute requiredRole={['technician', 'admin']}>
-                <TechnicianDashboard />
               </ProtectedRoute>
             </AnimatedRoute>
           } />
@@ -164,8 +133,56 @@ const AppRoutes = () => {
               </ProtectedRoute>
             </AnimatedRoute>
           } />
+          <Route path="/pay-balance" element={<AnimatedRoute><PayRemainingBalance /></AnimatedRoute>} />
+          <Route path="/pay-remaining" element={<AnimatedRoute><PayRemainingBalance /></AnimatedRoute>} />
+          <Route path="/checkout/pay-remaining" element={<AnimatedRoute><PayRemainingBalance /></AnimatedRoute>} />
+          <Route path="/about-seeda" element={<AnimatedRoute><AboutSeeda /></AnimatedRoute>} />
+          <Route path="/seeda" element={<AnimatedRoute><AboutSeeda /></AnimatedRoute>} />
+          
+          {/* Explicitly block and 404 all admin and technician endpoints on client portal */}
+          <Route path="/admin/*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
+          <Route path="/technical/*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
+          <Route path="/tech/*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
+          <Route path="/technician" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
+          <Route path="*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
+        </Routes>
+      </Suspense>
+    );
+  }
 
-          {/* Admin Routes */}
+  // If on Technical portal (technical.reflecto.com.sa / tech.reflecto.com.sa), render ONLY technician routes
+  if (portal === 'technical') {
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
+          <Route path="/login" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
+          <Route path="/technical/login" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
+          <Route path="/tech/login" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
+          <Route path="/technician" element={
+            <AnimatedRoute>
+              <ProtectedRoute requiredRole={['technician', 'admin']}>
+                <TechnicianDashboard />
+              </ProtectedRoute>
+            </AnimatedRoute>
+          } />
+          <Route path="*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
+        </Routes>
+      </Suspense>
+    );
+  }
+
+  // Admin Portal (admin.reflecto.com.sa / admin.localhost)
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <Routes location={location} key={location.pathname}>
+          {/* Admin Login & Root Routes */}
+          <Route path="/" element={<AnimatedRoute><AdminLoginView /></AnimatedRoute>} />
+          <Route path="/login" element={<AnimatedRoute><AdminLoginView /></AnimatedRoute>} />
+          <Route path="/admin/login" element={<AnimatedRoute><AdminLoginView /></AnimatedRoute>} />
+          <Route path="/about-seeda" element={<AnimatedRoute><AboutSeeda /></AnimatedRoute>} />
+          <Route path="/seeda" element={<AnimatedRoute><AboutSeeda /></AnimatedRoute>} />
+          <Route path="/admin/about-seeda" element={<AnimatedRoute><AboutSeeda /></AnimatedRoute>} />
           <Route path="/admin" element={
             <AnimatedRoute>
               <ProtectedRoute requiredRole="admin">
@@ -173,7 +190,6 @@ const AppRoutes = () => {
               </ProtectedRoute>
             </AnimatedRoute>
           } />
-          {/* Redirect /admin/overview → /admin */}
           <Route path="/admin/overview" element={<Navigate to="/admin" replace />} />
           <Route path="/admin/scheduling" element={
             <AnimatedRoute>
@@ -411,21 +427,6 @@ const AppRoutes = () => {
               <ProtectedRoute requiredRole="admin">
                 <AdminReviews />
               </ProtectedRoute>
-            </AnimatedRoute>
-          } />
-          <Route path="/pay-balance" element={
-            <AnimatedRoute>
-              <PayRemainingBalance />
-            </AnimatedRoute>
-          } />
-          <Route path="/pay-remaining" element={
-            <AnimatedRoute>
-              <PayRemainingBalance />
-            </AnimatedRoute>
-          } />
-          <Route path="/checkout/pay-remaining" element={
-            <AnimatedRoute>
-              <PayRemainingBalance />
             </AnimatedRoute>
           } />
           <Route path="*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />

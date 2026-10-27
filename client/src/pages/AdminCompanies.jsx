@@ -7,11 +7,13 @@ import FadeIn from '../components/components/FadeIn';
 import { getCompanyLogoUrl } from '../utils/imageUrl';
 import { useAuth } from '../contexts/AuthContext';
 import useBodyScrollLock from '../hooks/useBodyScrollLock';
+import { useAdminTheme } from '../contexts/AdminThemeContext';
 
 const AdminCompanies = () => {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const { hasPermission } = useAuth();
+    const { isLight } = useAdminTheme();
     const canView = hasPermission('view_companies');
     const canManage = hasPermission('manage_companies');
 
@@ -219,7 +221,7 @@ const AdminCompanies = () => {
 
     if (!canView) {
         return (
-            <div className="flex min-h-screen bg-[#050505] text-white">
+            <div className={`flex min-h-screen transition-colors duration-300 ${isLight ? 'bg-[#F8FAFC] text-gray-900' : 'bg-[#050505] text-white'}`}>
                 <AdminSidebar />
                 <main className="flex-1 flex items-center justify-center p-6 text-center">
                     <div className="max-w-md bg-white/[0.02] border border-white/10 rounded-3xl p-8 space-y-4 shadow-2xl">
@@ -233,7 +235,7 @@ const AdminCompanies = () => {
     }
 
     return (
-        <div className="flex min-h-screen bg-[#050505] text-white">
+        <div className={`flex min-h-screen transition-colors duration-300 ${isLight ? 'bg-[#F8FAFC] text-gray-900' : 'bg-[#050505] text-white'}`}>
             <AdminSidebar />
 
             <main className="flex-1 overflow-y-auto p-6 lg:p-10 max-w-7xl mx-auto space-y-8 w-full">
@@ -242,11 +244,11 @@ const AdminCompanies = () => {
                 <FadeIn>
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white/[0.02] border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-2xl relative overflow-hidden">
                         <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-xs font-bold text-[#FF5C35] uppercase tracking-wider">
+                            <div className="flex items-center gap-2 text-xs font-bold text-[#8B5CF6] uppercase tracking-wider">
                                 <span className="material-symbols-outlined text-sm">domain</span>
                                 إدارة الشركات والشركاء (Corporate Management)
                             </div>
-                            <h1 className="text-3xl font-extrabold font-display">الشركات والجهات التابعة</h1>
+                            <h1 className="text-2xl md:text-3xl font-extrabold font-display">الشركات والجهات التابعة</h1>
                             <p className="text-xs text-gray-400 font-bold max-w-lg">
                                 إضافة الشركات، رفع الشعارات وتحديد نسبة الخصم المخصصة والرسائل للعملاء التابعين.
                             </p>
@@ -260,7 +262,7 @@ const AdminCompanies = () => {
                                 }
                                 handleOpenModal();
                             }}
-                            className={`px-6 py-3.5 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white font-bold text-xs rounded-2xl shadow-[0_8px_25px_rgba(255,92,53,0.35)] transition-all flex items-center gap-2 cursor-pointer ${!canManage ? 'opacity-40 filter grayscale cursor-not-allowed' : ''}`}
+                            className={`px-6 py-3.5 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white font-bold text-xs rounded-2xl shadow-[0_8px_25px_rgba(92, 36, 235, 0.35)] transition-all flex items-center gap-2 cursor-pointer ${!canManage ? 'opacity-40 filter grayscale cursor-not-allowed' : ''}`}
                         >
                             <span className="material-symbols-outlined text-sm">add_business</span>
                             إضافة شركة جديدة
@@ -277,7 +279,7 @@ const AdminCompanies = () => {
                             placeholder="البحث باسم الشركة أو الملاحظات..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pr-11 pl-4 py-3 text-xs font-bold text-white placeholder-gray-500 outline-none focus:border-[#FF5C35]"
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pr-11 pl-4 py-3 text-xs font-bold text-white placeholder-gray-500 outline-none focus:border-[#5C24EB]"
                         />
                     </div>
                     <span className="text-xs text-gray-400 font-bold">إجمالي الشركات: {companies.length}</span>
@@ -286,7 +288,7 @@ const AdminCompanies = () => {
                 {/* Companies Grid */}
                 {isLoading ? (
                     <div className="p-12 text-center bg-white/[0.02] border border-white/5 rounded-3xl">
-                        <div className="w-8 h-8 border-3 border-[#FF5C35] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                        <div className="w-8 h-8 border-3 border-[#5C24EB] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
                         <p className="text-xs text-gray-400 font-bold">جاري تحميل قائمة الشركات...</p>
                     </div>
                 ) : filteredCompanies.length === 0 ? (
@@ -325,7 +327,7 @@ const AdminCompanies = () => {
                                             </div>
                                             <div>
                                                 <h3 className="text-lg font-bold text-white">{comp.name}</h3>
-                                                <span className="text-[11px] font-bold text-[#FF5C35] bg-[#FF5C35]/10 px-2.5 py-0.5 rounded-md inline-block mt-1">
+                                                <span className="text-[11px] font-bold text-[#8B5CF6] bg-[#5C24EB]/10 px-2.5 py-0.5 rounded-md inline-block mt-1">
                                                     خصم {comp.discount_percent}%
                                                 </span>
                                             </div>
@@ -405,7 +407,7 @@ const AdminCompanies = () => {
                         {/* Modal Header */}
                         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4 shrink-0 bg-[#0f0f0f] z-10">
                             <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[#FF5C35]">business</span>
+                                <span className="material-symbols-outlined text-[#8B5CF6]">business</span>
                                 {editingCompany ? 'تعديل بيانات الشركة' : 'إضافة شركة / جهة جديدة'}
                             </h2>
                             <button
@@ -421,13 +423,13 @@ const AdminCompanies = () => {
                         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-5 space-y-5 text-xs font-bold custom-scrollbar">
                             {/* Company Name */}
                             <div>
-                                <label className="block text-gray-400 mb-1.5">اسم الشركة / الجهة <span className="text-[#FF5C35]">*</span></label>
+                                <label className="block text-gray-400 mb-1.5">اسم الشركة / الجهة <span className="text-[#8B5CF6]">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                                     placeholder="مثال: شركة أرامكو السعودية"
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#FF5C35] transition-all"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#5C24EB] transition-all"
                                     required
                                 />
                             </div>
@@ -443,7 +445,7 @@ const AdminCompanies = () => {
                                     value={formData.discount_percent}
                                     onChange={(e) => setFormData(prev => ({ ...prev, discount_percent: e.target.value }))}
                                     placeholder="مثال: 15"
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#FF5C35] transition-all font-mono"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#5C24EB] transition-all font-mono"
                                 />
                             </div>
 
@@ -481,7 +483,7 @@ const AdminCompanies = () => {
                                         </div>
                                     )}
                                     <div className="space-y-2 text-center sm:text-right flex-1">
-                                        <label className="px-4 py-2.5 bg-[#FF5C35]/20 hover:bg-[#FF5C35]/30 text-[#FF5C35] border border-[#FF5C35]/30 rounded-xl cursor-pointer inline-flex items-center gap-2 transition-all text-xs font-bold">
+                                        <label className="px-4 py-2.5 bg-[#5C24EB]/20 hover:bg-[#5C24EB]/30 text-[#8B5CF6] border border-[#5C24EB]/30 rounded-xl cursor-pointer inline-flex items-center gap-2 transition-all text-xs font-bold">
                                             <span className="material-symbols-outlined text-sm">upload_file</span>
                                             {formData.logo_preview ? 'تغيير الصورة' : 'رفع صورة جديدة'}
                                             <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
@@ -501,14 +503,14 @@ const AdminCompanies = () => {
                                     value={formData.custom_message}
                                     onChange={(e) => setFormData(prev => ({ ...prev, custom_message: e.target.value }))}
                                     placeholder="مثال: خصم خاص لموظفي ومنسوبي الشركة..."
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#FF5C35] transition-all"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#5C24EB] transition-all"
                                 ></textarea>
                             </div>
 
                             {/* Package Prices Section */}
                             <div className="space-y-3 pt-3 border-t border-white/10">
                                 <div className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-[#FF5C35]">sell</span>
+                                    <span className="material-symbols-outlined text-[#8B5CF6]">sell</span>
                                     <label className="block text-white font-bold text-xs">أسعار الباقات المخصصة لهذه الشركة (Package Prices)</label>
                                 </div>
                                 <p className="text-[11px] text-gray-400 font-normal">
@@ -524,7 +526,7 @@ const AdminCompanies = () => {
                                             const serviceTitle = pkg.service_name_ar || pkg.service_name_en;
                                             const fullName = serviceTitle ? `${serviceTitle} - ${pkg.name_ar || pkg.name_en}` : (pkg.name_ar || pkg.name_en);
                                             return (
-                                                <div key={tierKey} className="flex items-center justify-between p-3 bg-white/[0.03] border border-white/5 rounded-xl gap-3 text-xs hover:border-[#FF5C35]/30 transition-all">
+                                                <div key={tierKey} className="flex items-center justify-between p-3 bg-white/[0.03] border border-white/5 rounded-xl gap-3 text-xs hover:border-[#5C24EB]/30 transition-all">
                                                     <div className="flex-1 min-w-0">
                                                         <span className="text-white font-bold block truncate">{fullName}</span>
                                                         <span className="text-gray-400 text-[10px]">السعر الأساسي: <span className="font-mono text-gray-300">{basePrice} SAR</span></span>
@@ -546,7 +548,7 @@ const AdminCompanies = () => {
                                                                     }
                                                                 }));
                                                             }}
-                                                            className="w-28 bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-white font-mono text-center outline-none focus:border-[#FF5C35]"
+                                                            className="w-28 bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-white font-mono text-center outline-none focus:border-[#5C24EB]"
                                                         />
                                                         <span className="text-gray-400 text-[10px]">SAR</span>
                                                     </div>
@@ -565,7 +567,7 @@ const AdminCompanies = () => {
                                     value={formData.notes}
                                     onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                                     placeholder="ملاحظات تظهر فقط للمدراء..."
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#FF5C35] transition-all"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#5C24EB] transition-all"
                                 ></textarea>
                             </div>
 
@@ -586,7 +588,7 @@ const AdminCompanies = () => {
                                 type="button"
                                 onClick={handleSubmit}
                                 disabled={saveMutation.isPending}
-                                className="px-6 py-2.5 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white rounded-xl shadow-[0_8px_20px_rgba(255,92,53,0.3)] transition-all font-bold cursor-pointer disabled:opacity-50 flex items-center gap-2"
+                                className="px-6 py-2.5 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white rounded-xl shadow-[0_8px_20px_rgba(92, 36, 235, 0.3)] transition-all font-bold cursor-pointer disabled:opacity-50 flex items-center gap-2"
                             >
                                 {saveMutation.isPending ? (
                                     <>
@@ -624,7 +626,7 @@ const AdminCompanies = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsAddClientModalOpen(true)}
-                                    className="px-4 py-2 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
+                                    className="px-4 py-2 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
                                 >
                                     <span className="material-symbols-outlined text-sm">person_add</span>
                                     إضافة عميل للشركة
@@ -647,7 +649,7 @@ const AdminCompanies = () => {
                         <div className="flex-1 overflow-y-auto p-6 space-y-3 custom-scrollbar">
                             {isLoadingDetails ? (
                                 <div className="p-8 text-center">
-                                    <div className="w-6 h-6 border-2 border-[#FF5C35] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                                    <div className="w-6 h-6 border-2 border-[#5C24EB] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                                     <p className="text-xs text-gray-400">جاري تحميل أسماء العملاء...</p>
                                 </div>
                             ) : !companyDetails?.clients || companyDetails.clients.length === 0 ? (
@@ -701,7 +703,7 @@ const AdminCompanies = () => {
                     <div className="bg-[#121212] border border-white/10 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <div className="flex items-center justify-between border-b border-white/10 pb-4">
                             <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[#FF5C35]">person_add</span>
+                                <span className="material-symbols-outlined text-[#8B5CF6]">person_add</span>
                                 إضافة عميل جديد لشركة ({viewClientsCompany.name})
                             </h3>
                             <button
@@ -742,7 +744,7 @@ const AdminCompanies = () => {
                                     placeholder="مثال: عبد الله بن سلمان"
                                     value={newClientData.full_name}
                                     onChange={(e) => setNewClientData(prev => ({ ...prev, full_name: e.target.value }))}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#FF5C35]"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#5C24EB]"
                                 />
                             </div>
 
@@ -754,7 +756,7 @@ const AdminCompanies = () => {
                                     placeholder="05xxxxxxxx"
                                     value={newClientData.phone}
                                     onChange={(e) => setNewClientData(prev => ({ ...prev, phone: e.target.value }))}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#FF5C35] font-mono"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#5C24EB] font-mono"
                                 />
                             </div>
 
@@ -765,7 +767,7 @@ const AdminCompanies = () => {
                                     placeholder="client@example.com"
                                     value={newClientData.email}
                                     onChange={(e) => setNewClientData(prev => ({ ...prev, email: e.target.value }))}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#FF5C35]"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#5C24EB]"
                                 />
                             </div>
 
@@ -777,7 +779,7 @@ const AdminCompanies = () => {
                                         placeholder="مثال: لكسز"
                                         value={newClientData.car_brand}
                                         onChange={(e) => setNewClientData(prev => ({ ...prev, car_brand: e.target.value }))}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white outline-none focus:border-[#FF5C35]"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white outline-none focus:border-[#5C24EB]"
                                     />
                                 </div>
                                 <div>
@@ -787,7 +789,7 @@ const AdminCompanies = () => {
                                         placeholder="مثال: LX600"
                                         value={newClientData.car_model}
                                         onChange={(e) => setNewClientData(prev => ({ ...prev, car_model: e.target.value }))}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white outline-none focus:border-[#FF5C35]"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white outline-none focus:border-[#5C24EB]"
                                     />
                                 </div>
                             </div>
@@ -797,7 +799,7 @@ const AdminCompanies = () => {
                                 <select
                                     value={newClientData.branch_name}
                                     onChange={(e) => setNewClientData(prev => ({ ...prev, branch_name: e.target.value }))}
-                                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#FF5C35] cursor-pointer"
+                                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#5C24EB] cursor-pointer"
                                 >
                                     <option value="جدة - شارع صاري">جدة - شارع صاري</option>
                                     <option value="جدة - الصفا">جدة - الصفا</option>
@@ -822,7 +824,7 @@ const AdminCompanies = () => {
                                 <button
                                     type="submit"
                                     disabled={addCorporateClientMutation.isPending}
-                                    className="px-5 py-2 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white rounded-xl shadow-md transition-all flex items-center gap-1.5"
+                                    className="px-5 py-2 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white rounded-xl shadow-md transition-all flex items-center gap-1.5"
                                 >
                                     {addCorporateClientMutation.isPending && <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
                                     حفظ إضافة العميل

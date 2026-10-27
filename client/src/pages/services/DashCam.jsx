@@ -67,7 +67,7 @@ const DashCam = React.memo(() => {
       />
       <div className="max-w-7xl mx-auto px-6 pt-24">
         <header className="text-center mb-16" aria-label="Dash Cam Hero">
-          <h1 className="text-4xl md:text-6xl font-display text-white tracking-widest uppercase font-black">
+          <h1 className="text-3xl md:text-5xl font-display text-white tracking-widest uppercase font-black">
             <span className="text-[#FF4500]">{t('dashcam:hero_highlight')}</span> <span className="text-gray-300">{t('dashcam:hero_name')}</span> {t('dashcam:hero_rest')}
           </h1>
         </header>

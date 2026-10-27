@@ -236,9 +236,9 @@ const EditService = React.memo(() => {
 
   // Tier form component
   const renderTierForm = (isNew = false) => (
-    <div className="bg-[#1a1a2e]/80 backdrop-blur-xl rounded-xl p-6 border border-[#FF5C35]/20 space-y-5 animate-in">
+    <div className="bg-[#1a1a2e]/80 backdrop-blur-xl rounded-xl p-6 border border-[#5C24EB]/20 space-y-5 animate-in">
       <div className="flex items-center justify-between mb-2">
-        <h4 className="text-base font-bold text-[#FF5C35] flex items-center gap-2">
+        <h4 className="text-base font-bold text-[#8B5CF6] flex items-center gap-2">
           <span className="material-symbols-outlined text-sm">edit</span>
           {isNew ? 'Add New Pricing Tier' : 'Edit Pricing Tier'}
         </h4>
@@ -255,7 +255,7 @@ const EditService = React.memo(() => {
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Name (EN) *</label>
           <input
-            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none transition-all"
+            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none transition-all"
             placeholder="e.g. Basic Protection"
             value={tierForm.name_en}
             onChange={(e) => setTierForm({ ...tierForm, name_en: e.target.value })}
@@ -264,7 +264,7 @@ const EditService = React.memo(() => {
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest text-right block">* الاسم (العربية)</label>
           <input
-            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none transition-all text-right"
+            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none transition-all text-right"
             placeholder="مثال: الحماية الأساسية"
             value={tierForm.name_ar}
             onChange={(e) => setTierForm({ ...tierForm, name_ar: e.target.value })}
@@ -276,7 +276,7 @@ const EditService = React.memo(() => {
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Price (SAR) *</label>
           <input
-            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none transition-all"
+            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none transition-all"
             placeholder="e.g. 1200"
             type="number" min="0" step="0.01"
             value={tierForm.price}
@@ -286,7 +286,7 @@ const EditService = React.memo(() => {
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Warranty (Years)</label>
           <input
-            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none transition-all"
+            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none transition-all"
             placeholder="e.g. 5"
             type="number" min="0"
             value={tierForm.warranty_years}
@@ -299,7 +299,7 @@ const EditService = React.memo(() => {
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Tagline (EN)</label>
           <input
-            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none transition-all"
+            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none transition-all"
             placeholder="e.g. Essential protection for daily drivers"
             value={tierForm.tagline_en}
             onChange={(e) => setTierForm({ ...tierForm, tagline_en: e.target.value })}
@@ -308,7 +308,7 @@ const EditService = React.memo(() => {
         <div className="space-y-1">
           <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest text-right block">العنوان الفرعي (العربية)</label>
           <input
-            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none transition-all text-right"
+            className="w-full bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none transition-all text-right"
             placeholder="مثال: حماية أساسية لسيارات الاستخدام اليومي"
             value={tierForm.tagline_ar}
             onChange={(e) => setTierForm({ ...tierForm, tagline_ar: e.target.value })}
@@ -319,12 +319,12 @@ const EditService = React.memo(() => {
       {/* Features */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-3">
-          <label className="text-[10px] font-bold text-[#FF5C35] uppercase tracking-widest">Features (EN)</label>
+          <label className="text-[10px] font-bold text-[#8B5CF6] uppercase tracking-widest">Features (EN)</label>
           {tierForm.features_en.map((feat, i) => (
             <div key={`en-${i}`} className="flex items-center gap-2">
-              <span className="text-[#FF5C35] text-xs font-bold w-5">{i+1}.</span>
+              <span className="text-[#8B5CF6] text-xs font-bold w-5">{i+1}.</span>
               <input
-                className="flex-1 bg-white/[0.03] shadow-inner border-0 rounded-lg py-2 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none"
+                className="flex-1 bg-white/[0.03] shadow-inner border-0 rounded-lg py-2 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none"
                 placeholder="e.g. 9H Surface Hardness"
                 value={feat}
                 onChange={(e) => updateFeature('en', i, e.target.value)}
@@ -334,27 +334,27 @@ const EditService = React.memo(() => {
               </button>
             </div>
           ))}
-          <button type="button" onClick={() => addFeature('en')} className="text-[#FF5C35] text-[10px] font-bold uppercase tracking-widest hover:text-[#ff7e5f] transition-colors flex items-center gap-1">
+          <button type="button" onClick={() => addFeature('en')} className="text-[#8B5CF6] text-[10px] font-bold uppercase tracking-widest hover:text-[#ff7e5f] transition-colors flex items-center gap-1">
             <span className="material-symbols-outlined text-sm">add</span> Add Point
           </button>
         </div>
         <div className="space-y-3">
-          <label className="text-[10px] font-bold text-[#FF5C35] uppercase tracking-widest text-right block">المميزات (العربية)</label>
+          <label className="text-[10px] font-bold text-[#8B5CF6] uppercase tracking-widest text-right block">المميزات (العربية)</label>
           {tierForm.features_ar.map((feat, i) => (
             <div key={`ar-${i}`} className="flex items-center gap-2">
               <button type="button" onClick={() => removeFeature('ar', i)} className="text-gray-500 hover:text-red-400 transition-colors">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
               <input
-                className="flex-1 bg-white/[0.03] shadow-inner border-0 rounded-lg py-2 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none text-right"
+                className="flex-1 bg-white/[0.03] shadow-inner border-0 rounded-lg py-2 px-3 text-sm text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none text-right"
                 placeholder="مثال: صلابة سطح 9H"
                 value={feat}
                 onChange={(e) => updateFeature('ar', i, e.target.value)}
               />
-              <span className="text-[#FF5C35] text-xs font-bold w-5 text-right">{i+1}.</span>
+              <span className="text-[#8B5CF6] text-xs font-bold w-5 text-right">{i+1}.</span>
             </div>
           ))}
-          <button type="button" onClick={() => addFeature('ar')} className="text-[#FF5C35] text-[10px] font-bold uppercase tracking-widest hover:text-[#ff7e5f] transition-colors flex items-center gap-1 ml-auto">
+          <button type="button" onClick={() => addFeature('ar')} className="text-[#8B5CF6] text-[10px] font-bold uppercase tracking-widest hover:text-[#ff7e5f] transition-colors flex items-center gap-1 ml-auto">
             <span className="material-symbols-outlined text-sm">add</span> إضافة نقطة
           </button>
         </div>
@@ -373,7 +373,7 @@ const EditService = React.memo(() => {
           type="button"
           onClick={handleSaveTier}
           disabled={createTierMutation.isPending || updateTierMutation.isPending}
-          className="px-6 py-2 rounded-lg bg-[#FF5C35] text-white font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-[0_4px_20px_rgba(255,92,53,0.3)] disabled:opacity-50 flex items-center gap-2"
+          className="px-6 py-2 rounded-lg bg-[#5C24EB] text-white font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-[0_4px_20px_rgba(92,36,235,0.3)] disabled:opacity-50 flex items-center gap-2"
         >
           {(createTierMutation.isPending || updateTierMutation.isPending) && (
             <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -437,14 +437,14 @@ const EditService = React.memo(() => {
             <div className="mb-8">
               <section className="bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl p-6 shadow-2xl relative overflow-hidden" aria-label="Service Selection">
                 <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#FF5C35]">construction</span>
+                  <span className="material-symbols-outlined text-[#8B5CF6]">construction</span>
                   Select Service to Edit / اختر الخدمة لتعديلها
                 </h2>
                 <select
                   id="service-select"
                   value={selectedServiceId}
                   onChange={(e) => setSelectedServiceId(e.target.value)}
-                  className="w-full bg-[#1c1b1b]/80 backdrop-blur-md shadow-inner rounded-lg p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 transition-all font-medium outline-none cursor-pointer appearance-none text-sm border-0"
+                  className="w-full bg-[#1c1b1b]/80 backdrop-blur-md shadow-inner rounded-lg p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium outline-none cursor-pointer appearance-none text-sm border-0"
                 >
                   <option value="">
                     {isLoadingServices ? 'Loading services...' : '— Select a service —'}
@@ -547,7 +547,7 @@ const EditService = React.memo(() => {
                         <input 
                           checked={isActive} 
                           onChange={(e) => setIsActive(e.target.checked)}
-                          className="w-5 h-5 rounded-md text-[#FF5C35] bg-[#353534] border-transparent focus:ring-offset-0 focus:ring-0 cursor-pointer" 
+                          className="w-5 h-5 rounded-md text-[#8B5CF6] bg-[#353534] border-transparent focus:ring-offset-0 focus:ring-0 cursor-pointer" 
                           type="checkbox" 
                         />
                       </label>
@@ -573,14 +573,14 @@ const EditService = React.memo(() => {
                 <section className="bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl p-8 shadow-2xl relative overflow-hidden">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-bold flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[#FF5C35]">payments</span>
+                      <span className="material-symbols-outlined text-[#8B5CF6]">payments</span>
                       Pricing Tiers / الأسعار والباقات
                     </h3>
                     {!showAddTier && (
                       <button
                         type="button"
                         onClick={() => { setShowAddTier(true); setEditingTierId(null); resetTierForm(); }}
-                        className="px-4 py-2 rounded-lg bg-[#FF5C35]/10 text-[#FF5C35] font-bold text-xs uppercase tracking-widest hover:bg-[#FF5C35]/20 transition-all flex items-center gap-2"
+                        className="px-4 py-2 rounded-lg bg-[#5C24EB]/10 text-[#8B5CF6] font-bold text-xs uppercase tracking-widest hover:bg-[#5C24EB]/20 transition-all flex items-center gap-2"
                       >
                         <span className="material-symbols-outlined text-sm">add</span>
                         Add Tier / إضافة سعر
@@ -591,7 +591,7 @@ const EditService = React.memo(() => {
                   {/* Existing tiers list */}
                   {isLoadingPricing ? (
                     <div className="text-center py-8 text-gray-500">
-                      <div className="w-6 h-6 border-2 border-gray-600 border-t-[#FF5C35] rounded-full animate-spin mx-auto mb-3"></div>
+                      <div className="w-6 h-6 border-2 border-gray-600 border-t-[#5C24EB] rounded-full animate-spin mx-auto mb-3"></div>
                       Loading pricing tiers...
                     </div>
                   ) : serviceTiers.length === 0 && !showAddTier ? (
@@ -614,7 +614,7 @@ const EditService = React.memo(() => {
                                   <span className="text-xs text-gray-500 font-medium">({tier.name_ar})</span>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm">
-                                  <span className="text-[#FF5C35] font-bold text-lg">{tier.price} SAR</span>
+                                  <span className="text-[#8B5CF6] font-bold text-lg">{tier.price} SAR</span>
                                   {tier.warranty_years > 0 && (
                                     <span className="text-gray-400 flex items-center gap-1">
                                       <span className="material-symbols-outlined text-xs">verified</span>

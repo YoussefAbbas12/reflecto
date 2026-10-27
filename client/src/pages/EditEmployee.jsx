@@ -27,6 +27,7 @@ const EditEmployee = React.memo(() => {
     fullName: '',
     emailAddress: '',
     phoneNumber: '',
+    employeeCode: '',
     notes: '',
     role: 'technician',
     branch_name: 'جدة - الصفا'
@@ -62,6 +63,7 @@ const EditEmployee = React.memo(() => {
         fullName: employeeData.full_name || '',
         emailAddress: employeeData.email || '',
         phoneNumber: employeeData.phone || '',
+        employeeCode: employeeData.employee_code || '',
         notes: employeeData.notes || '',
         role: initialRole,
         branch_name: employeeData.branch_name || 'جدة - الصفا'
@@ -136,6 +138,7 @@ const EditEmployee = React.memo(() => {
       full_name: formData.fullName,
       email: formData.emailAddress,
       phone: formData.phoneNumber,
+      employee_code: formData.employeeCode?.trim() || null,
       notes: formData.notes,
       role: formData.role,
       role_id: matchedRole ? matchedRole.id : null,
@@ -166,7 +169,7 @@ const EditEmployee = React.memo(() => {
           <span className="material-symbols-outlined text-6xl text-red-500">lock</span>
           <h1 className="text-2xl font-bold text-white">عفواً، لا تملك صلاحية تعديل بيانات الموظف</h1>
           <p className="text-gray-400 text-sm">تواصل مع السوبر أدمن للحصول على صلاحية (edit_employee)</p>
-          <button onClick={() => navigate('/admin/employees')} className="px-6 py-2 bg-[#FF5C35] text-white rounded-xl font-bold text-xs cursor-pointer">
+          <button onClick={() => navigate('/admin/employees')} className="px-6 py-2 bg-[#5C24EB] text-white rounded-xl font-bold text-xs cursor-pointer">
             العودة لإدارة الموظفين
           </button>
         </main>
@@ -175,7 +178,7 @@ const EditEmployee = React.memo(() => {
   }
 
   return (
-    <div className="flex bg-[#050505] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0 selection:bg-[#FF5C35]/30">
+    <div className="flex bg-[#050505] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0 selection:bg-[#5C24EB]/30">
       
       <AdminSidebar />
       
@@ -188,12 +191,12 @@ const EditEmployee = React.memo(() => {
               <nav className="flex items-center gap-2 text-[11px] font-bold tracking-widest text-gray-500 mb-2">
                 <button type="button" onClick={handleCancel} className="hover:text-gray-300 transition-colors">إدارة الموظفين</button>
                 <span>/</span>
-                <span className="text-[#FF5C35]">تعديل بيانات الموظف</span>
+                <span className="text-[#8B5CF6]">تعديل بيانات الموظف</span>
               </nav>
               <h1 id="edit-employee-heading" className="text-3xl md:text-4xl font-display font-extrabold text-white flex items-center gap-3">
-                <span className="material-symbols-outlined text-3xl text-[#FF5C35]">badge</span>
+                <span className="material-symbols-outlined text-3xl text-[#8B5CF6]">badge</span>
                 تعديل بيانات الموظف
-                {isFetching && <div className="w-5 h-5 border-2 border-[#FF5C35] border-t-transparent rounded-full animate-spin"></div>}
+                {isFetching && <div className="w-5 h-5 border-2 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></div>}
               </h1>
               <p className="text-xs text-gray-400 font-bold mt-1">
                 تحديث البيانات الشخصية، الفرع، الصلاحيات، وإعادة تعيين كلمة المرور.
@@ -212,7 +215,7 @@ const EditEmployee = React.memo(() => {
 
           {isFetching ? (
             <div className="p-12 text-center bg-white/[0.02] border border-white/5 rounded-3xl">
-              <div className="w-8 h-8 border-3 border-[#FF5C35] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+              <div className="w-8 h-8 border-3 border-[#5C24EB] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
               <p className="text-xs text-gray-400 font-bold">جاري تحميل بيانات الموظف...</p>
             </div>
           ) : (
@@ -224,13 +227,13 @@ const EditEmployee = React.memo(() => {
                 {/* Personal Info */}
                 <section className="bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl p-6 md:p-8 space-y-6 relative overflow-hidden shadow-2xl">
                   <div className="flex items-center gap-3 text-sm font-bold text-white border-b border-white/10 pb-4">
-                    <span className="w-8 h-8 rounded-xl bg-[#FF5C35]/10 flex items-center justify-center text-[#FF5C35] material-symbols-outlined text-base">person</span>
+                    <span className="w-8 h-8 rounded-xl bg-[#5C24EB]/10 flex items-center justify-center text-[#8B5CF6] material-symbols-outlined text-base">person</span>
                     البيانات الشخصية للموظف
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2">
-                      <label className="block text-xs font-bold text-gray-400">الاسم الكامل للموظف <span className="text-[#FF5C35]">*</span></label>
+                      <label className="block text-xs font-bold text-gray-400">الاسم الكامل للموظف <span className="text-[#8B5CF6]">*</span></label>
                       <input 
                         type="text"
                         name="fullName"
@@ -238,12 +241,12 @@ const EditEmployee = React.memo(() => {
                         onChange={handleInputChange}
                         required
                         disabled={updateMutation.isPending}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-xs font-bold text-gray-400">رقم الجوال <span className="text-[#FF5C35]">*</span></label>
+                      <label className="block text-xs font-bold text-gray-400">رقم الجوال <span className="text-[#8B5CF6]">*</span></label>
                       <input 
                         type="tel"
                         name="phoneNumber"
@@ -251,11 +254,11 @@ const EditEmployee = React.memo(() => {
                         onChange={handleInputChange}
                         required
                         disabled={updateMutation.isPending}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600 font-mono"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 font-mono"
                       />
                     </div>
 
-                    <div className="md:col-span-2 space-y-2">
+                    <div className="space-y-2">
                       <label className="block text-xs font-bold text-gray-400">البريد الإلكتروني الوظيفي</label>
                       <input 
                         type="email"
@@ -263,8 +266,31 @@ const EditEmployee = React.memo(() => {
                         value={formData.emailAddress}
                         onChange={handleInputChange}
                         disabled={updateMutation.isPending}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600 font-mono"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 font-mono"
                       />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold text-gray-400">
+                        الرقم الوظيفي
+                        <span className="mr-2 text-[10px] font-medium text-gray-500">
+                          ({formData.role === 'technician' ? 'RT-XXXX للفنيين' : 'RM-XXXX للإداريين'})
+                        </span>
+                      </label>
+                      <div className="relative">
+                        <input 
+                          type="text"
+                          name="employeeCode"
+                          value={formData.employeeCode || ''}
+                          onChange={handleInputChange}
+                          disabled={updateMutation.isPending}
+                          placeholder={formData.role === 'technician' ? 'مثال: RT-0001' : 'مثال: RM-0001'}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 font-mono pr-10"
+                        />
+                      </div>
+                      <p className="text-[10px] text-gray-500">
+                        يُستخدم هذا الرقم لتسجيل الدخول بدلاً من رقم الجوال
+                      </p>
                     </div>
                   </div>
                 </section>
@@ -272,19 +298,19 @@ const EditEmployee = React.memo(() => {
                 {/* Role & Branch Section */}
                 <section className="bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl">
                   <div className="flex items-center gap-3 text-sm font-bold text-white border-b border-white/10 pb-4">
-                    <span className="w-8 h-8 rounded-xl bg-[#FF5C35]/10 flex items-center justify-center text-[#FF5C35] material-symbols-outlined text-base">work</span>
+                    <span className="w-8 h-8 rounded-xl bg-[#5C24EB]/10 flex items-center justify-center text-[#8B5CF6] material-symbols-outlined text-base">work</span>
                     التكليف الوظيفي والفرع والصلاحيات
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2">
-                      <label className="block text-xs font-bold text-gray-400">الصفة / الدور الوظيفي <span className="text-[#FF5C35]">*</span></label>
+                      <label className="block text-xs font-bold text-gray-400">الصفة / الدور الوظيفي <span className="text-[#8B5CF6]">*</span></label>
                       <select 
                         name="role"
                         value={formData.role}
                         onChange={handleInputChange}
                         disabled={updateMutation.isPending}
-                        className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all cursor-pointer"
+                        className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all cursor-pointer"
                       >
                         <option value="technician">فني / تيكنيكال (Technician)</option>
                         <option value="admin">مدير فرع / أدمن (Admin)</option>
@@ -296,13 +322,13 @@ const EditEmployee = React.memo(() => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-xs font-bold text-gray-400">الفرع المخصص <span className="text-[#FF5C35]">*</span></label>
+                      <label className="block text-xs font-bold text-gray-400">الفرع المخصص <span className="text-[#8B5CF6]">*</span></label>
                       <select 
                         name="branch_name"
                         value={formData.branch_name}
                         onChange={handleInputChange}
                         disabled={updateMutation.isPending}
-                        className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all cursor-pointer"
+                        className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all cursor-pointer"
                       >
                         <option value="جدة - شارع صاري">جدة - شارع صاري</option>
                         <option value="جدة - الصفا">جدة - الصفا</option>
@@ -321,7 +347,7 @@ const EditEmployee = React.memo(() => {
                   {formData.role !== 'technician' && formData.role !== 'client' && (
                     <div className="pt-4 border-t border-white/10 space-y-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider">صلاحيات الوصول والتحكم بالحساب</span>
+                        <span className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider">صلاحيات الوصول والتحكم بالحساب</span>
                         {isSuperAdmin && (
                           <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
                             سوبر أدمن (صلاحية كاملة)
@@ -358,7 +384,7 @@ const EditEmployee = React.memo(() => {
                                 type="checkbox"
                                 checked={!!permissions[item.key]}
                                 onChange={() => handlePermissionToggle(item.key)}
-                                className="accent-[#FF5C35] w-4 h-4 rounded cursor-pointer"
+                                className="accent-[#5C24EB] w-4 h-4 rounded cursor-pointer"
                               />
                               <span className="text-gray-300 font-bold">{item.label}</span>
                             </label>
@@ -376,7 +402,7 @@ const EditEmployee = React.memo(() => {
                       onChange={handleInputChange}
                       disabled={updateMutation.isPending}
                       rows="3"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600 resize-none"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 resize-none"
                     />
                   </div>
                 </section>
@@ -406,7 +432,7 @@ const EditEmployee = React.memo(() => {
                       type="button"
                       onClick={handleSave}
                       disabled={updateMutation.isPending}
-                      className="px-8 py-3 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white font-bold text-xs rounded-xl transition-all shadow-[0_8px_25px_rgba(255,92,53,0.35)] flex items-center gap-2 cursor-pointer"
+                      className="px-8 py-3 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white font-bold text-xs rounded-xl transition-all shadow-[0_8px_25px_rgba(92,36,235,0.35)] flex items-center gap-2 cursor-pointer"
                     >
                       {updateMutation.isPending && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>}
                       <span className="material-symbols-outlined text-base">save</span>
@@ -419,10 +445,10 @@ const EditEmployee = React.memo(() => {
               {/* Sidebar Info & Active Status */}
               <div className="lg:col-span-1 space-y-6">
                 <div className="bg-gradient-to-b from-[#18181b] to-[#09090b] border border-white/10 rounded-3xl p-6 relative overflow-hidden shadow-2xl space-y-6">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF5C35]/10 rounded-full blur-2xl pointer-events-none"></div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#5C24EB]/10 rounded-full blur-2xl pointer-events-none"></div>
 
                   <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <span className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-sm">badge</span>
                       بطاقة الموظف
                     </span>
@@ -434,12 +460,12 @@ const EditEmployee = React.memo(() => {
                   </div>
 
                   <div className="text-center space-y-3 py-2">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#FF5C35] to-[#ff7b5c] mx-auto flex items-center justify-center text-white text-3xl font-extrabold shadow-lg border-2 border-white/20">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#5C24EB] to-[#7B4BF5] mx-auto flex items-center justify-center text-white text-3xl font-extrabold shadow-lg border-2 border-white/20">
                       {formData.fullName ? formData.fullName.charAt(0).toUpperCase() : '؟'}
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-white leading-snug">{formData.fullName || 'اسم الموظف'}</h3>
-                      <p className="text-xs text-[#FF5C35] font-bold mt-1">{formData.role === 'technician' ? 'فني معتمد' : (formData.role === 'client' ? 'عميل عادي' : 'حساب إداري')}</p>
+                      <p className="text-xs text-[#8B5CF6] font-bold mt-1">{formData.role === 'technician' ? 'فني معتمد' : (formData.role === 'client' ? 'عميل عادي' : 'حساب إداري')}</p>
                     </div>
                   </div>
 

@@ -1,6 +1,38 @@
 const { pool } = require('../config/database');
 const bcrypt = require('bcryptjs');
 
+/**
+ * Generates a unique role-based employee code:
+ *   Technicians  → RT-0001, RT-0002, …
+ *   Admins/staff → RM-0001, RM-0002, …
+ */
+async function generateUniqueEmployeeCode(dbPool, role) {
+  const prefix = (role === 'technician') ? 'RT' : 'RM';
+  const [rows] = await dbPool.query(
+    `SELECT employee_code FROM users WHERE employee_code LIKE ? ORDER BY id DESC`,
+    [`${prefix}-%`]
+  );
+  let maxNum = 0;
+  for (const r of rows) {
+    const match = r.employee_code?.match(new RegExp(`^${prefix}-(\\d+)$`, 'i'));
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (!isNaN(num) && num > maxNum) maxNum = num;
+    }
+  }
+  let nextNum = maxNum + 1;
+  let nextCode = `${prefix}-${String(nextNum).padStart(4, '0')}`;
+  let attempts = 0;
+  while (attempts < 20) {
+    const [[chk]] = await dbPool.query('SELECT id FROM users WHERE employee_code = ?', [nextCode]);
+    if (!chk) return nextCode;
+    nextNum++;
+    nextCode = `${prefix}-${String(nextNum).padStart(4, '0')}`;
+    attempts++;
+  }
+  return `${prefix}-${Date.now().toString().slice(-4)}`;
+}
+
 async function getAll(req, res) {
   try {
     const page  = Math.max(1, parseInt(req.query.page  || '1'));
@@ -46,8 +78,8 @@ async function getAll(req, res) {
     }
 
     if (search) {
-      whereConditions.push(`(u.full_name LIKE ? OR u.phone LIKE ? OR u.email LIKE ?)`);
-      params.push(search, search, search);
+      whereConditions.push(`(u.full_name LIKE ? OR u.phone LIKE ? OR u.email LIKE ? OR u.employee_code LIKE ?)`);
+      params.push(search, search, search, search);
     }
 
     const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
@@ -58,7 +90,7 @@ async function getAll(req, res) {
 
     const [rows] = await pool.query(
       `SELECT
-         u.id AS raw_id, u.uuid, u.full_name, u.phone, u.email, u.member_since, u.is_active, u.role, u.role_id, u.permissions, u.branch_name,
+         u.id AS raw_id, u.uuid, u.full_name, u.phone, u.email, u.employee_code, u.member_since, u.is_active, u.role, u.role_id, u.permissions, u.branch_name,
          u.company_id, u.is_corporate, c.name AS company_name, c.discount_percent AS company_discount_percent,
          r.name AS role_name, r.slug AS role_slug,
          CONCAT(v.brand, ' ', v.model) AS vehicle,
@@ -86,6 +118,7 @@ async function getAll(req, res) {
         full_name:     r.full_name,
         phone:         r.phone,
         email:         r.email,
+        employee_code: r.employee_code || null,
         role:          r.role,
         role_id:       r.role_id || null,
         role_name:     r.role_name || null,
@@ -172,12 +205,22 @@ async function create(req, res) {
     const targetCompId = company_id ? parseInt(company_id) : null;
     const targetIsCorp = (is_corporate || company_id) ? 1 : 0;
 
+    let finalEmployeeCode = req.body.employee_code ? String(req.body.employee_code).trim() : null;
+    if (finalEmployeeCode) {
+      const [[codeExists]] = await pool.query('SELECT id FROM users WHERE employee_code = ? LIMIT 1', [finalEmployeeCode]);
+      if (codeExists) {
+        return res.status(409).json({ success: false, error: { code: 'EMPLOYEE_CODE_EXISTS', message: 'كود الموظف هذا مستخدم بالفعل' } });
+      }
+    } else if (role && role !== 'client') {
+      finalEmployeeCode = await generateUniqueEmployeeCode(pool, role);
+    }
+
     {
       const hashedPass = await bcrypt.hash(password || '00000', 10);
       const [uRes] = await pool.query(
-        `INSERT INTO users (uuid, phone, full_name, email, password, role, is_active, company_id, is_corporate, branch_name, is_super_admin, permissions, created_at)
-         VALUES (UUID(), ?, ?, ?, ?, COALESCE(?, 'client'), 1, ?, ?, ?, 0, '{}', NOW())`,
-        [rawPhone, full_name || 'Client', email || null, hashedPass, role, targetCompId, targetIsCorp, branch_name || null]
+        `INSERT INTO users (uuid, phone, full_name, email, employee_code, password, role, is_active, company_id, is_corporate, branch_name, is_super_admin, permissions, created_at)
+         VALUES (UUID(), ?, ?, ?, ?, ?, COALESCE(?, 'client'), 1, ?, ?, ?, 0, '{}', NOW())`,
+        [rawPhone, full_name || 'Client', email || null, finalEmployeeCode, hashedPass, role, targetCompId, targetIsCorp, branch_name || null]
       );
       userId = uRes.insertId;
       const [[newUser]] = await pool.query('SELECT uuid FROM users WHERE id = ?', [userId]);
@@ -238,6 +281,17 @@ async function update(req, res) {
     if (city !== undefined) { updates.push('city = ?'); queryParams.push(city || null); }
     if (address !== undefined) { updates.push('address = ?'); queryParams.push(address || null); }
     if (notes !== undefined) { updates.push('notes = ?'); queryParams.push(notes || null); }
+    if (req.body.employee_code !== undefined) {
+      const codeVal = req.body.employee_code ? String(req.body.employee_code).trim() : null;
+      if (codeVal) {
+        const [[codeDup]] = await pool.query('SELECT id FROM users WHERE employee_code = ? AND uuid != ? AND id != ? LIMIT 1', [codeVal, id, id]);
+        if (codeDup) {
+          return res.status(409).json({ success: false, error: { code: 'EMPLOYEE_CODE_EXISTS', message: 'كود الموظف هذا مستخدم بالفعل لموظف آخر' } });
+        }
+      }
+      updates.push('employee_code = ?');
+      queryParams.push(codeVal);
+    }
     if (is_premium !== undefined) { updates.push('is_premium = ?'); queryParams.push(is_premium ? 1 : 0); }
     if (company_id !== undefined) { updates.push('company_id = ?'); queryParams.push(company_id ? parseInt(company_id) : null); }
     if (is_corporate !== undefined) { updates.push('is_corporate = ?'); queryParams.push(is_corporate ? 1 : 0); }
@@ -499,10 +553,10 @@ async function search(req, res) {
     const q = req.query.q;
     const role = req.query.role;
     if (!q || q.length < 1) {
-      return res.json({ data: [] });
+      return res.json({ success: true, data: [] });
     }
     const like = `%${q}%`;
-    const params = [like, like, like];
+    const params = [like, like, like, like, like, like];
     let roleWhere = '';
     if (role === 'client') {
       roleWhere = " AND (u.role = 'client' OR u.role IS NULL OR u.role = '')";
@@ -514,17 +568,32 @@ async function search(req, res) {
     }
 
     const [rows] = await pool.query(
-      `SELECT u.uuid, u.full_name, u.phone, u.role,
-         CONCAT(v.brand, ' ', v.model) AS vehicle
+      `SELECT u.uuid, u.id, u.full_name, u.phone, u.email, u.role, u.branch_name,
+         CONCAT(COALESCE(v.brand, ''), ' ', COALESCE(v.model, '')) AS vehicle,
+         v.plate_number
        FROM users u
        LEFT JOIN vehicles v ON v.client_id = u.id
-       WHERE (u.full_name LIKE ? OR u.phone LIKE ? OR u.email LIKE ?)${roleWhere}
+       WHERE (u.full_name LIKE ? OR u.phone LIKE ? OR u.email LIKE ? OR v.brand LIKE ? OR v.model LIKE ? OR v.plate_number LIKE ?)${roleWhere}
        GROUP BY u.id
-       LIMIT 10`,
+       ORDER BY (CASE WHEN u.role IN ('admin', 'super_admin', 'technician') THEN 1 ELSE 2 END), u.full_name ASC
+       LIMIT 25`,
       params
     );
 
-    res.json({ data: rows.map((r) => ({ id: r.uuid, full_name: r.full_name, phone: r.phone, role: r.role, vehicle: r.vehicle })) });
+    res.json({
+      success: true,
+      data: rows.map((r) => ({
+        id: r.uuid || r.id,
+        uuid: r.uuid,
+        full_name: r.full_name,
+        phone: r.phone,
+        email: r.email,
+        role: r.role || 'client',
+        branch_name: r.branch_name,
+        vehicle: (r.vehicle || '').trim(),
+        plate_number: r.plate_number,
+      })),
+    });
   } catch (err) {
     console.error('Clients search error:', err);
     res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });

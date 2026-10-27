@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useToast } from '../contexts/ToastContext';
 import AdminSidebar from '../components/AdminSidebar';
 import { useAuth } from '../contexts/AuthContext';
+import { useAdminTheme } from '../contexts/AdminThemeContext';
 
 const DEFAULT_COMPANY_KNOWLEDGE_BASE = `COMPANY IDENTITY:
 الاسم الرسمي: ريفليكتو لحماية وتظليل وتطوير السيارات (Reflecto Premium Car Protection)
@@ -68,12 +69,13 @@ const AdminAiPrompt = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { hasPermission } = useAuth();
+  const { isLight } = useAdminTheme();
   const canManage = hasPermission('manage_ai');
   const [promptText, setPromptText] = useState('');
 
   if (!canManage) {
     return (
-      <div className="flex min-h-screen bg-[#0a0a0a] text-white">
+      <div className={`flex min-h-screen transition-colors duration-300 ${isLight ? 'bg-[#F8FAFC] text-gray-900' : 'bg-[#0a0a0a] text-white'}`}>
         <AdminSidebar />
         <main className="flex-1 flex items-center justify-center p-6 text-center">
           <div className="max-w-md bg-white/[0.02] border border-white/10 rounded-3xl p-8 space-y-4 shadow-2xl">
@@ -123,7 +125,7 @@ const AdminAiPrompt = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a] text-white">
+    <div className={`flex min-h-screen transition-colors duration-300 ${isLight ? 'bg-[#F8FAFC] text-gray-900' : 'bg-[#0a0a0a] text-white'}`}>
       <AdminSidebar />
       <main className="flex-1 p-6 md:p-10 max-w-5xl mx-auto">
         <h1 className="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3">

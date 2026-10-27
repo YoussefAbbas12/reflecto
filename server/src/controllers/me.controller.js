@@ -496,6 +496,7 @@ async function getMe(req, res) {
     full_name:   req.user.full_name,
     phone:       req.user.phone,
     email:       req.user.email,
+    employee_code: req.user.employee_code || null,
     role:        req.user.role,
     role_id:     req.user.role_id || null,
     is_super_admin: !!req.user.is_super_admin,
@@ -770,4 +771,28 @@ async function changePassword(req, res) {
   res.json({ success: true, message: 'Password changed successfully' });
 }
 
-module.exports = { getMe, getMyPayments, getMyVehicles, addMyVehicle, changePassword };
+async function updateMyEmployeeCode(req, res) {
+  try {
+    const userId = req.user.id;
+    let { employee_code } = req.body;
+    if (!employee_code || !String(employee_code).trim()) {
+      return res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'كود الموظف مطلوب' } });
+    }
+    const cleanCode = String(employee_code).trim();
+    // Check if duplicate for another user
+    const [existing] = await pool.query(
+      'SELECT id FROM users WHERE LOWER(employee_code) = LOWER(?) AND id != ? LIMIT 1',
+      [cleanCode, userId]
+    );
+    if (existing.length > 0) {
+      return res.status(409).json({ success: false, error: { code: 'DUPLICATE_CODE', message: 'كود الموظف هذا مستخدم بالفعل لحساب آخر' } });
+    }
+    await pool.query('UPDATE users SET employee_code = ? WHERE id = ?', [cleanCode, userId]);
+    res.json({ success: true, message: 'تم تحديث كود الموظف بنجاح', employee_code: cleanCode });
+  } catch (err) {
+    console.error('updateMyEmployeeCode error:', err);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+  }
+}
+
+module.exports = { getMe, getMyPayments, getMyVehicles, addMyVehicle, changePassword, updateMyEmployeeCode };

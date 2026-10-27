@@ -19,7 +19,7 @@ const PAYMENT_OPTIONS = [
 // 2. Extract and memoize list items to keep the DOM tree lean and fast
 const FeatureItem = React.memo(({ feature }) => (
   <li className="flex items-center gap-3 text-sm text-gray-400">
-    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5C35" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5C24EB" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 6 9 17l-5-5" />
     </svg>
     <span>{feature}</span>
@@ -157,11 +157,11 @@ const PricingView = React.memo(() => {
         
         <FadeIn direction="up">
           <header className="text-center mb-20 flex flex-col items-center">
-            <span className="px-4 py-1 rounded-full bg-[#FF5C35]/10 text-[#FF5C35] text-[10px] font-bold uppercase tracking-widest mb-4 inline-block shadow-[0_4px_14px_0_rgba(255,92,53,0.1)]">
+            <span className="px-4 py-1 rounded-full bg-[#5C24EB]/10 text-[#8B5CF6] text-[10px] font-bold uppercase tracking-widest mb-4 inline-block shadow-[0_4px_14px_0_rgba(92,36,235,0.1)]">
               {t('common:premium_packages')}
             </span>
-            <h1 id="pricing-heading" className="text-4xl md:text-7xl font-display font-bold tracking-tighter mb-4 leading-tight text-white">
-              {t('pricing:title_highlight')} <span className="text-[#FF5C35]">{t('pricing:title_rest')}</span>
+            <h1 id="pricing-heading" className="text-3xl md:text-5xl font-display font-bold tracking-tighter mb-4 leading-tight text-white">
+              {t('pricing:title_highlight')} <span className="text-[#8B5CF6]">{t('pricing:title_rest')}</span>
             </h1>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg font-light leading-relaxed">
               {t('pricing:subtitle')}
@@ -171,7 +171,7 @@ const PricingView = React.memo(() => {
 
         {isLoading ? (
           <div className="flex justify-center items-center h-64" aria-live="polite" aria-busy="true">
-            <div className="w-12 h-12 border-4 border-[#FF5C35]/20 border-t-[#FF5C35] rounded-full animate-spin" role="status">
+            <div className="w-12 h-12 border-4 border-[#5C24EB]/20 border-t-[#5C24EB] rounded-full animate-spin" role="status">
               <span className="sr-only">{t('common:loading', 'Loading pricing plans...')}</span>
             </div>
           </div>
@@ -184,18 +184,18 @@ const PricingView = React.memo(() => {
                   // Applied Glassmorphism and removed explicit borders 
                   className={`relative p-10 w-full rounded-3xl flex flex-col transition-all duration-500
                   ${tier.isPopular
-                    ? 'bg-white/[0.04] backdrop-blur-3xl shadow-[0_20px_50px_rgba(255,92,53,0.15)] scale-105 z-10'
+                    ? 'bg-white/[0.04] backdrop-blur-3xl shadow-[0_20px_50px_rgba(92,36,235,0.15)] scale-105 z-10'
                     : 'bg-white/[0.02] backdrop-blur-xl shadow-2xl hover:bg-white/[0.04]'
                   }`}
                 >
                   {tier.isPopular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-[#FF5C35] to-[#ff7b5c] text-white text-[10px] font-bold rounded-full uppercase tracking-widest shadow-lg">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-[#5C24EB] to-[#7B4BF5] text-white text-[10px] font-bold rounded-full uppercase tracking-widest shadow-lg">
                       {t('common:most_popular')}
                     </div>
                   )}
 
                   <div className="mb-8 flex-grow">
-                    <div className={`w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 text-xl mb-6 shadow-inner ${tier.isPopular ? 'text-[#FF5C35]' : 'text-gray-400'}`}>
+                    <div className={`w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 text-xl mb-6 shadow-inner ${tier.isPopular ? 'text-[#8B5CF6]' : 'text-gray-400'}`}>
                       <Icon name={tier.iconName} aria-hidden="true" />
                     </div>
                     {/* Fixed semantic hierarchy: Swapped <h3> for <h2> */}
@@ -205,13 +205,13 @@ const PricingView = React.memo(() => {
                       <span className="text-gray-400 text-xs block">{t('common:starting_at')}</span>
                       {tier.isCompanyPrice && tier.originalPrice && tier.originalPrice > tier.price ? (
                         <div className="flex flex-wrap items-baseline gap-2">
-                          <span className="line-through text-gray-500 text-sm font-mono opacity-80 decoration-[#FF5C35]">
+                          <span className="line-through text-gray-500 text-sm font-mono opacity-80 decoration-[#8B5CF6]">
                             {tier.originalPrice.toLocaleString()} SAR
                           </span>
-                          <span className="text-3xl md:text-4xl font-display font-black text-[#FF5C35]">
+                          <span className="text-3xl md:text-4xl font-display font-black text-[#8B5CF6]">
                             {tier.price.toLocaleString()} SAR
                           </span>
-                          <span className="px-2 py-0.5 rounded-full bg-[#FF5C35]/20 text-[#FF5C35] text-[10px] font-bold border border-[#FF5C35]/30">
+                          <span className="px-2 py-0.5 rounded-full bg-[#5C24EB]/20 text-[#8B5CF6] text-[10px] font-bold border border-[#5C24EB]/30">
                             خصم خاص بالشركة
                           </span>
                         </div>
@@ -230,7 +230,7 @@ const PricingView = React.memo(() => {
                     aria-label={`${t('common:select_tier', { tier: tier.name })}`}
                     className={`w-full py-4 rounded-xl font-bold transition-all mb-10 text-center flex items-center justify-center
                     ${tier.isPopular
-                        ? 'bg-[#FF5C35] text-white shadow-[0_8px_30px_rgb(255,92,53,0.3)] hover:brightness-110'
+                        ? 'bg-[#5C24EB] text-white shadow-[0_8px_30px_rgba(92,36,235,0.3)] hover:brightness-110'
                         : 'bg-white/5 text-white shadow-md hover:bg-white/10'
                     }`}
                   >
@@ -257,8 +257,8 @@ const PricingView = React.memo(() => {
 
         {/* Adherence to No-Line: Removed 'border-t' in favor of a gradient pseudo-element separator */}
         <section className="text-center max-w-4xl mx-auto py-20 relative before:absolute before:top-0 before:left-1/4 before:right-1/4 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent">
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-white">
-            {t('pricing:payment_title_prefix')} <span className="text-[#FF5C35]">{t('pricing:payment_title_highlight')}</span> {t('pricing:payment_title_suffix')}
+          <h2 className="text-2xl md:text-4xl font-display font-bold mb-4 text-white">
+            {t('pricing:payment_title_prefix')} <span className="text-[#8B5CF6]">{t('pricing:payment_title_highlight')}</span> {t('pricing:payment_title_suffix')}
           </h2>
           <p className="text-gray-400 mb-10">{t('pricing:payment_subtitle')}</p>
           
@@ -268,7 +268,7 @@ const PricingView = React.memo(() => {
                 {/* Changed generic div to accessible <button> */}
                 <button
                   type="button"
-                  className="px-8 py-4 bg-white/5 backdrop-blur-md rounded-xl text-white font-bold hover:bg-white/10 hover:shadow-[0_4px_20px_rgba(255,92,53,0.15)] transition-all flex items-center justify-center"
+                  className="px-8 py-4 bg-white/5 backdrop-blur-md rounded-xl text-white font-bold hover:bg-white/10 hover:shadow-[0_4px_20px_rgba(92,36,235,0.15)] transition-all flex items-center justify-center"
                 >
                   {t(key)}
                 </button>

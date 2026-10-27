@@ -252,7 +252,7 @@ const AdminQuotationPreview = () => {
                 <button
                   type="button"
                   onClick={() => setLanguage('en')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${language === 'en' ? 'bg-[#FF5C35] text-white shadow-md' : 'text-gray-400 hover:text-white'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${language === 'en' ? 'bg-[#5C24EB] text-white shadow-md' : 'text-gray-400 hover:text-white'
                     }`}
                 >
                   English 🇬🇧
@@ -260,7 +260,7 @@ const AdminQuotationPreview = () => {
                 <button
                   type="button"
                   onClick={() => setLanguage('ar')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${language === 'ar' ? 'bg-[#FF5C35] text-white shadow-md' : 'text-gray-400 hover:text-white'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${language === 'ar' ? 'bg-[#5C24EB] text-white shadow-md' : 'text-gray-400 hover:text-white'
                     }`}
                 >
                   العربية 🇸🇦
@@ -269,7 +269,7 @@ const AdminQuotationPreview = () => {
 
               <button
                 onClick={handleDownloadPDF}
-                className="px-6 py-2.5 bg-[#FF5C35] hover:bg-[#e04b27] text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_20px_rgba(255,92,53,0.4)] flex items-center gap-2 cursor-pointer"
+                className="px-6 py-2.5 bg-[#5C24EB] hover:bg-[#4d1ec7] text-white rounded-xl text-xs font-bold transition-all shadow-[0_4px_20px_rgba(92, 36, 235, 0.4)] flex items-center gap-2 cursor-pointer"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -419,7 +419,7 @@ const AdminQuotationPreview = () => {
               {/* 5. Four Bottom Features Badges */}
               <div className="grid grid-cols-4 gap-3 my-3">
                 <div className="bg-[#f8f9fa] p-3 rounded-xl border border-gray-100 text-center space-y-1">
-                  <div className="w-6 h-6 mx-auto text-[#FF5C35] flex items-center justify-center">
+                  <div className="w-6 h-6 mx-auto text-[#8B5CF6] flex items-center justify-center">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                     </svg>
@@ -429,7 +429,7 @@ const AdminQuotationPreview = () => {
                 </div>
 
                 <div className="bg-[#f8f9fa] p-3 rounded-xl border border-gray-100 text-center space-y-1">
-                  <div className="w-6 h-6 mx-auto text-[#FF5C35] flex items-center justify-center">
+                  <div className="w-6 h-6 mx-auto text-[#8B5CF6] flex items-center justify-center">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
@@ -439,7 +439,7 @@ const AdminQuotationPreview = () => {
                 </div>
 
                 <div className="bg-[#f8f9fa] p-3 rounded-xl border border-gray-100 text-center space-y-1">
-                  <div className="w-6 h-6 mx-auto text-[#FF5C35] flex items-center justify-center">
+                  <div className="w-6 h-6 mx-auto text-[#8B5CF6] flex items-center justify-center">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                       <circle cx="8.5" cy="7" r="4"></circle>
@@ -451,7 +451,7 @@ const AdminQuotationPreview = () => {
                 </div>
 
                 <div className="bg-[#f8f9fa] p-3 rounded-xl border border-gray-100 text-center space-y-1">
-                  <div className="w-6 h-6 mx-auto text-[#FF5C35] flex items-center justify-center">
+                  <div className="w-6 h-6 mx-auto text-[#8B5CF6] flex items-center justify-center">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                       <circle cx="12" cy="10" r="3"></circle>
@@ -499,15 +499,15 @@ const AdminQuotationPreview = () => {
               <div className="mt-4 bg-slate-950 text-white rounded-xl p-3 flex items-center justify-between text-[10px] relative overflow-hidden">
                 <div className="flex items-center gap-4 text-gray-300">
                   <span className="flex items-center gap-1 font-mono">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF5C35" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5C24EB" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                     +966 55 872 2444
                   </span>
                   <span className="flex items-center gap-1">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF5C35" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5C24EB" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                     info@reflecto.com.sa
                   </span>
                   <span className="flex items-center gap-1">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF5C35" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5C24EB" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                     {t.address}
                   </span>
                 </div>
@@ -517,7 +517,7 @@ const AdminQuotationPreview = () => {
                   <span className="font-bold text-gray-500">1 / 3</span>
                 </div>
 
-                <div className={`absolute ${isAr ? 'left-0' : 'right-0'} bottom-0 top-0 w-4 bg-[#FF5C35]`}></div>
+                <div className={`absolute ${isAr ? 'left-0' : 'right-0'} bottom-0 top-0 w-4 bg-[#5C24EB]`}></div>
               </div>
 
             </div>
@@ -544,7 +544,7 @@ const AdminQuotationPreview = () => {
 
               {/* Title section */}
               <div className="my-3">
-                <div className="w-6 h-1 bg-[#FF5C35] mb-2 rounded-full"></div>
+                <div className="w-6 h-1 bg-[#5C24EB] mb-2 rounded-full"></div>
                 <h2 className="text-xl font-black text-slate-900 uppercase tracking-wider">{t.page2Title}</h2>
               </div>
 
@@ -574,7 +574,7 @@ const AdminQuotationPreview = () => {
                           'Crystal clear finish'
                         ]).map((feat, fIdx) => (
                           <li key={fIdx} className="flex items-center gap-2">
-                            <span className="w-4 h-4 rounded-full bg-[#FF5C35]/15 text-[#FF5C35] flex items-center justify-center text-[10px] font-bold shrink-0">
+                            <span className="w-4 h-4 rounded-full bg-[#5C24EB]/15 text-[#8B5CF6] flex items-center justify-center text-[10px] font-bold shrink-0">
                               ✓
                             </span>
                             <span className="text-[11px]">{feat}</span>
@@ -635,7 +635,7 @@ const AdminQuotationPreview = () => {
 
               {/* Thank you Message Area */}
               <div className="my-auto py-12 space-y-6">
-                <div className="w-8 h-1 bg-[#FF5C35] rounded-full"></div>
+                <div className="w-8 h-1 bg-[#5C24EB] rounded-full"></div>
                 <h2 className="text-4xl font-black text-slate-950 tracking-tight">{t.thankYou}</h2>
                 <h3 className="text-xl font-bold text-gray-600">{t.forChoosing}</h3>
 
@@ -664,15 +664,15 @@ const AdminQuotationPreview = () => {
 
                 <div className="relative z-10 space-y-3 text-xs text-gray-300">
                   <div className="flex items-center gap-2 font-mono text-sm text-white font-bold">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5C35" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5C24EB" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                     +966 55 872 2444
                   </div>
                   <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5C35" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5C24EB" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                     info@reflecto.com.sa
                   </div>
                   <div className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5C35" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5C24EB" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                     {t.address}
                   </div>
                 </div>

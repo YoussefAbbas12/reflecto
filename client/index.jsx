@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { ToastProvider } from './src/contexts/ToastContext';
+import { AdminThemeProvider } from './src/contexts/AdminThemeContext';
 import QueryProvider from './src/contexts/QueryProvider';
 import './i18n';
 import App from './App';
@@ -20,9 +21,11 @@ root.render(
       <BrowserRouter>
         <QueryProvider>
           <AuthProvider>
-            <ToastProvider>
-              <App />
-            </ToastProvider>
+            <AdminThemeProvider>
+              <ToastProvider>
+                <App />
+              </ToastProvider>
+            </AdminThemeProvider>
           </AuthProvider>
         </QueryProvider>
       </BrowserRouter>

@@ -3,6 +3,8 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { pricingService, servicesService, clientService } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
+import { useAdminTheme } from '../contexts/AdminThemeContext';
+import { useLanguage } from '../hooks/useLanguage';
 import Navbar from '../components/Navbar';
 import AdminSidebar from '../components/AdminSidebar';
 
@@ -11,6 +13,9 @@ const EditPackage = React.memo(() => {
   const queryClient = useQueryClient();
   const location = useLocation();
   const params = useParams();
+  const { isLight } = useAdminTheme();
+  const { language } = useLanguage();
+  const isArabic = language === 'ar';
   const searchParams = new URLSearchParams(location.search);
   const paramId = searchParams.get('id') || params.id;
   
@@ -238,7 +243,9 @@ const EditPackage = React.memo(() => {
   };
 
   return (
-    <div className="flex bg-[#131313] text-[#e5e2e1] font-body relative mt-16">
+    <div className={`flex font-body relative mt-16 min-h-screen transition-colors duration-300 ${
+      isLight ? 'bg-[#F8FAFC] text-gray-900' : 'bg-[#131313] text-[#e5e2e1]'
+    }`}>
       <AdminSidebar />
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
 
@@ -253,19 +260,25 @@ const EditPackage = React.memo(() => {
             {/* Header */}
             <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
               <div>
-                <h1 id="edit-package-heading" className="text-4xl font-extrabold text-white tracking-tight font-headline">
+                <h1 id="edit-package-heading" className={`text-4xl font-extrabold tracking-tight font-headline ${
+                  isLight ? 'text-gray-900' : 'text-white'
+                }`}>
                   Edit Package / تعديل باقة
                 </h1>
-                <p className="text-gray-500 mt-2 text-sm">Select a package from one of the dropdowns to edit its details and features.</p>
+                <p className={`mt-2 text-sm ${isLight ? 'text-gray-600' : 'text-gray-500'}`}>Select a package from one of the dropdowns to edit its details and features.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button 
                   type="button"
                   onClick={handleDelete}
                   disabled={!selectedPackageId || deleteMutation.isPending}
-                  className="px-6 py-2.5 rounded-xl bg-red-500/10 text-red-300 hover:bg-red-500/20 transition-all font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                  className={`px-6 py-2.5 rounded-xl transition-all font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 ${
+                    isLight
+                      ? 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'
+                      : 'bg-red-500/10 text-red-300 hover:bg-red-500/20'
+                  }`}
                 >
-                  {deleteMutation.isPending && <div className="inline-block w-4 h-4 mr-2 border-2 border-red-300/50 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>}
+                  {deleteMutation.isPending && <div className="inline-block w-4 h-4 border-2 border-red-300/50 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>}
                   <span className="material-symbols-outlined text-sm">delete</span>
                   Delete Package
                 </button>
@@ -273,7 +286,11 @@ const EditPackage = React.memo(() => {
                   type="button"
                   onClick={handleDiscard}
                   disabled={!selectedPackageId}
-                  className="px-6 py-2.5 rounded-xl text-[#e5e2e1] shadow-inner hover:bg-white/[0.05] transition-all font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                  className={`px-6 py-2.5 rounded-xl transition-all font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed ${
+                    isLight
+                      ? 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200'
+                      : 'text-[#e5e2e1] shadow-inner hover:bg-white/[0.05]'
+                  }`}
                 >
                   Discard Changes
                 </button>
@@ -281,7 +298,7 @@ const EditPackage = React.memo(() => {
                   type="button"
                   onClick={handleSave}
                   disabled={!selectedPackageId || updateMutation.isPending}
-                  className="px-8 py-2.5 rounded-xl ink-pool-gradient text-white font-semibold text-sm shadow-[0_8px_30px_rgba(255,180,167,0.15)] hover:brightness-110 flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  className="px-8 py-2.5 rounded-xl bg-[#5C24EB] text-white font-semibold text-sm shadow-[0_8px_30px_rgba(92,36,235,0.3)] hover:brightness-110 flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
                   {updateMutation.isPending && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true"></div>}
                   <span className="material-symbols-outlined text-sm">save</span>
@@ -293,8 +310,10 @@ const EditPackage = React.memo(() => {
             {/* Package Selector Dropdowns */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {/* Dropdown 1: General/Service */}
-              <section className="bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl p-6 shadow-2xl relative overflow-hidden" aria-label="General/Service Packages">
-                <h2 className="text-sm font-bold mb-4 flex items-center gap-2 uppercase tracking-widest text-[#FF5C35]">
+              <section className={`rounded-xl p-6 shadow-2xl relative overflow-hidden transition-colors ${
+                isLight ? 'bg-white border border-gray-200' : 'bg-[#0e0e0e]/80 backdrop-blur-xl'
+              }`} aria-label="General/Service Packages">
+                <h2 className="text-sm font-bold mb-4 flex items-center gap-2 uppercase tracking-widest text-[#8B5CF6]">
                   <span className="material-symbols-outlined text-sm">inventory_2</span>
                   General & Service Packages / الباقات العامة وباقات الخدمات
                 </h2>
@@ -311,7 +330,9 @@ const EditPackage = React.memo(() => {
                       setSelectedPackageId('');
                     }
                   }}
-                  className="w-full bg-[#1c1b1b]/80 backdrop-blur-md shadow-inner rounded-lg p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 transition-all font-medium outline-none cursor-pointer appearance-none text-sm border-0"
+                  className={`w-full rounded-lg p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium outline-none cursor-pointer appearance-none text-sm border-0 ${
+                    isLight ? 'bg-gray-100 text-gray-900 border border-gray-200' : 'bg-[#1c1b1b]/80 backdrop-blur-md shadow-inner text-[#e5e2e1]'
+                  }`}
                 >
                   <option value="">
                     {isLoadingPackages ? 'Loading packages...' : '— Select a standard package —'}
@@ -325,8 +346,10 @@ const EditPackage = React.memo(() => {
               </section>
 
               {/* Dropdown 2: Special/Client-specific */}
-              <section className="bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl p-6 shadow-2xl relative overflow-hidden" aria-label="Client Special Packages">
-                <h2 className="text-sm font-bold mb-4 flex items-center gap-2 uppercase tracking-widest text-[#FF5C35]">
+              <section className={`rounded-xl p-6 shadow-2xl relative overflow-hidden transition-colors ${
+                isLight ? 'bg-white border border-gray-200' : 'bg-[#0e0e0e]/80 backdrop-blur-xl'
+              }`} aria-label="Client Special Packages">
+                <h2 className="text-sm font-bold mb-4 flex items-center gap-2 uppercase tracking-widest text-[#8B5CF6]">
                   <span className="material-symbols-outlined text-sm">stars</span>
                   Client Special Packages / الباقات الخاصة للعملاء
                 </h2>
@@ -343,7 +366,9 @@ const EditPackage = React.memo(() => {
                       setSelectedPackageId('');
                     }
                   }}
-                  className="w-full bg-[#1c1b1b]/80 backdrop-blur-md shadow-inner rounded-lg p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 transition-all font-medium outline-none cursor-pointer appearance-none text-sm border-0"
+                  className={`w-full rounded-lg p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium outline-none cursor-pointer appearance-none text-sm border-0 ${
+                    isLight ? 'bg-gray-100 text-gray-900 border border-gray-200' : 'bg-[#1c1b1b]/80 backdrop-blur-md shadow-inner text-[#e5e2e1]'
+                  }`}
                 >
                   <option value="">
                     {isLoadingPackages ? 'Loading packages...' : '— Select a special package —'}
@@ -361,7 +386,9 @@ const EditPackage = React.memo(() => {
             {selectedPackageId ? (
               <>
                 {/* Package Type Selection */}
-                <div className="mb-6 p-4 bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl border border-white/5">
+                <div className={`mb-6 p-4 rounded-xl border ${
+                  isLight ? 'bg-gray-50 border-gray-200' : 'bg-[#0e0e0e]/80 backdrop-blur-xl border-white/5'
+                }`}>
                   <span className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
                     Package Scope / نطاق الباقة
                   </span>
@@ -373,9 +400,9 @@ const EditPackage = React.memo(() => {
                         value="general" 
                         checked={packageType === 'general'} 
                         onChange={() => { setPackageType('general'); setSelectedClient(null); setSelectedServiceId(''); }}
-                        className="text-[#FF5C35] focus:ring-[#FF5C35]"
+                        className="text-[#8B5CF6] focus:ring-[#5C24EB]"
                       />
-                      <span className="text-sm font-bold text-white">General Package (باقة عامة)</span>
+                      <span className={`text-sm font-bold ${isLight ? 'text-gray-800' : 'text-white'}`}>General Package (باقة عامة)</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input 
@@ -390,9 +417,9 @@ const EditPackage = React.memo(() => {
                             setSelectedServiceId(services[0].id || services[0].uuid);
                           }
                         }}
-                        className="text-[#FF5C35] focus:ring-[#FF5C35]"
+                        className="text-[#8B5CF6] focus:ring-[#5C24EB]"
                       />
-                      <span className="text-sm font-bold text-white">Service Specific (سعر خدمة معينة)</span>
+                      <span className={`text-sm font-bold ${isLight ? 'text-gray-800' : 'text-white'}`}>Service Specific (سعر خدمة معينة)</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input 
@@ -401,17 +428,21 @@ const EditPackage = React.memo(() => {
                         value="special" 
                         checked={packageType === 'special'} 
                         onChange={() => { setPackageType('special'); setSelectedServiceId(''); }}
-                        className="text-[#FF5C35] focus:ring-[#FF5C35]"
+                        className="text-[#8B5CF6] focus:ring-[#5C24EB]"
                       />
-                      <span className="text-sm font-bold text-white font-body">Special for Client (باقة مخصصة لعميل)</span>
+                      <span className={`text-sm font-bold font-body ${isLight ? 'text-gray-800' : 'text-white'}`}>Special for Client (باقة مخصصة لعميل)</span>
                     </label>
                   </div>
                 </div>
 
                 {/* Conditional Client Search Section */}
                 {packageType === 'special' && (
-                  <div className="mb-6 p-4 bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl border border-white/5 space-y-4">
-                    <label htmlFor="clientSearch" className="block text-xs font-bold text-gray-400 uppercase tracking-widest">
+                  <div className={`mb-6 p-4 rounded-xl border space-y-4 ${
+                    isLight ? 'bg-gray-50 border-gray-200' : 'bg-[#0e0e0e]/80 backdrop-blur-xl border-white/5'
+                  }`}>
+                    <label htmlFor="clientSearch" className={`block text-xs font-bold uppercase tracking-widest ${
+                      isLight ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
                       Search Client (Phone or Name) / ابحث عن العميل (بالاسم أو الهاتف) *
                     </label>
                     
@@ -423,16 +454,20 @@ const EditPackage = React.memo(() => {
                           value={searchQuery}
                           onChange={(e) => handleSearchClients(e.target.value)}
                           placeholder="Search by phone number (e.g. 050...) or name"
-                          className="w-full bg-[#353534]/50 border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                          className={`w-full rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all ${
+                            isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-[#353534]/50 border-0 shadow-inner text-[#e5e2e1]'
+                          }`}
                         />
                         {isSearchingClients && (
                           <div className="absolute right-4 top-3">
-                            <div className="w-4 h-4 border-2 border-[#FF5C35] border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-4 h-4 border-2 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></div>
                           </div>
                         )}
                         
                         {searchResults.length > 0 && (
-                          <ul className="absolute z-50 w-full mt-2 bg-[#0e0e0e] border border-white/10 rounded-xl overflow-hidden shadow-2xl max-h-60 overflow-y-auto">
+                          <ul className={`absolute z-50 w-full mt-2 rounded-xl overflow-hidden shadow-2xl max-h-60 overflow-y-auto border ${
+                            isLight ? 'bg-white border-gray-200' : 'bg-[#0e0e0e] border-white/10'
+                          }`}>
                             {searchResults.map((cli) => (
                               <li key={cli.id}>
                                 <button
@@ -442,9 +477,11 @@ const EditPackage = React.memo(() => {
                                     setSearchResults([]);
                                     setSearchQuery('');
                                   }}
-                                  className="w-full text-left px-4 py-3 hover:bg-[#FF5C35]/10 hover:text-white transition-all border-b border-white/5 flex flex-col gap-1 text-sm text-gray-300 font-bold"
+                                  className={`w-full text-left px-4 py-3 hover:bg-[#5C24EB]/10 transition-all border-b flex flex-col gap-1 text-sm font-bold ${
+                                    isLight ? 'border-gray-100 text-gray-700' : 'border-white/5 text-gray-300 hover:text-white'
+                                  }`}
                                 >
-                                  <span className="text-white">{cli.full_name}</span>
+                                  <span className={isLight ? 'text-gray-900' : 'text-white'}>{cli.full_name}</span>
                                   <span className="text-xs text-gray-500 font-semibold">{cli.phone} {cli.vehicle ? `(${cli.vehicle})` : ''}</span>
                                 </button>
                               </li>
@@ -453,20 +490,20 @@ const EditPackage = React.memo(() => {
                         )}
                       </div>
                     ) : (
-                      <div className="p-4 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl flex items-center justify-between">
+                      <div className="p-4 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-lg bg-[#FF5C35]/20 flex items-center justify-center text-[#FF5C35]">
+                          <div className="w-10 h-10 rounded-lg bg-[#5C24EB]/20 flex items-center justify-center text-[#8B5CF6]">
                             <span className="material-symbols-outlined">person</span>
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-white">{selectedClient.full_name}</div>
+                            <div className={`text-sm font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>{selectedClient.full_name}</div>
                             <div className="text-xs text-gray-400 font-semibold">{selectedClient.phone} {selectedClient.vehicle ? `(${selectedClient.vehicle})` : ''}</div>
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={() => setSelectedClient(null)}
-                          className="px-3 py-1.5 bg-red-500/20 text-red-300 hover:bg-red-500/30 rounded-lg text-xs font-bold transition-all"
+                          className="px-3 py-1.5 bg-red-500/20 text-red-500 hover:bg-red-500/30 rounded-lg text-xs font-bold transition-all border border-red-200"
                         >
                           Change / تغيير
                         </button>
@@ -478,14 +515,18 @@ const EditPackage = React.memo(() => {
                 {/* Conditional Service Selection Dropdown */}
                 {packageType === 'service' && !!selectedServiceId && (
                   <div className="mb-6">
-                    <label htmlFor="service-select" className="block text-xs font-bold uppercase tracking-widest text-[#e3beb8] mb-1">
+                    <label htmlFor="service-select" className={`block text-xs font-bold uppercase tracking-widest mb-1 ${
+                      isLight ? 'text-[#5C24EB]' : 'text-[#e3beb8]'
+                    }`}>
                       Service *
                     </label>
                     <select
                       id="service-select"
                       value={selectedServiceId}
                       onChange={(e) => setSelectedServiceId(e.target.value)}
-                      className="w-full bg-[#353534]/50 backdrop-blur-md border-0 rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 transition-all"
+                      className={`w-full rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all outline-none cursor-pointer ${
+                        isLight ? 'bg-gray-100 border border-gray-200 text-gray-900' : 'bg-[#353534]/50 backdrop-blur-md border-0 text-[#e5e2e1]'
+                      }`}
                       disabled={servicesLoading}
                     >
                       <option value="">Select a service</option>
@@ -500,28 +541,42 @@ const EditPackage = React.memo(() => {
 
               <div className="space-y-6">
                 {/* Core Config */}
-                <section className="bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl p-8 shadow-2xl relative overflow-hidden">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#ffb4a7]">settings</span>
+                <section className={`rounded-xl p-8 shadow-2xl relative overflow-hidden transition-colors ${
+                  isLight ? 'bg-white border border-gray-200' : 'bg-[#0e0e0e]/80 backdrop-blur-xl'
+                }`}>
+                  <h3 className={`text-xl font-bold mb-6 flex items-center gap-2 ${
+                    isLight ? 'text-gray-900' : 'text-white'
+                  }`}>
+                    <span className={`material-symbols-outlined ${
+                      isLight ? 'text-[#5C24EB]' : 'text-[#ffb4a7]'
+                    }`}>settings</span>
                     Core Configuration / البيانات الأساسية
                   </h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="nameEn" className="text-xs font-bold uppercase tracking-widest text-[#e3beb8] px-1">Package Title (EN)</label>
+                      <label htmlFor="nameEn" className={`text-xs font-bold uppercase tracking-widest px-1 ${
+                        isLight ? 'text-gray-600' : 'text-[#e3beb8]'
+                      }`}>Package Title (EN)</label>
                       <input 
                         id="nameEn"
-                        className="w-full bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#e4e2e1]/50 transition-all font-medium outline-none" 
+                        className={`w-full rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium outline-none ${
+                          isLight ? 'bg-gray-100 border border-gray-200 text-gray-900' : 'bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner text-[#e5e2e1]'
+                        }`}
                         type="text" 
                         value={nameEn}
                         onChange={(e) => setNameEn(e.target.value)}
                       />
                     </div>
                     <div className="space-y-2 text-right dir-rtl">
-                      <label htmlFor="nameAr" className="text-xs font-bold uppercase tracking-widest text-[#e3beb8] px-1 block mb-2">* اسم الباقة (العربية)</label>
+                      <label htmlFor="nameAr" className={`text-xs font-bold uppercase tracking-widest px-1 block mb-2 ${
+                        isLight ? 'text-gray-600' : 'text-[#e3beb8]'
+                      }`}>* اسم الباقة (العربية)</label>
                       <input 
                         id="nameAr"
-                        className="w-full bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#e4e2e1]/50 transition-all font-medium outline-none text-right" 
+                        className={`w-full rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium outline-none text-right ${
+                          isLight ? 'bg-gray-100 border border-gray-200 text-gray-900' : 'bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner text-[#e5e2e1]'
+                        }`}
                         type="text" 
                         value={nameAr}
                         onChange={(e) => setNameAr(e.target.value)}
@@ -531,20 +586,28 @@ const EditPackage = React.memo(() => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <div className="space-y-2">
-                      <label htmlFor="price" className="text-xs font-bold uppercase tracking-widest text-[#e3beb8] px-1">Price (SAR)</label>
+                      <label htmlFor="price" className={`text-xs font-bold uppercase tracking-widest px-1 ${
+                        isLight ? 'text-gray-600' : 'text-[#e3beb8]'
+                      }`}>Price (SAR)</label>
                       <input 
                         id="price"
-                        className="w-full bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#e4e2e1]/50 transition-all font-medium outline-none" 
+                        className={`w-full rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium outline-none ${
+                          isLight ? 'bg-gray-100 border border-gray-200 text-gray-900' : 'bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner text-[#e5e2e1]'
+                        }`}
                         type="number" 
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="warranty" className="text-xs font-bold uppercase tracking-widest text-[#e3beb8] px-1">Warranty (Years) / الضمان</label>
+                      <label htmlFor="warranty" className={`text-xs font-bold uppercase tracking-widest px-1 ${
+                        isLight ? 'text-gray-600' : 'text-[#e3beb8]'
+                      }`}>Warranty (Years) / الضمان</label>
                       <input 
                         id="warranty"
-                        className="w-full bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#e4e2e1]/50 transition-all font-medium outline-none" 
+                        className={`w-full rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium outline-none ${
+                          isLight ? 'bg-gray-100 border border-gray-200 text-gray-900' : 'bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner text-[#e5e2e1]'
+                        }`}
                         type="number" 
                         value={warranty}
                         onChange={(e) => setWarranty(e.target.value)}
@@ -554,27 +617,41 @@ const EditPackage = React.memo(() => {
                 </section>
 
                 {/* Taglines / Descriptions */}
-                <section className="bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl p-8 shadow-2xl relative overflow-hidden">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#ffb4a7]">description</span>
+                <section className={`rounded-xl p-8 shadow-2xl relative overflow-hidden transition-colors ${
+                  isLight ? 'bg-white border border-gray-200' : 'bg-[#0e0e0e]/80 backdrop-blur-xl'
+                }`}>
+                  <h3 className={`text-xl font-bold mb-6 flex items-center gap-2 ${
+                    isLight ? 'text-gray-900' : 'text-white'
+                  }`}>
+                    <span className={`material-symbols-outlined ${
+                      isLight ? 'text-[#5C24EB]' : 'text-[#ffb4a7]'
+                    }`}>description</span>
                     Subtitle & Description / الوصف
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="descEn" className="text-xs font-bold uppercase tracking-widest text-[#e3beb8] px-1">Tagline (EN)</label>
+                      <label htmlFor="descEn" className={`text-xs font-bold uppercase tracking-widest px-1 ${
+                        isLight ? 'text-gray-600' : 'text-[#e3beb8]'
+                      }`}>Tagline (EN)</label>
                       <textarea 
                         id="descEn"
-                        className="w-full bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#e4e2e1]/50 transition-all outline-none resize-y min-h-[100px]" 
+                        className={`w-full rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all outline-none resize-y min-h-[100px] ${
+                          isLight ? 'bg-gray-100 border border-gray-200 text-gray-900' : 'bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner text-[#e5e2e1]'
+                        }`}
                         rows="3"
                         value={descriptionEn}
                         onChange={(e) => setDescriptionEn(e.target.value)}
                       />
                     </div>
                     <div className="space-y-2 text-right dir-rtl">
-                      <label htmlFor="descAr" className="text-xs font-bold uppercase tracking-widest text-[#e3beb8] px-1 block mb-2">العنوان الفرعي أو الوصف (AR)</label>
+                      <label htmlFor="descAr" className={`text-xs font-bold uppercase tracking-widest px-1 block mb-2 ${
+                        isLight ? 'text-gray-600' : 'text-[#e3beb8]'
+                      }`}>العنوان الفرعي أو الوصف (AR)</label>
                       <textarea 
                         id="descAr"
-                        className="w-full bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#e4e2e1]/50 transition-all outline-none resize-y min-h-[100px] text-right" 
+                        className={`w-full rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 transition-all outline-none resize-y min-h-[100px] text-right ${
+                          isLight ? 'bg-gray-100 border border-gray-200 text-gray-900' : 'bg-[#353534]/50 backdrop-blur-md border-0 shadow-inner text-[#e5e2e1]'
+                        }`}
                         rows="3"
                         value={descriptionAr}
                         onChange={(e) => setDescriptionAr(e.target.value)}
@@ -584,21 +661,29 @@ const EditPackage = React.memo(() => {
                 </section>
 
                 {/* Features (Points list) */}
-                <section className="bg-[#0e0e0e]/80 backdrop-blur-xl rounded-xl p-8 shadow-2xl relative overflow-hidden">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#ffb4a7]">checklist</span>
+                <section className={`rounded-xl p-8 shadow-2xl relative overflow-hidden transition-colors ${
+                  isLight ? 'bg-white border border-gray-200' : 'bg-[#0e0e0e]/80 backdrop-blur-xl'
+                }`}>
+                  <h3 className={`text-xl font-bold mb-6 flex items-center gap-2 ${
+                    isLight ? 'text-gray-900' : 'text-white'
+                  }`}>
+                    <span className={`material-symbols-outlined ${
+                      isLight ? 'text-[#5C24EB]' : 'text-[#ffb4a7]'
+                    }`}>checklist</span>
                     Features Checklist / خدمات ومميزات الباقة (نقاط تحت بعضها)
                   </h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     {/* EN features */}
                     <div className="space-y-4">
-                      <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-2">Features (English)</h4>
+                      <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-2">Features (English)</h4>
                       {featuresEn.map((feat, index) => (
                         <div key={`feat-en-${index}`} className="flex items-center gap-3">
-                          <span className="text-[#FF5C35] font-bold">{index + 1}.</span>
+                          <span className="text-[#8B5CF6] font-bold">{index + 1}.</span>
                           <input
-                            className="flex-1 bg-[#353534]/50 border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                            className={`flex-1 rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all ${
+                              isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-[#353534]/50 border-0 shadow-inner text-[#e5e2e1]'
+                            }`}
                             placeholder="e.g. 9H Surface Hardness"
                             value={feat}
                             onChange={(e) => handleFeatureEnChange(index, e.target.value)}
@@ -606,7 +691,7 @@ const EditPackage = React.memo(() => {
                           <button
                             type="button"
                             onClick={() => removeFeatureEn(index)}
-                            className="text-gray-500 hover:text-red-500 transition-colors p-1"
+                            className="text-gray-400 hover:text-red-500 transition-colors p-1"
                           >
                             <span className="material-symbols-outlined text-lg">delete</span>
                           </button>
@@ -615,7 +700,7 @@ const EditPackage = React.memo(() => {
                       <button
                         type="button"
                         onClick={addFeatureEn}
-                        className="text-[#FF5C35] bg-[#FF5C35]/10 shadow-inner rounded-xl px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#FF5C35]/20 transition-all flex items-center gap-2 mt-2"
+                        className="text-[#8B5CF6] bg-[#5C24EB]/10 shadow-inner rounded-xl px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#5C24EB]/20 transition-all flex items-center gap-2 mt-2"
                       >
                         <span className="material-symbols-outlined text-sm">add</span>
                         Add Point (EN)
@@ -624,12 +709,14 @@ const EditPackage = React.memo(() => {
 
                     {/* AR features */}
                     <div className="space-y-4">
-                      <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-2 text-right">المميزات (العربية)</h4>
+                      <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-2 text-right">المميزات (العربية)</h4>
                       {featuresAr.map((feat, index) => (
                         <div key={`feat-ar-${index}`} className="flex items-center gap-3 dir-rtl">
-                          <span className="text-[#FF5C35] font-bold">{index + 1}.</span>
+                          <span className="text-[#8B5CF6] font-bold">{index + 1}.</span>
                           <input
-                            className="flex-1 bg-[#353534]/50 border-0 shadow-inner rounded-md p-3 text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all text-right"
+                            className={`flex-1 rounded-md p-3 focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all text-right ${
+                              isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-[#353534]/50 border-0 shadow-inner text-[#e5e2e1]'
+                            }`}
                             placeholder="مثال: صلابة سطح 9H"
                             value={feat}
                             onChange={(e) => handleFeatureArChange(index, e.target.value)}
@@ -637,7 +724,7 @@ const EditPackage = React.memo(() => {
                           <button
                             type="button"
                             onClick={() => removeFeatureAr(index)}
-                            className="text-gray-500 hover:text-red-500 transition-colors p-1"
+                            className="text-gray-400 hover:text-red-500 transition-colors p-1"
                           >
                             <span className="material-symbols-outlined text-lg">delete</span>
                           </button>
@@ -646,7 +733,7 @@ const EditPackage = React.memo(() => {
                       <button
                         type="button"
                         onClick={addFeatureAr}
-                        className="text-[#FF5C35] bg-[#FF5C35]/10 shadow-inner rounded-xl px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#FF5C35]/20 transition-all flex items-center gap-2 mt-2 ml-auto"
+                        className="text-[#8B5CF6] bg-[#5C24EB]/10 shadow-inner rounded-xl px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#5C24EB]/20 transition-all flex items-center gap-2 mt-2 ml-auto"
                       >
                         <span className="material-symbols-outlined text-sm">add</span>
                         إضافة نقطة (AR)

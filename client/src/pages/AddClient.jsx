@@ -174,7 +174,7 @@ const AddClient = React.memo(() => {
                     <span className="material-symbols-outlined text-6xl text-red-500">lock</span>
                     <h1 className="text-2xl font-bold text-white">عفواً، لا تملك صلاحية إضافة عميل جديد</h1>
                     <p className="text-gray-400 text-sm">تواصل مع السوبر أدمن للحصول على صلاحية (create_client)</p>
-                    <button onClick={() => navigate('/admin/clients')} className="px-6 py-2 bg-[#FF5C35] text-white rounded-xl font-bold text-xs cursor-pointer">
+                    <button onClick={() => navigate('/admin/clients')} className="px-6 py-2 bg-[#5C24EB] text-white rounded-xl font-bold text-xs cursor-pointer">
                         العودة لإدارة العملاء
                     </button>
                 </main>
@@ -183,7 +183,7 @@ const AddClient = React.memo(() => {
     }
 
     return (
-        <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0 selection:bg-[#FF5C35]/30">
+        <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0 selection:bg-[#5C24EB]/30">
 
             <AdminSidebar />
 
@@ -193,7 +193,7 @@ const AddClient = React.memo(() => {
                     <nav className="flex items-center gap-3 text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-6" aria-label="Breadcrumb">
                         <button type="button" onClick={handleCancel} className="hover:text-gray-300 transition-colors focus:outline-none focus:underline">Clients</button>
                         <span className="material-symbols-outlined text-[10px]" aria-hidden="true">chevron_right</span>
-                        <span className="text-[#FF5C35]" aria-current="page">Add New Client</span>
+                        <span className="text-[#8B5CF6]" aria-current="page">Add New Client</span>
                     </nav>
 
                     <h1 id="add-client-heading" className="text-4xl font-display font-black tracking-tight mb-10 text-white drop-shadow-lg">
@@ -203,9 +203,9 @@ const AddClient = React.memo(() => {
                     <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Client Information Section */}
                         <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0 relative overflow-hidden" aria-labelledby="client-info-heading">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#FF5C35] to-transparent opacity-50 pointer-events-none" aria-hidden="true"></div>
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#5C24EB] to-transparent opacity-50 pointer-events-none" aria-hidden="true"></div>
                             <h2 id="client-info-heading" className="text-lg mb-8 font-bold flex items-center gap-3 tracking-widest uppercase text-white">
-                                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+                                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                                     <span className="material-symbols-outlined text-sm">person</span>
                                 </div>
                                 Client Information
@@ -222,7 +222,7 @@ const AddClient = React.memo(() => {
                                         required
                                         aria-required="true"
                                         disabled={createMutation.isPending}
-                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600"
+                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600"
                                         placeholder="e.g. Mark Thompson"
                                     />
                                 </div>
@@ -234,7 +234,7 @@ const AddClient = React.memo(() => {
                                         </label>
                                     </div>
                                     <div className="flex gap-2 items-center" dir="ltr">
-                                        <div className="flex-1 flex items-center bg-white/[0.05] shadow-inner border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#FF5C35]/50 transition-all" dir="ltr">
+                                        <div className="flex-1 flex items-center bg-white/[0.05] shadow-inner border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#5C24EB]/50 transition-all" dir="ltr">
                                             <span className="px-3.5 py-3 bg-white/[0.08] text-gray-300 font-mono text-sm font-bold border-r border-white/10 select-none flex items-center gap-1.5 shrink-0">
                                                 <span className="text-base">🇸🇦</span> +966
                                             </span>
@@ -257,7 +257,7 @@ const AddClient = React.memo(() => {
                                                 type="button"
                                                 onClick={handleSendClientOtp}
                                                 disabled={isSendingOtp || !formData.phoneNumber}
-                                                className="px-4 py-3 bg-[#FF5C35]/20 hover:bg-[#FF5C35] text-[#FF5C35] hover:text-white border border-[#FF5C35]/40 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-1.5 shadow-md disabled:opacity-50 cursor-pointer"
+                                                className="px-4 py-3 bg-[#5C24EB]/20 hover:bg-[#5C24EB] text-[#8B5CF6] hover:text-white border border-[#5C24EB]/40 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-1.5 shadow-md disabled:opacity-50 cursor-pointer"
                                             >
                                                 {isSendingOtp && <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />}
                                                 <span className="material-symbols-outlined text-sm">verified_user</span>
@@ -286,7 +286,7 @@ const AddClient = React.memo(() => {
                                         value={formData.emailAddress}
                                         onChange={handleInputChange}
                                         disabled={createMutation.isPending}
-                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600"
+                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600"
                                         placeholder="e.g. mark.t@email.com"
                                     />
                                 </div>
@@ -299,7 +299,7 @@ const AddClient = React.memo(() => {
                                         value={formData.role}
                                         onChange={handleInputChange}
                                         disabled={createMutation.isPending}
-                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all cursor-pointer appearance-none"
+                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all cursor-pointer appearance-none"
                                     >
                                         <option value="client" className="bg-black text-white">Client (عميل)</option>
                                         <option value="technician" className="bg-black text-white">Technical (فني / تيكنيكال)</option>
@@ -315,7 +315,7 @@ const AddClient = React.memo(() => {
                                         value={formData.branch_name}
                                         onChange={handleInputChange}
                                         disabled={createMutation.isPending}
-                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all cursor-pointer appearance-none"
+                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all cursor-pointer appearance-none"
                                     >
                                         <option value="جدة - شارع صاري" className="bg-black text-white">جدة - شارع صاري</option>
                                         <option value="جدة - الصفا" className="bg-black text-white">جدة - الصفا</option>
@@ -337,7 +337,7 @@ const AddClient = React.memo(() => {
                                         value={formData.company_id}
                                         onChange={handleInputChange}
                                         disabled={createMutation.isPending}
-                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all cursor-pointer appearance-none"
+                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all cursor-pointer appearance-none"
                                     >
                                         <option value="" className="bg-black text-white">عميل فردي (بدون شركة)</option>
                                         {companiesList.map(comp => (
@@ -353,7 +353,7 @@ const AddClient = React.memo(() => {
                         {/* Vehicle Details */}
                         <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0" aria-labelledby="vehicle-details-heading">
                             <h2 id="vehicle-details-heading" className="text-lg mb-8 font-bold flex items-center gap-3 tracking-widest uppercase text-white">
-                                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+                                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                                     <span className="material-symbols-outlined text-sm">directions_car</span>
                                 </div>
                                 بيانات السيارة (Vehicle Details)
@@ -361,7 +361,7 @@ const AddClient = React.memo(() => {
                             <div className="space-y-6">
                                 {formData.vehicles.map((vehicle, index) => (
                                     <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-5 p-6 rounded-2xl bg-white/[0.03] border border-white/10">
-                                        <div className="md:col-span-3 flex items-center justify-between text-xs font-black text-[#FF5C35] uppercase tracking-widest border-b border-white/10 pb-3 mb-2">
+                                        <div className="md:col-span-3 flex items-center justify-between text-xs font-black text-[#8B5CF6] uppercase tracking-widest border-b border-white/10 pb-3 mb-2">
                                             <span>السيارة {index + 1}</span>
                                             {formData.vehicles.length > 1 && (
                                                 <button
@@ -376,41 +376,41 @@ const AddClient = React.memo(() => {
 
                                         <div className="space-y-2">
                                             <label htmlFor={`vehicleBrand-${index}`} className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest">اسم / ماركة السيارة *</label>
-                                            <input id={`vehicleBrand-${index}`} type="text" value={vehicle.brand} onChange={e => handleVehicleChange(index, 'brand', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600" placeholder="مثال: مرسيدس / Porsche" />
+                                            <input id={`vehicleBrand-${index}`} type="text" value={vehicle.brand} onChange={e => handleVehicleChange(index, 'brand', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600" placeholder="مثال: مرسيدس / Porsche" />
                                         </div>
 
                                         <div className="space-y-2">
                                             <label htmlFor={`vehicleModel-${index}`} className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest">الموديل / الفئة *</label>
-                                            <input id={`vehicleModel-${index}`} type="text" value={vehicle.model} onChange={e => handleVehicleChange(index, 'model', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600" placeholder="مثال: S-Class / 911 GT3" />
+                                            <input id={`vehicleModel-${index}`} type="text" value={vehicle.model} onChange={e => handleVehicleChange(index, 'model', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600" placeholder="مثال: S-Class / 911 GT3" />
                                         </div>
 
                                         <div className="space-y-2">
                                             <label htmlFor={`vehicleYear-${index}`} className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest">سنة الصنع</label>
-                                            <input id={`vehicleYear-${index}`} type="number" value={vehicle.year || ''} onChange={e => handleVehicleChange(index, 'year', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600" placeholder="مثال: 2024" />
+                                            <input id={`vehicleYear-${index}`} type="number" value={vehicle.year || ''} onChange={e => handleVehicleChange(index, 'year', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600" placeholder="مثال: 2024" />
                                         </div>
 
                                         <div className="space-y-2">
                                             <label htmlFor={`vehicleColor-${index}`} className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest">لون السيارة</label>
-                                            <input id={`vehicleColor-${index}`} type="text" value={vehicle.color || ''} onChange={e => handleVehicleChange(index, 'color', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600" placeholder="مثال: أسود / اسود ميتاليك" />
+                                            <input id={`vehicleColor-${index}`} type="text" value={vehicle.color || ''} onChange={e => handleVehicleChange(index, 'color', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600" placeholder="مثال: أسود / اسود ميتاليك" />
                                         </div>
 
                                         <div className="space-y-2">
                                             <label htmlFor={`vehiclePlate-${index}`} className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest">رقم اللوحة</label>
-                                            <input id={`vehiclePlate-${index}`} type="text" value={vehicle.plate_number || ''} onChange={e => handleVehicleChange(index, 'plate_number', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600" placeholder="أ ب ج 1234" dir="ltr" />
+                                            <input id={`vehiclePlate-${index}`} type="text" value={vehicle.plate_number || ''} onChange={e => handleVehicleChange(index, 'plate_number', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600" placeholder="أ ب ج 1234" dir="ltr" />
                                         </div>
 
                                         <div className="space-y-2">
                                             <label htmlFor={`vehicleMileage-${index}`} className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest">عدد الكيلوميترات (KM)</label>
-                                            <input id={`vehicleMileage-${index}`} type="number" value={vehicle.mileage || ''} onChange={e => handleVehicleChange(index, 'mileage', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600" placeholder="مثال: 45000" />
+                                            <input id={`vehicleMileage-${index}`} type="number" value={vehicle.mileage || ''} onChange={e => handleVehicleChange(index, 'mileage', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600" placeholder="مثال: 45000" />
                                         </div>
 
                                         <div className="md:col-span-3 space-y-2">
                                             <label htmlFor={`chassisNumber-${index}`} className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest">رقم الهيكل / VIN (اختياري)</label>
-                                            <input id={`chassisNumber-${index}`} type="text" value={vehicle.chassis_number || ''} onChange={e => handleVehicleChange(index, 'chassis_number', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600 font-mono" placeholder="مثال: WBA33AH040FP12345 (اختياري)" dir="ltr" />
+                                            <input id={`chassisNumber-${index}`} type="text" value={vehicle.chassis_number || ''} onChange={e => handleVehicleChange(index, 'chassis_number', e.target.value)} disabled={createMutation.isPending} className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600 font-mono" placeholder="مثال: WBA33AH040FP12345 (اختياري)" dir="ltr" />
                                         </div>
                                     </div>
                                 ))}
-                                <button type="button" onClick={addVehicle} disabled={createMutation.isPending} className="w-full py-3.5 rounded-xl border border-dashed border-[#FF5C35]/50 text-[#FF5C35] font-bold text-xs hover:bg-[#FF5C35]/10 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                                <button type="button" onClick={addVehicle} disabled={createMutation.isPending} className="w-full py-3.5 rounded-xl border border-dashed border-[#5C24EB]/50 text-[#8B5CF6] font-bold text-xs hover:bg-[#5C24EB]/10 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                                     <span className="material-symbols-outlined text-sm">add</span>
                                     + إضافة سيارة أخرى للعميل
                                 </button>
@@ -420,7 +420,7 @@ const AddClient = React.memo(() => {
                         {/* Address Details Section */}
                         <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0" aria-labelledby="location-details-heading">
                             <h2 id="location-details-heading" className="text-lg mb-8 font-bold flex items-center gap-3 tracking-widest uppercase text-white">
-                                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+                                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                                     <span className="material-symbols-outlined text-sm">location_on</span>
                                 </div>
                                 Location Details
@@ -435,7 +435,7 @@ const AddClient = React.memo(() => {
                                         value={formData.city}
                                         onChange={handleInputChange}
                                         disabled={createMutation.isPending}
-                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600"
+                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600"
                                         placeholder="e.g. Riyadh"
                                     />
                                 </div>
@@ -449,7 +449,7 @@ const AddClient = React.memo(() => {
                                         value={formData.neighborhood}
                                         onChange={handleInputChange}
                                         disabled={createMutation.isPending}
-                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600"
+                                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600"
                                         placeholder="e.g. Al Olaya"
                                     />
                                 </div>
@@ -459,7 +459,7 @@ const AddClient = React.memo(() => {
                         {/* Notes Section */}
                         <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0" aria-labelledby="notes-heading">
                             <h2 id="notes-heading" className="text-lg mb-8 font-bold flex items-center gap-3 tracking-widest uppercase text-white">
-                                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+                                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                                     <span className="material-symbols-outlined text-sm">note</span>
                                 </div>
                                 Internal Notes
@@ -472,7 +472,7 @@ const AddClient = React.memo(() => {
                                     value={formData.notes}
                                     onChange={handleInputChange}
                                     disabled={createMutation.isPending}
-                                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-4 text-sm font-bold tracking-wide text-white focus:outline-none resize-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all placeholder-gray-600 leading-relaxed"
+                                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl px-4 py-4 text-sm font-bold tracking-wide text-white focus:outline-none resize-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all placeholder-gray-600 leading-relaxed"
                                     placeholder="Enter specific client preferences or detailing instructions..."
                                     rows="4"
                                 />
@@ -493,7 +493,7 @@ const AddClient = React.memo(() => {
                                 type="submit"
                                 disabled={createMutation.isPending || !isPhoneVerified}
                                 title={!isPhoneVerified ? 'يجب التحقق من رقم الجوال أولاً قبل الحفظ' : ''}
-                                className="w-full sm:w-auto flex-1 md:flex-none bg-[#FF5C35] hover:brightness-110 text-white font-bold py-3.5 px-10 rounded-xl transition-all shadow-[0_8px_30px_rgba(255,92,53,0.3)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-[10px] uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-white/50"
+                                className="w-full sm:w-auto flex-1 md:flex-none bg-[#5C24EB] hover:brightness-110 text-white font-bold py-3.5 px-10 rounded-xl transition-all shadow-[0_8px_30px_rgba(92,36,235,0.3)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-[10px] uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-white/50"
                             >
                                 {createMutation.isPending && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true"></div>}
                                 {!isPhoneVerified ? '🔒 يجب التحقق من الرقم أولاً' : 'Save Client'}
@@ -514,7 +514,7 @@ const AddClient = React.memo(() => {
                                 ✕
                             </button>
 
-                            <div className="w-12 h-12 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-2xl flex items-center justify-center text-[#FF5C35] mx-auto mb-3">
+                            <div className="w-12 h-12 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-2xl flex items-center justify-center text-[#8B5CF6] mx-auto mb-3">
                                 <span className="material-symbols-outlined text-xl">lock</span>
                             </div>
 
@@ -531,7 +531,7 @@ const AddClient = React.memo(() => {
                                 value={otpCode}
                                 onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                                 placeholder="••••••"
-                                className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 text-center text-2xl sm:text-3xl font-bold font-mono text-white tracking-[0.3em] focus:ring-2 focus:ring-[#FF5C35]/50 outline-none mb-4"
+                                className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 py-3 text-center text-2xl sm:text-3xl font-bold font-mono text-white tracking-[0.3em] focus:ring-2 focus:ring-[#5C24EB]/50 outline-none mb-4"
                                 dir="ltr"
                                 autoFocus
                             />
@@ -541,7 +541,7 @@ const AddClient = React.memo(() => {
                                     type="button"
                                     onClick={handleVerifyClientOtp}
                                     disabled={isVerifyingOtp || otpCode.length !== 6}
-                                    className="w-full py-3 bg-[#FF5C35] hover:brightness-110 text-white font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#FF5C35]/20 text-sm"
+                                    className="w-full py-3 bg-[#5C24EB] hover:brightness-110 text-white font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#5C24EB]/20 text-sm"
                                 >
                                     {isVerifyingOtp && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
                                     تأكيد رمز التحقق

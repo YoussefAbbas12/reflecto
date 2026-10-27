@@ -34,6 +34,42 @@ async function testConnection() {
     await conn.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS branch_name VARCHAR(100) DEFAULT NULL`).catch(() => { });
     await conn.query(`UPDATE users SET branch_name = 'فرع جدة' WHERE (branch_name IS NULL OR branch_name = '') AND (role = 'client' OR role IS NULL OR role = '')`).catch(() => { });
     await conn.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS permissions LONGTEXT DEFAULT NULL`).catch(() => { });
+    await conn.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS employee_code VARCHAR(50) DEFAULT NULL`).catch(() => { });
+    await conn.query(`CREATE UNIQUE INDEX idx_users_employee_code ON users (employee_code)`).catch(() => { });
+
+    // Auto-populate employee_code for existing staff/admins/technicians if missing
+    // Technicians get RT-XXXX, admins/staff get RM-XXXX
+    try {
+      const [staffWithoutCode] = await conn.query(
+        `SELECT id, role FROM users WHERE (employee_code IS NULL OR employee_code = '') AND (role IN ('admin', 'super_admin', 'technician') OR (role_id IS NOT NULL AND role_id > 0)) ORDER BY id ASC`
+      );
+      for (const staff of (staffWithoutCode || [])) {
+        const prefix = staff.role === 'technician' ? 'RT' : 'RM';
+        const code = `${prefix}-${String(1000 + staff.id).padStart(4, '0')}`;
+        await conn.query('UPDATE users SET employee_code = ? WHERE id = ?', [code, staff.id]).catch(() => {});
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // Migrate old EMP- codes to role-based format RT- / RM-
+    try {
+      const [oldCodes] = await conn.query(
+        `SELECT id, role FROM users WHERE employee_code LIKE 'EMP-%' AND role IN ('admin', 'super_admin', 'technician') ORDER BY id ASC`
+      );
+      for (const staff of (oldCodes || [])) {
+        const prefix = staff.role === 'technician' ? 'RT' : 'RM';
+        const newCode = `${prefix}-${String(1000 + staff.id).padStart(4, '0')}`;
+        const [[taken]] = await conn.query('SELECT id FROM users WHERE employee_code = ? AND id != ? LIMIT 1', [newCode, staff.id]).catch(() => [[null]]);
+        if (!taken) {
+          await conn.query('UPDATE users SET employee_code = ? WHERE id = ?', [newCode, staff.id]).catch(() => {});
+        }
+      }
+    } catch (e) {
+      // ignore migration errors
+    }
+
+
     await conn.query(`ALTER TABLE loyalty_transactions ADD COLUMN IF NOT EXISTS work_order_uuid VARCHAR(100) DEFAULT NULL`).catch(() => { });
     await conn.query(`ALTER TABLE loyalty_transactions MODIFY COLUMN type ENUM('earned','redeemed','transferred_out','transferred_in','gifted','awarded_by_admin','deducted_by_admin') NOT NULL DEFAULT 'earned'`).catch(() => { });
 

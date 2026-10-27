@@ -88,7 +88,7 @@ const AdminScheduling = React.memo(() => {
   ], [schedulingData]);
 
   return (
-    <div className="flex bg-[#000000] min-h-screen text-white overflow-hidden pt-20 font-body selection:bg-[#FF5C35]/30">
+    <div className="flex bg-[#000000] min-h-screen text-white overflow-hidden pt-20 font-body selection:bg-[#5C24EB]/30">
       <AdminSidebar />
 
       <main className="flex-1 flex flex-col xl:flex-row w-full overflow-hidden" aria-labelledby="scheduling-heading">
@@ -100,17 +100,17 @@ const AdminScheduling = React.memo(() => {
                 <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`} aria-hidden="true"></span> 
                 <span aria-live="polite">{isLoading ? 'Syncing...' : `${technicians.filter(t => t.active).length} Active Techs`}</span>
               </div>
-              <h1 id="scheduling-heading" className="text-4xl font-display font-black tracking-tight">Scheduling</h1>
+              <h1 id="scheduling-heading" className="text-2xl md:text-3xl font-display font-black tracking-tight">Scheduling</h1>
             </div>
 
             <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
               <div className="relative shrink-0">
                 <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
-                <input type="text" placeholder="Search Client..." className="bg-white/[0.05] shadow-inner border-0 rounded-xl pl-12 pr-6 py-3 text-sm w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all font-medium text-white placeholder-gray-500" aria-label="Search appointments" />
+                <input type="text" placeholder="Search Client..." className="bg-white/[0.05] shadow-inner border-0 rounded-xl pl-12 pr-6 py-3 text-sm w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium text-white placeholder-gray-500" aria-label="Search appointments" />
               </div>
               <Link
                 to="/admin/add-client"
-                className="px-6 py-3 shrink-0 bg-[#FF5C35] text-white font-bold rounded-xl text-sm flex items-center gap-2 hover:brightness-110 shadow-[0_8px_30px_rgba(255,92,53,0.3)] transition-all active:scale-95"
+                className="px-6 py-3 shrink-0 bg-[#5C24EB] text-white font-bold rounded-xl text-sm flex items-center gap-2 hover:brightness-110 shadow-[0_8px_30px_rgba(92, 36, 235, 0.3)] transition-all active:scale-95"
                 aria-label="Create a new client"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
@@ -155,7 +155,7 @@ const AdminScheduling = React.memo(() => {
             <div className="flex bg-white/[0.02] p-1 rounded-xl w-full sm:w-auto overflow-x-auto shrink-0 shadow-inner" role="group" aria-label="View mode">
               <button type="button" className="px-4 py-1.5 rounded-lg text-xs text-gray-500 font-bold whitespace-nowrap hover:bg-white/[0.05] transition-all" aria-pressed="false">Month</button>
               <button type="button" className="px-4 py-1.5 rounded-lg text-xs text-gray-500 font-bold whitespace-nowrap hover:bg-white/[0.05] transition-all" aria-pressed="false">Week</button>
-              <button type="button" className="px-4 py-1.5 rounded-lg text-xs bg-[#FF5C35] text-white font-bold whitespace-nowrap shadow-md" aria-pressed="true">Day</button>
+              <button type="button" className="px-4 py-1.5 rounded-lg text-xs bg-[#5C24EB] text-white font-bold whitespace-nowrap shadow-md" aria-pressed="true">Day</button>
             </div>
           </nav>
 
@@ -163,7 +163,7 @@ const AdminScheduling = React.memo(() => {
           <div className="relative space-y-20 pt-10 overflow-x-auto w-full pb-12 pr-4 min-w-full">
             {isLoading && (
               <div className="absolute inset-0 bg-[#000000]/50 backdrop-blur-sm z-50 flex items-center justify-center rounded-xl" aria-busy="true">
-                <div className="w-8 h-8 border-4 border-[#FF5C35] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-4 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
             
@@ -232,7 +232,7 @@ const AdminScheduling = React.memo(() => {
                 <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Active</div>
               </div>
               <div className="bg-white/[0.02] border-0 shadow-inner p-4 rounded-xl flex flex-col items-center col-span-2">
-                <div className="text-2xl font-bold text-[#FF5C35] drop-shadow-md">${(quickStats.today_revenue || 0).toLocaleString()}</div>
+                <div className="text-2xl font-bold text-[#8B5CF6] drop-shadow-md">${(quickStats.today_revenue || 0).toLocaleString()}</div>
                 <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Today's Revenue</div>
               </div>
             </div>
@@ -244,7 +244,7 @@ const AdminScheduling = React.memo(() => {
               <span className="text-[10px] font-bold text-green-400 uppercase tracking-widest">{bayPercent}% Load</span>
             </div>
             <div className="h-2 w-full bg-black/50 rounded-full mb-4 overflow-hidden shadow-inner" role="progressbar" aria-valuenow={bayPercent} aria-valuemin="0" aria-valuemax="100">
-              <div className="h-full bg-gradient-to-r from-[#FF5C35] to-[#ff8060] rounded-full shadow-[0_0_10px_rgba(255,92,53,0.5)] transition-all duration-1000" style={{ width: `${bayPercent}%` }}></div>
+              <div className="h-full bg-gradient-to-r from-[#5C24EB] to-[#7C3AED] rounded-full shadow-[0_0_10px_rgba(92, 36, 235, 0.5)] transition-all duration-1000" style={{ width: `${bayPercent}%` }}></div>
             </div>
             <div className="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
               <span>Occupied: {bayCapacity.occupied}</span>
@@ -277,15 +277,15 @@ const AdminScheduling = React.memo(() => {
             <div className="space-y-4">
               {pendingDispatch.map((pd, idx) => (
                 <article key={idx} className="p-4 bg-white/[0.02] border-0 shadow-sm rounded-xl relative overflow-hidden group">
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#FF5C35] shadow-[0_0_10px_rgba(255,92,53,0.8)]" aria-hidden="true"></div>
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#5C24EB] shadow-[0_0_10px_rgba(92, 36, 235, 0.8)]" aria-hidden="true"></div>
                   <div className="flex justify-between mb-4 pl-3">
                     <div className="overflow-hidden pr-2">
                       <h3 className="font-bold text-xs truncate text-white tracking-wide">{pd.car}</h3>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 truncate mt-1">{pd.type}</p>
                     </div>
-                    <span className="text-[#FF5C35] font-bold text-[10px] uppercase tracking-widest shrink-0">{pd.time}</span>
+                    <span className="text-[#8B5CF6] font-bold text-[10px] uppercase tracking-widest shrink-0">{pd.time}</span>
                   </div>
-                  <button type="button" className="w-full py-2.5 bg-white/[0.05] hover:bg-[#FF5C35] shadow-inner text-white rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50">Assign Bay</button>
+                  <button type="button" className="w-full py-2.5 bg-white/[0.05] hover:bg-[#5C24EB] shadow-inner text-white rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50">Assign Bay</button>
                 </article>
               ))}
             </div>

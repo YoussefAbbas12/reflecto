@@ -93,7 +93,7 @@ const NanoCeramic = React.memo(() => {
           aria-hidden="true"
         />
         <div className="relative z-10 text-center pt-24 pb-12 px-6">
-          <h1 className="text-4xl md:text-6xl font-display font-black tracking-widest uppercase leading-tight">
+          <h1 className="text-3xl md:text-5xl font-display font-black tracking-widest uppercase leading-tight">
             <span className="text-[#FF5C35]">{t('service5:hero_highlight')}</span>{' '}
             <span className="text-white">{t('service5:hero_rest')}</span>
           </h1>

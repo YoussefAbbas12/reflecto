@@ -68,7 +68,7 @@ const Tint = React.memo(() => {
         </div>
 
         <div className="relative z-10 text-center max-w-4xl px-6 pt-16">
-          <h1 id="tint-hero-heading" className="text-4xl tracking-[2px] md:text-7xl font-display font-black mb-4 leading-tight uppercase text-white">
+          <h1 id="tint-hero-heading" className="text-3xl tracking-[2px] md:text-5xl font-display font-black mb-4 leading-tight uppercase text-white">
             {t('tint:tint_title')}
           </h1>
           <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto font-light font-michroma leading-relaxed">
@@ -142,7 +142,7 @@ const Tint = React.memo(() => {
 
         <section className="text-center mb-32" aria-label="Transparency Guide">
           <span className="text-[#FF5C35] text-[10px] font-bold uppercase tracking-widest mb-4 block">{t('tint:visual_guide')}</span>
-          <h2 className="text-4xl md:text-5xl font-display font-light mb-14 tracking-tight"><span className="text-[#FF5C35] font-bold">{t('tint:transparency_scale_highlight')}</span> {t('tint:transparency_scale_rest')}</h2>
+          <h2 className="text-2xl md:text-4xl font-display font-light mb-14 tracking-tight"><span className="text-[#FF5C35] font-bold">{t('tint:transparency_scale_highlight')}</span> {t('tint:transparency_scale_rest')}</h2>
           <p className="text-gray-400 text-sm mb-12 leading-relaxed max-w-xl mx-auto font-bold tracking-wide">{t('tint:transparency_desc')}</p>
           <div className="flex flex-wrap justify-center gap-12">
             {Array.isArray(vltLevels) && vltLevels.map((item, i) => (

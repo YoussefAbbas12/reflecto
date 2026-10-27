@@ -281,7 +281,7 @@ const EditClient = React.memo(() => {
     navigate('/clientsDashboard');
   }, [navigate]);
 
-  const inputStyle = "w-full bg-white/[0.05] backdrop-blur-md text-white border-0 shadow-inner focus:ring-2 focus:ring-[#FF5C35]/50 rounded-md py-3 px-4 font-medium outline-none transition-all disabled:opacity-50";
+  const inputStyle = "w-full bg-white/[0.05] backdrop-blur-md text-white border-0 shadow-inner focus:ring-2 focus:ring-[#5C24EB]/50 rounded-md py-3 px-4 font-medium outline-none transition-all disabled:opacity-50";
   const labelStyle = "block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2";
 
   if (!canEdit) {
@@ -292,7 +292,7 @@ const EditClient = React.memo(() => {
           <span className="material-symbols-outlined text-6xl text-red-500">lock</span>
           <h1 className="text-2xl font-bold text-white">عفواً، لا تملك صلاحية تعديل بيانات العملاء</h1>
           <p className="text-gray-400 text-sm">تواصل مع السوبر أدمن للحصول على صلاحية (edit_client)</p>
-          <button onClick={() => navigate('/admin/clients')} className="px-6 py-2 bg-[#FF5C35] text-white rounded-xl font-bold text-xs cursor-pointer">
+          <button onClick={() => navigate('/admin/clients')} className="px-6 py-2 bg-[#5C24EB] text-white rounded-xl font-bold text-xs cursor-pointer">
             العودة لإدارة العملاء
           </button>
         </main>
@@ -305,7 +305,7 @@ const EditClient = React.memo(() => {
       <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] items-center justify-center">
         <div className="text-center bg-white/[0.02] backdrop-blur-xl p-8 rounded-xl shadow-2xl">
           <h2 className="text-2xl font-bold mb-4">No Client ID Provided</h2>
-          <button type="button" onClick={handleCancel} className="text-[#FF5C35] hover:underline focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 rounded px-2">Go back to Clients</button>
+          <button type="button" onClick={handleCancel} className="text-[#8B5CF6] hover:underline focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 rounded px-2">Go back to Clients</button>
         </div>
       </div>
     );
@@ -318,7 +318,7 @@ const EditClient = React.memo(() => {
       <main className="flex-1 overflow-y-auto p-8 lg:p-12 space-y-12" aria-labelledby="edit-client-heading">
         {isFetching ? (
           <div className="flex items-center justify-center h-64" aria-live="polite">
-            <div className="w-8 h-8 border-4 border-[#FF5C35] border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+            <div className="w-8 h-8 border-4 border-[#5C24EB] border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
             <span className="sr-only">Loading client details...</span>
           </div>
         ) : (
@@ -326,7 +326,7 @@ const EditClient = React.memo(() => {
             {/* Breadcrumb & Hero */}
             <header>
               <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-gray-500 mb-4 text-sm font-medium">
-                <button type="button" className="cursor-pointer hover:text-white focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 rounded px-1" onClick={handleCancel}>Clients</button>
+                <button type="button" className="cursor-pointer hover:text-white focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 rounded px-1" onClick={handleCancel}>Clients</button>
                 <span className="material-symbols-outlined text-xs" aria-hidden="true">chevron_right</span>
                 <span className="font-bold text-[#e5e2e1]" aria-current="page">Edit Client Details</span>
               </nav>
@@ -342,7 +342,7 @@ const EditClient = React.memo(() => {
                 {/* Personal Information Panel */}
                 <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-xl p-8 shadow-2xl border-0">
                   <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-1.5 rounded-lg" aria-hidden="true">person</span>
+                    <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-1.5 rounded-lg" aria-hidden="true">person</span>
                     Personal Information
                   </legend>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -371,7 +371,7 @@ const EditClient = React.memo(() => {
                         </select>
                       ) : (
                         <div className={`${inputStyle} flex items-center gap-2 cursor-not-allowed opacity-70`}>
-                          <span className={`w-2 h-2 rounded-full ${formData.role === 'admin' ? 'bg-amber-400' : (formData.role === 'technician' ? 'bg-blue-400' : 'bg-[#FF5C35]')}`} aria-hidden="true"></span>
+                          <span className={`w-2 h-2 rounded-full ${formData.role === 'admin' ? 'bg-amber-400' : (formData.role === 'technician' ? 'bg-blue-400' : 'bg-[#5C24EB]')}`} aria-hidden="true"></span>
                           <span className="capitalize">{formData.role === 'admin' ? 'Administrator' : (formData.role === 'technician' ? 'Technician (فني)' : formData.role)}</span>
                         </div>
                       )}
@@ -413,7 +413,7 @@ const EditClient = React.memo(() => {
                 {/* Vehicles Details Panel */}
                 <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-xl p-8 shadow-2xl border-0">
                   <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-1.5 rounded-lg" aria-hidden="true">directions_car</span>
+                    <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-1.5 rounded-lg" aria-hidden="true">directions_car</span>
                     بيانات سيارات العميل (Client Vehicles)
                   </legend>
                   
@@ -421,7 +421,7 @@ const EditClient = React.memo(() => {
                     {(formData.vehicles || []).map((vehicle, index) => (
                       <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-5 p-6 rounded-2xl bg-white/[0.03] border border-white/10 relative">
                         <div className="md:col-span-3 flex items-center justify-between border-b border-white/10 pb-3 mb-1">
-                          <span className="text-xs font-black text-[#FF5C35] uppercase tracking-wider">السيارة {index + 1}</span>
+                          <span className="text-xs font-black text-[#8B5CF6] uppercase tracking-wider">السيارة {index + 1}</span>
                           {(formData.vehicles || []).length > 1 && (
                             <button
                               type="button"
@@ -469,7 +469,7 @@ const EditClient = React.memo(() => {
                       type="button"
                       onClick={addVehicle}
                       disabled={updateMutation.isPending}
-                      className="w-full py-3.5 rounded-2xl border border-dashed border-[#FF5C35]/50 text-[#FF5C35] font-bold text-xs hover:bg-[#FF5C35]/10 transition-colors cursor-pointer flex items-center justify-center gap-2"
+                      className="w-full py-3.5 rounded-2xl border border-dashed border-[#5C24EB]/50 text-[#8B5CF6] font-bold text-xs hover:bg-[#5C24EB]/10 transition-colors cursor-pointer flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined text-sm">add</span>
                       + إضافة سيارة أخرى للعميل
@@ -480,7 +480,7 @@ const EditClient = React.memo(() => {
                 {/* Location & Notes Panel */}
                 <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-xl p-8 shadow-2xl border-0">
                   <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-1.5 rounded-lg" aria-hidden="true">location_on</span>
+                    <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-1.5 rounded-lg" aria-hidden="true">location_on</span>
                     العنوان والملاحظات (Location & Notes)
                   </legend>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -509,7 +509,7 @@ const EditClient = React.memo(() => {
                   <span className="material-symbols-outlined absolute top-4 right-4 text-[120px] text-white opacity-[0.02] pointer-events-none" aria-hidden="true">shield</span>
 
                   <h3 className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3 relative z-10">
-                    <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-1.5 rounded-lg" aria-hidden="true">settings</span>
+                    <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-1.5 rounded-lg" aria-hidden="true">settings</span>
                     Account Status
                   </h3>
 
@@ -540,7 +540,7 @@ const EditClient = React.memo(() => {
                             disabled={updateMutation.isPending}
                             aria-label="Toggle active account status"
                           />
-                          <div className={`w-11 h-6 rounded-full peer transition-all duration-300 relative shadow-inner ${isActive ? 'bg-[#FF5C35]' : 'bg-white/10'}`}>
+                          <div className={`w-11 h-6 rounded-full peer transition-all duration-300 relative shadow-inner ${isActive ? 'bg-[#5C24EB]' : 'bg-white/10'}`}>
                             <div className={`absolute top-[2px] w-5 h-5 bg-white shadow-md rounded-full transition-all duration-300 ${isActive ? 'left-[22px]' : 'left-[2px]'}`}></div>
                           </div>
                         </div>
@@ -557,7 +557,7 @@ const EditClient = React.memo(() => {
                             disabled={updateMutation.isPending}
                             aria-label="Toggle premium client status"
                           />
-                          <div className={`w-11 h-6 rounded-full peer transition-all duration-300 relative shadow-inner ${premiumSupport ? 'bg-[#FF5C35]' : 'bg-white/10'}`}>
+                          <div className={`w-11 h-6 rounded-full peer transition-all duration-300 relative shadow-inner ${premiumSupport ? 'bg-[#5C24EB]' : 'bg-white/10'}`}>
                             <div className={`absolute top-[2px] w-5 h-5 bg-white shadow-md rounded-full transition-all duration-300 ${premiumSupport ? 'left-[22px]' : 'left-[2px]'}`}></div>
                           </div>
                         </div>
@@ -567,7 +567,7 @@ const EditClient = React.memo(() => {
                       {/* Super Admin Control Panel (Visible for Super Admins) */}
                       {(currentUser?.is_super_admin || currentUser?.role === 'super_admin') && (
                         <div className="pt-4 border-t border-white/10 space-y-4">
-                          <h4 className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider">إدارة صلاحيات المسؤول (Super Admin Controls)</h4>
+                          <h4 className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider">إدارة صلاحيات المسؤول (Super Admin Controls)</h4>
 
                           <label className="flex items-center gap-4 cursor-pointer">
                             <div className="relative inline-flex items-center">
@@ -602,7 +602,7 @@ const EditClient = React.memo(() => {
                                     type="checkbox"
                                     checked={!!permissions[item.key]}
                                     onChange={() => handlePermissionToggle(item.key)}
-                                    className="accent-[#FF5C35] w-4 h-4 rounded cursor-pointer"
+                                    className="accent-[#5C24EB] w-4 h-4 rounded cursor-pointer"
                                   />
                                   <span>{item.label}</span>
                                 </label>
@@ -665,14 +665,14 @@ const EditClient = React.memo(() => {
       {!isFetching && (
         <div className="fixed bottom-0 right-0 left-0 md:left-[280px] p-6 lg:p-10 pointer-events-none z-50 flex flex-col items-end gap-6">
           <div className="flex bg-[#000000]/90 backdrop-blur-xl p-4 rounded-xl border-0 shadow-[0_20px_50px_rgba(0,0,0,0.5)] items-center gap-6 pointer-events-auto mt-4">
-            <button type="button" onClick={handleCancel} disabled={updateMutation.isPending} className="text-white text-sm font-semibold hover:text-[#FF5C35] transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#FF5C35]/50 rounded px-4 py-2">
+            <button type="button" onClick={handleCancel} disabled={updateMutation.isPending} className="text-white text-sm font-semibold hover:text-[#8B5CF6] transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#5C24EB]/50 rounded px-4 py-2">
               Cancel
             </button>
             <button
               type="button"
               onClick={handleSave}
               disabled={updateMutation.isPending}
-              className="bg-[#FF5C35] text-white px-8 py-3 rounded-lg font-bold text-sm shadow-[0_8px_30px_rgba(255,92,53,0.3)] flex items-center gap-2 hover:shadow-[#FF5C35]/50 hover:brightness-110 transition-all active:scale-95 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="bg-[#5C24EB] text-white px-8 py-3 rounded-lg font-bold text-sm shadow-[0_8px_30px_rgba(92,36,235,0.3)] flex items-center gap-2 hover:shadow-[#5C24EB]/50 hover:brightness-110 transition-all active:scale-95 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50"
               aria-label="Save Client Changes"
             >
               {updateMutation.isPending ? (

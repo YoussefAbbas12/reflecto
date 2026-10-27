@@ -108,7 +108,7 @@ const HomeView = React.memo(() => {
         </div>
         <div className="relative z-10 text-center max-w-4xl px-6">
           <FadeIn direction="up" delay={0.2}>
-            <h1 id="hero-heading" className="text-4xl tracking-[2px] md:text-7xl font-display font-bold mb-4 leading-tight text-white">
+            <h1 id="hero-heading" className="text-3xl tracking-[2px] md:text-5xl font-display font-bold mb-4 leading-tight text-white">
               {t('home:hero_line1')} <br />
               <span className="text-[#FF5C35]">{t('home:hero_line2')}</span>
             </h1>
@@ -152,7 +152,7 @@ const HomeView = React.memo(() => {
           <FadeIn direction="up">
             <div className="text-center mb-16">
               <span id="standards-heading" className="text-[#FF5C35] font-bold tracking-widest text-sm uppercase mb-4 block">{t('home:standards.badge')}</span>
-              <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6 leading-tight">{t('home:standards.title')}</h2>
+              <h2 className="text-2xl md:text-4xl font-display font-bold text-white mb-6 leading-tight">{t('home:standards.title')}</h2>
               <p className="text-gray-400 max-w-2xl mx-auto">{t('home:standards.desc')}</p>
             </div>
           </FadeIn>
@@ -181,7 +181,7 @@ const HomeView = React.memo(() => {
                   <span className="w-8 h-[2px] bg-[#FF5C35]"></span>
                   {t('home:services_subtitle')}
                 </span>
-                <h2 id="services-heading" className="text-4xl md:text-5xl font-display font-bold text-white leading-tight">
+                <h2 id="services-heading" className="text-2xl md:text-4xl font-display font-bold text-white leading-tight">
                   {t('home:services_title')}
                 </h2>
               </div>

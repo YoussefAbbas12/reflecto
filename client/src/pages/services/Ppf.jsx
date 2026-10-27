@@ -89,7 +89,7 @@ const Ppf = React.memo(() => {
         </div>
 
         <div className="relative z-10 text-center max-w-4xl px-6 pt-16">
-          <h1 id="ppf-hero-heading" className="text-4xl tracking-[2px] md:text-7xl font-display font-black mb-4 leading-tight uppercase text-white">
+          <h1 id="ppf-hero-heading" className="text-3xl tracking-[2px] md:text-5xl font-display font-black mb-4 leading-tight uppercase text-white">
             <span className="text-[#FF5C35]">{t('ppf:hero_highlight')}</span>{' '}
             <span>{t('ppf:hero_rest')}</span>
           </h1>
@@ -126,7 +126,7 @@ const Ppf = React.memo(() => {
       <section className="py-24 px-6 bg-[#000000]" aria-label="PPF Anatomy Details">
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl md:text-5xl font-display font-black tracking-widest uppercase mb-4">
+            <h2 className="text-2xl md:text-4xl font-display font-black tracking-widest uppercase mb-4">
               <span className="text-[#FF5C35]">{t('ppf:anatomy_title_highlight')}</span> {t('ppf:anatomy_title_rest')}
             </h2>
             <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-10 max-w-sm leading-relaxed">

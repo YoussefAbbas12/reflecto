@@ -15,7 +15,7 @@ async function requireAuth(req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
     const [rows] = await pool.query(
       `SELECT 
-         u.id, u.uuid, u.full_name, u.phone, u.email, u.role, u.role_id, u.is_super_admin, u.branch_name, 
+         u.id, u.uuid, u.full_name, u.phone, u.email, u.employee_code, u.role, u.role_id, u.is_super_admin, u.branch_name, 
          u.permissions AS user_permissions, u.member_since, u.avatar_url, u.company_id, u.is_corporate,
          r.permissions AS role_permissions, r.name AS role_name, r.slug AS role_slug
        FROM users u

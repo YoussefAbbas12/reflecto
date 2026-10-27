@@ -1,21 +1,16 @@
 import React from 'react';
 
-/**
- * InvertoLogo Component
- * Uses the inverto.jpg image provided in /assets/photo/inverto.jpg
- * (renders inverto-white.png with fallback to inverto.jpg)
- */
 export const InvertoLogo = ({ className = "h-7 w-auto" }) => {
   return (
     <img
-      src="/assets/photo/inverto-white.png"
+      src="/assets/photo/seeda.png"
       onError={(e) => {
         e.currentTarget.onerror = null;
-        e.currentTarget.src = '/assets/photo/inverto.jpg';
+        e.currentTarget.src = '/assets/photo/seeda-dark-text.png';
         e.currentTarget.style.mixBlendMode = 'screen';
         e.currentTarget.style.filter = 'invert(1) hue-rotate(180deg)';
       }}
-      alt="INVERTO"
+      alt="SEEDA"
       className={`${className} object-contain transition-opacity duration-200`}
     />
   );

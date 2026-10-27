@@ -133,8 +133,13 @@ const request = async (endpoint, options = {}) => {
 
   const response = await fetch(url, config);
 
-  // ── Handle 401 with silent refresh ──
-  if (response.status === 401 && !options._retry) {
+  // ── Handle 401 with silent refresh (skip for auth endpoints) ──
+  const isAuthEndpoint = endpoint.startsWith('/auth/login') ||
+                         endpoint.startsWith('/auth/verify') ||
+                         endpoint.startsWith('/auth/refresh') ||
+                         endpoint.startsWith('/auth/send-');
+
+  if (response.status === 401 && !options._retry && !isAuthEndpoint) {
     if (isRefreshing) {
       // Another call is already refreshing — wait in line
       const newToken = await new Promise((resolve, reject) => {
@@ -325,6 +330,11 @@ export const meService = {
        current_password: currentPassword,
        new_password: newPassword,
      });
+   },
+
+   /** Update employee code */
+   updateEmployeeCode(employee_code) {
+     return api.put('/me/employee-code', { employee_code });
    },
 };
 

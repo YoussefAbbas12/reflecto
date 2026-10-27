@@ -89,7 +89,7 @@ const PartialPaymentsSection = ({ order, orderId }) => {
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder={`المتبقي: ${order.remaining_amount}`}
-                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs font-bold text-black outline-none focus:border-[#FF5C35]"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs font-bold text-black outline-none focus:border-[#5C24EB]"
                                 required
                             />
                         </div>
@@ -238,7 +238,7 @@ const OrderDetails = React.memo(() => {
     };
 
     return (
-        <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-24 md:pt-8 selection:bg-[#FF5C35]/30">
+        <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-24 md:pt-8 selection:bg-[#5C24EB]/30">
             <style>{`
                 @media print {
                     nav, header, aside, .print\\:hidden, button, footer, [role="dialog"] {
@@ -328,10 +328,10 @@ const OrderDetails = React.memo(() => {
                         <div className="flex items-center gap-2 text-gray-500 mb-2 text-xs font-bold uppercase tracking-wider">
                             <button type="button" onClick={() => navigate('/admin/orders')} className="hover:text-white transition-colors">Orders</button>
                             <span className="material-symbols-outlined text-xs">chevron_right</span>
-                            <span className="text-[#FF5C35]">Order Details</span>
+                            <span className="text-[#8B5CF6]">Order Details</span>
                         </div>
-                        <h1 id="order-details-heading" className="text-3xl md:text-5xl font-display font-black text-white tracking-tight flex items-center gap-3">
-                            <span className="material-symbols-outlined text-3xl md:text-4xl text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-2xl border border-[#FF5C35]/20 shadow-inner" aria-hidden="true">receipt_long</span>
+                        <h1 id="order-details-heading" className="text-2xl md:text-3xl font-display font-black text-white tracking-tight flex items-center gap-3">
+                            <span className="material-symbols-outlined text-2xl md:text-3xl text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-2xl border border-[#5C24EB]/20 shadow-inner" aria-hidden="true">receipt_long</span>
                             <span>نموذج الفحص والاستلام (Work Order)</span>
                         </h1>
                         <p className="text-gray-400 text-sm mt-1">عرض وطباعة النموذج الرسمي لطلب الخدمة والفحص</p>
@@ -342,7 +342,7 @@ const OrderDetails = React.memo(() => {
                         <button
                             type="button"
                             onClick={handlePrint}
-                            className="px-6 py-3.5 bg-[#FF5C35] hover:brightness-110 text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                            className="px-6 py-3.5 bg-[#5C24EB] hover:brightness-110 text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                         >
                             <span className="material-symbols-outlined text-lg">print</span>
                             طباعة Check List
@@ -352,7 +352,7 @@ const OrderDetails = React.memo(() => {
 
                 {isLoading ? (
                     <div className="flex items-center justify-center py-20">
-                        <div className="w-10 h-10 border-4 border-[#FF5C35] border-t-transparent rounded-full animate-spin" />
+                        <div className="w-10 h-10 border-4 border-[#5C24EB] border-t-transparent rounded-full animate-spin" />
                     </div>
                 ) : (
                     /* Printable Document Layout */
@@ -365,7 +365,7 @@ const OrderDetails = React.memo(() => {
 
                             <div className="text-right">
                                 <h3 className="text-xl font-black text-black">Check List</h3>
-                                <p className="text-xs font-bold font-mono text-[#FF5C35]">WORK ORDER: {order.work_order_number}</p>
+                                <p className="text-xs font-bold font-mono text-[#8B5CF6]">WORK ORDER: {order.work_order_number}</p>
                                 <p className="text-[11px] font-bold text-gray-600 mt-0.5">Date: {formatDateGregorian(order.order_date)}</p>
                             </div>
                         </div>
@@ -402,7 +402,7 @@ const OrderDetails = React.memo(() => {
                                         </button>
                                     </div>
                                 ) : (
-                                    <span className="text-[#FF5C35] flex items-center gap-1 font-black">
+                                    <span className="text-[#8B5CF6] flex items-center gap-1 font-black">
                                         {order.delivery_date ? new Date(order.delivery_date).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }) : 'غير محدد'}
                                         <button
                                             type="button"
@@ -410,7 +410,7 @@ const OrderDetails = React.memo(() => {
                                                 setTempDeliveryDate(order.delivery_date ? new Date(order.delivery_date).toISOString().slice(0, 16) : '');
                                                 setIsEditingDeliveryDate(true);
                                             }}
-                                            className="print:hidden text-gray-500 hover:text-[#FF5C35] transition-colors cursor-pointer"
+                                            className="print:hidden text-gray-500 hover:text-[#8B5CF6] transition-colors cursor-pointer"
                                             title="تعديل موعد الانتهاء"
                                         >
                                             <span className="material-symbols-outlined text-sm">edit_calendar</span>
@@ -434,35 +434,35 @@ const OrderDetails = React.memo(() => {
                                     {hasServiceItems(order.heat_insulation) && (
                                         <tr>
                                             <td className="p-2 font-bold bg-gray-50 border-l border-gray-300">عازل حراري</td>
-                                            <td className="p-2 font-bold text-[#FF5C35] border-l border-gray-300">{order.service_technicians?.['heat_insulation'] || order.technician_name || 'غير محدد'}</td>
+                                            <td className="p-2 font-bold text-[#8B5CF6] border-l border-gray-300">{order.service_technicians?.['heat_insulation'] || order.technician_name || 'غير محدد'}</td>
                                             <td className="p-2">{formatHeatInsulation(order.heat_insulation, order.heat_insulation_details)}</td>
                                         </tr>
                                     )}
                                     {hasServiceItems(order.polishing) && (
                                         <tr>
                                             <td className="p-2 font-bold bg-gray-50 border-l border-gray-300">تلميع</td>
-                                            <td className="p-2 font-bold text-[#FF5C35] border-l border-gray-300">{order.service_technicians?.['polishing'] || order.technician_name || 'غير محدد'}</td>
+                                            <td className="p-2 font-bold text-[#8B5CF6] border-l border-gray-300">{order.service_technicians?.['polishing'] || order.technician_name || 'غير محدد'}</td>
                                             <td className="p-2">{Array.isArray(order.polishing) ? order.polishing.filter(Boolean).join(' - ') : order.polishing}</td>
                                         </tr>
                                     )}
                                     {hasServiceItems(order.nano_ceramic) && (
                                         <tr>
                                             <td className="p-2 font-bold bg-gray-50 border-l border-gray-300">نانو سيراميك</td>
-                                            <td className="p-2 font-bold text-[#FF5C35] border-l border-gray-300">{order.service_technicians?.['nano_ceramic'] || order.technician_name || 'غير محدد'}</td>
+                                            <td className="p-2 font-bold text-[#8B5CF6] border-l border-gray-300">{order.service_technicians?.['nano_ceramic'] || order.technician_name || 'غير محدد'}</td>
                                             <td className="p-2">{Array.isArray(order.nano_ceramic) ? order.nano_ceramic.filter(Boolean).join(' - ') : order.nano_ceramic}</td>
                                         </tr>
                                     )}
                                     {hasServiceItems(order.ppf) && (
                                         <tr>
                                             <td className="p-2 font-bold bg-gray-50 border-l border-gray-300">PPF</td>
-                                            <td className="p-2 font-bold text-[#FF5C35] border-l border-gray-300">{order.service_technicians?.['ppf'] || order.technician_name || 'غير محدد'}</td>
+                                            <td className="p-2 font-bold text-[#8B5CF6] border-l border-gray-300">{order.service_technicians?.['ppf'] || order.technician_name || 'غير محدد'}</td>
                                             <td className="p-2">{formatPPF(order.ppf, order.ppf_partial_details)}</td>
                                         </tr>
                                     )}
                                     {hasServiceItems(order.removal_services) && (
                                         <tr>
                                             <td className="p-2 font-bold bg-gray-50 border-l border-gray-300">إزالة</td>
-                                            <td className="p-2 font-bold text-[#FF5C35] border-l border-gray-300">{order.service_technicians?.['removal_services'] || order.technician_name || 'غير محدد'}</td>
+                                            <td className="p-2 font-bold text-[#8B5CF6] border-l border-gray-300">{order.service_technicians?.['removal_services'] || order.technician_name || 'غير محدد'}</td>
                                             <td className="p-2">{Array.isArray(order.removal_services) ? order.removal_services.filter(Boolean).join(' - ') : order.removal_services}</td>
                                         </tr>
                                     )}
@@ -503,12 +503,12 @@ const OrderDetails = React.memo(() => {
                         <div className="space-y-2">
                             {(order.discount_percent > 0 || order.discount_amount > 0 || (order.original_price && order.original_price > order.price)) && (
                                 <div className="bg-amber-50 border border-amber-300 rounded-xl p-3 text-xs font-bold space-y-1.5 print:bg-gray-50 print:border-gray-400">
-                                    <div className="flex items-center justify-between border-b border-amber-200 pb-1 text-[#FF5C35]">
+                                    <div className="flex items-center justify-between border-b border-amber-200 pb-1 text-[#8B5CF6]">
                                         <span className="flex items-center gap-1 font-black">
                                             <span className="material-symbols-outlined text-base">verified_user</span>
                                             خصم اتفاقية شركة / جهة معتمدة ({order.company_name || order.client_type || 'خصم خاص'})
                                         </span>
-                                        <span className="bg-[#FF5C35] text-white px-2.5 py-0.5 rounded-full text-[11px] font-mono">
+                                        <span className="bg-[#5C24EB] text-white px-2.5 py-0.5 rounded-full text-[11px] font-mono">
                                             خصم {order.discount_percent || Math.round((((order.original_price || (order.price + (order.discount_amount || 0))) - order.price) / (order.original_price || (order.price + (order.discount_amount || 0)))) * 100)}%
                                         </span>
                                     </div>
@@ -540,9 +540,9 @@ const OrderDetails = React.memo(() => {
                             const derivedTechName = order.technician_name ||
                                 (Object.values(serviceTechs).filter(Boolean)[0] || null);
                             return (
-                                <div className="border border-[#FF5C35]/30 rounded-xl p-3 bg-[#FF5C35]/5 space-y-2 text-xs">
+                                <div className="border border-[#5C24EB]/30 rounded-xl p-3 bg-[#5C24EB]/5 space-y-2 text-xs">
                                     <div className="flex items-center justify-between font-bold text-gray-800">
-                                        <span className="flex items-center gap-1.5 text-[#FF5C35]">
+                                        <span className="flex items-center gap-1.5 text-[#8B5CF6]">
                                             <span className="material-symbols-outlined text-base">engineering</span>
                                             {derivedTechName ? `الفني المسؤول` : 'الفنيون المسؤولون: (موزعون على الخدمات)'}
                                         </span>
@@ -568,7 +568,7 @@ const OrderDetails = React.memo(() => {
                                                 return (
                                                     <div key={chk.key} className={`p-2 rounded-lg border text-center font-bold text-[10px] ${isDone ? 'bg-emerald-100 border-emerald-300 text-emerald-900' : 'bg-gray-100 border-gray-200 text-gray-400'}`}>
                                                         <div>{chk.title}</div>
-                                                        {serviceTech && <div className="text-[9px] text-[#FF5C35] font-normal truncate mt-0.5">الفني: {serviceTech}</div>}
+                                                        {serviceTech && <div className="text-[9px] text-[#8B5CF6] font-normal truncate mt-0.5">الفني: {serviceTech}</div>}
                                                         <div className="text-[9px] font-mono mt-0.5">{isDone ? (timeStr ? `تم ${timeStr}` : 'مكتمل ✓') : 'قيد الانتظار'}</div>
                                                     </div>
                                                 );

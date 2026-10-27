@@ -103,6 +103,7 @@ export const AuthProvider = React.memo(({ children }) => {
               phone: meData.phone || user.phone,
               full_name: meData.full_name || user.full_name,
               email: meData.email || user.email,
+              employee_code: meData.employee_code || user.employee_code || null,
               role: meData.role || user.role,
               role_id: meData.role_id || user.role_id,
               is_super_admin: meData.is_super_admin !== undefined ? !!meData.is_super_admin : true,
@@ -182,6 +183,20 @@ export const AuthProvider = React.memo(({ children }) => {
     dispatch({ type: 'LOGOUT' });
   }, [queryClient]);
 
+  const updateUser = useCallback((patch) => {
+    dispatch({
+      type: 'LOGIN_SUCCESS',
+      payload: {
+        user: { ...(state.user || {}), ...patch }
+      }
+    });
+    const stored = getStoredUser();
+    if (stored) {
+      const updated = { ...stored, ...patch };
+      localStorage.setItem('reflecto_user', JSON.stringify(updated));
+    }
+  }, [state.user]);
+
   const hasPermission = useCallback((permKey) => {
     if (!permKey) return true;
     if (!state.user) return false;
@@ -219,8 +234,9 @@ export const AuthProvider = React.memo(({ children }) => {
     setPhone,
     login,
     logout,
+    updateUser,
     hasPermission,
-  }), [state, setPhone, login, logout, hasPermission]);
+  }), [state, setPhone, login, logout, updateUser, hasPermission]);
 
   return (
     <AuthContext.Provider value={value}>

@@ -4,95 +4,108 @@ import { roleService, clientService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import AdminSidebar from '../components/AdminSidebar';
+import { useLanguage } from '../hooks/useLanguage';
+import { useAdminTheme } from '../contexts/AdminThemeContext';
 import useBodyScrollLock from '../hooks/useBodyScrollLock';
 
 export const PERMISSION_SECTIONS = [
     {
-        title: 'الصفحة الرئيسية والتقارير العامة (Overview & Dashboard)',
+        titleAr: 'الصفحة الرئيسية والتقارير العامة',
+        titleEn: 'Overview & Main Dashboard',
         permissions: [
-            { key: 'view_overview', label: 'رؤية لوحة التحكم والإحصائيات الرئيسية' }
+            { key: 'view_overview', labelAr: 'رؤية لوحة التحكم والإحصائيات الرئيسية', labelEn: 'View Dashboard & Main Analytics' }
         ]
     },
     {
-        title: 'إدارة أوامر العمل والـ Check List',
+        titleAr: 'إدارة أوامر العمل وقوائم الفحص (Checklist)',
+        titleEn: 'Work Orders & Checklists',
         permissions: [
-            { key: 'view_checklists', label: 'رؤية صفحة أوامر العمل والـ Check List' },
-            { key: 'view_order_details', label: 'رؤية تفاصيل الطلب والـ Check List الكامل (زر العين)' },
-            { key: 'create_checklist', label: 'إضافة أمر عمل / Check List جديد' },
-            { key: 'edit_checklist', label: 'تعديل وتحديث أمر العمل والـ Check List' },
-            { key: 'delete_checklist', label: 'حذف أمر العمل نهائياً' }
+            { key: 'view_checklists', labelAr: 'رؤية صفحة أوامر العمل وقوائم الفحص', labelEn: 'View Work Orders & Checklists Page' },
+            { key: 'view_order_details', labelAr: 'رؤية تفاصيل الطلب والفحص الكامل (زر العين)', labelEn: 'View Full Order Details & Inspection (Eye Icon)' },
+            { key: 'create_checklist', labelAr: 'إضافة أمر عمل / قائمة فحص جديدة', labelEn: 'Create New Work Order / Checklist' },
+            { key: 'edit_checklist', labelAr: 'تعديل وتحديث أمر العمل وقائمة الفحص', labelEn: 'Edit & Update Work Order / Checklist' },
+            { key: 'delete_checklist', labelAr: 'حذف أمر العمل نهائياً', labelEn: 'Permanently Delete Work Order' }
         ]
     },
     {
-        title: 'إدارة عروض الأسعار (Price Quotations)',
+        titleAr: 'إدارة عروض الأسعار',
+        titleEn: 'Price Quotations',
         permissions: [
-            { key: 'view_quotations', label: 'رؤية صفحة عروض الأسعار وقائمتها' },
-            { key: 'create_quotation', label: 'إنشاء عرض سعر جديد' },
-            { key: 'edit_quotation', label: 'تعديل عرض سعر موجود' },
-            { key: 'delete_quotation', label: 'حذف عرض سعر نهائياً' }
+            { key: 'view_quotations', labelAr: 'رؤية صفحة عروض الأسعار وقائمتها', labelEn: 'View Price Quotations Page' },
+            { key: 'create_quotation', labelAr: 'إنشاء عرض سعر جديد', labelEn: 'Create New Price Quotation' },
+            { key: 'edit_quotation', labelAr: 'تعديل عرض سعر موجود', labelEn: 'Edit Existing Quotation' },
+            { key: 'delete_quotation', labelAr: 'حذف عرض سعر نهائياً', labelEn: 'Permanently Delete Quotation' }
         ]
     },
     {
-        title: 'إدارة العملاء (Clients Management)',
+        titleAr: 'إدارة العملاء و CRM',
+        titleEn: 'Clients & CRM',
         permissions: [
-            { key: 'view_clients', label: 'رؤية قائمة العملاء' },
-            { key: 'view_client_details', label: 'رؤية صفحة استعلام وتفاصيل العميل الشاملة' },
-            { key: 'create_client', label: 'إضافة عميل جديد' },
-            { key: 'edit_client', label: 'تعديل بيانات العميل والسيارات' },
-            { key: 'delete_client', label: 'حذف العميل' }
+            { key: 'view_clients', labelAr: 'رؤية قائمة العملاء', labelEn: 'View Clients List' },
+            { key: 'view_client_details', labelAr: 'رؤية صفحة استعلام وتفاصيل العميل الشاملة', labelEn: 'View Client Comprehensive Details & History' },
+            { key: 'create_client', labelAr: 'إضافة عميل جديد', labelEn: 'Add New Client' },
+            { key: 'edit_client', labelAr: 'تعديل بيانات العميل والسيارات', labelEn: 'Edit Client & Vehicles Data' },
+            { key: 'delete_client', labelAr: 'حذف العميل', labelEn: 'Delete Client' }
         ]
     },
     {
-        title: 'إدارة الموظفين (Employees Management)',
+        titleAr: 'إدارة الموظفين والفنيين',
+        titleEn: 'Employees & Staff',
         permissions: [
-            { key: 'view_employees', label: 'رؤية قائمة الموظفين (الأدمن والفنيين)' },
-            { key: 'create_employee', label: 'إضافة موظف جديد' },
-            { key: 'edit_employee', label: 'تعديل بيانات الموظف والصلاحيات' },
-            { key: 'delete_employee', label: 'حذف الموظف' }
+            { key: 'view_employees', labelAr: 'رؤية قائمة الموظفين (الأدمن والفنيين)', labelEn: 'View Staff & Technicians List' },
+            { key: 'create_employee', labelAr: 'إضافة موظف جديد', labelEn: 'Add New Employee / Tech' },
+            { key: 'edit_employee', labelAr: 'تعديل بيانات الموظف والصلاحيات', labelEn: 'Edit Employee Details & Permissions' },
+            { key: 'delete_employee', labelAr: 'حذف الموظف', labelEn: 'Delete Employee' }
         ]
     },
     {
-        title: 'إدارة الشركات والجهات الكبرى (Companies & Corporate)',
+        titleAr: 'الشركات والجهات الكبرى',
+        titleEn: 'Corporate & Companies',
         permissions: [
-            { key: 'view_companies', label: 'رؤية صفحة وقائمة الشركات' },
-            { key: 'manage_companies', label: 'إضافة وتعديل الشركات وأسعار الباقات المخصصة' }
+            { key: 'view_companies', labelAr: 'رؤية صفحة وقائمة الشركات', labelEn: 'View Corporate Companies Page' },
+            { key: 'manage_companies', labelAr: 'إضافة وتعديل الشركات وأسعار الباقات المخصصة', labelEn: 'Manage Corporate Accounts & Custom Pricing' }
         ]
     },
     {
-        title: 'إدارة الباقات والخدمات (Packages & Services)',
+        titleAr: 'الخدمات والباقات',
+        titleEn: 'Services & Packages',
         permissions: [
-            { key: 'view_packages', label: 'رؤية الخدمات والباقات' },
-            { key: 'manage_packages', label: 'إضافة وتعديل الباقات والأسعار الأساسية' }
+            { key: 'view_packages', labelAr: 'رؤية الخدمات والباقات', labelEn: 'View Services & Packages' },
+            { key: 'manage_packages', labelAr: 'إضافة وتعديل الباقات والأسعار الأساسية', labelEn: 'Manage Packages & Base Prices' }
         ]
     },
     {
-        title: 'إدارة المواعيد والحجوزات (Appointments & Scheduling)',
+        titleAr: 'المواعيد والحجوزات',
+        titleEn: 'Appointments & Scheduling',
         permissions: [
-            { key: 'view_appointments', label: 'رؤية قائمة المواعيد والحجوزات' },
-            { key: 'edit_appointment', label: 'تعديل وتحديث بيانات الموعد والحالة (Update)' },
-            { key: 'delete_appointment', label: 'حذف الموعد نهائياً (Delete)' },
-            { key: 'view_scheduling', label: 'رؤية جدول الفنيين والجدولة' }
+            { key: 'view_appointments', labelAr: 'رؤية قائمة المواعيد والحجوزات', labelEn: 'View Appointments & Bookings' },
+            { key: 'edit_appointment', labelAr: 'تعديل وتحديث بيانات الموعد والحالة', labelEn: 'Update Appointment Details & Status' },
+            { key: 'delete_appointment', labelAr: 'حذف الموعد نهائياً', labelEn: 'Delete Appointment' },
+            { key: 'view_scheduling', labelAr: 'رؤية جدول الفنيين والجدولة', labelEn: 'View Technicians Scheduling' }
         ]
     },
     {
-        title: 'إدارة الكوبونات والدفع (Coupons & Billing)',
+        titleAr: 'الفواتير والكوبونات والمالية',
+        titleEn: 'Billing & Coupons',
         permissions: [
-            { key: 'view_billing', label: 'رؤية الفواتير والعمليات المالية' },
-            { key: 'manage_coupons', label: 'إضافة وتعديل كوبونات الخصم' }
+            { key: 'view_billing', labelAr: 'رؤية الفواتير والعمليات المالية', labelEn: 'View Billing & Financial Transactions' },
+            { key: 'manage_coupons', labelAr: 'إضافة وتعديل كوبونات الخصم', labelEn: 'Manage Discount Coupons' }
         ]
     },
     {
-        title: 'التواصل والتقييمات والذكاء الاصطناعي (Support & AI)',
+        titleAr: 'التواصل والتقييمات والذكاء الاصطناعي',
+        titleEn: 'Support, Feedback & AI',
         permissions: [
-            { key: 'manage_ai', label: 'الوصول لإعدادات وأوامر الذكاء الاصطناعي' },
-            { key: 'view_reviews', label: 'رؤية تقييمات وآراء العملاء' },
-            { key: 'view_contact_requests', label: 'رؤية طلبات التواصل والاستفسارات' }
+            { key: 'manage_ai', labelAr: 'الوصول لإعدادات وأوامر الذكاء الاصطناعي', labelEn: 'Manage AI Assistant Prompts & Settings' },
+            { key: 'view_reviews', labelAr: 'رؤية تقييمات وآراء العملاء', labelEn: 'View Customer Reviews' },
+            { key: 'view_contact_requests', labelAr: 'رؤية طلبات التواصل والاستفسارات', labelEn: 'View Contact Requests' }
         ]
     },
     {
-        title: 'إدارة الصلاحيات (Permissions System)',
+        titleAr: 'إدارة الصلاحيات (سوبر أدمن)',
+        titleEn: 'Permissions System (Super Admin)',
         permissions: [
-            { key: 'manage_permissions', label: 'الوصول لصفحة إدارة الصلاحيات والأدوار (سوبر أدمن)' }
+            { key: 'manage_permissions', labelAr: 'الوصول لصفحة إدارة الصلاحيات والأدوار', labelEn: 'Access Roles & Permissions Page' }
         ]
     }
 ];
@@ -101,6 +114,9 @@ const AdminPermissions = () => {
     const { user } = useAuth();
     const { toast } = useToast();
     const queryClient = useQueryClient();
+    const { language } = useLanguage();
+    const isArabic = language === 'ar';
+    const { isLight } = useAdminTheme();
 
     const isSuperAdmin = Boolean(
         user?.is_super_admin === 1 ||
@@ -151,12 +167,12 @@ const AdminPermissions = () => {
             return roleService.create(payload);
         },
         onSuccess: (res) => {
-            toast.success(res.message || 'تم حفظ الدور بنجاح');
+            toast.success(res.message || (isArabic ? 'تم حفظ الدور بنجاح' : 'Role saved successfully'));
             queryClient.invalidateQueries({ queryKey: ['rolesList'] });
             handleCloseRoleModal();
         },
         onError: (err) => {
-            toast.error(err.message || 'فشل حفظ الدور');
+            toast.error(err.message || (isArabic ? 'فشل حفظ الدور' : 'Failed to save role'));
         }
     });
 
@@ -164,11 +180,11 @@ const AdminPermissions = () => {
     const deleteRoleMutation = useMutation({
         mutationFn: (id) => roleService.remove(id),
         onSuccess: () => {
-            toast.success('تم حذف الدور بنجاح');
+            toast.success(isArabic ? 'تم حذف الدور بنجاح' : 'Role deleted successfully');
             queryClient.invalidateQueries({ queryKey: ['rolesList'] });
         },
         onError: (err) => {
-            toast.error(err.message || 'فشل حذف الدور');
+            toast.error(err.message || (isArabic ? 'فشل حذف الدور' : 'Failed to delete role'));
         }
     });
 
@@ -176,13 +192,13 @@ const AdminPermissions = () => {
     const saveUserPermissionsMutation = useMutation({
         mutationFn: (payload) => roleService.updateUserPermissions(selectedUser.id || selectedUser.uuid, payload),
         onSuccess: () => {
-            toast.success('تم حفظ صلاحيات المستخدم المخصصة بنجاح!');
+            toast.success(isArabic ? 'تم حفظ صلاحيات المستخدم المخصصة بنجاح!' : 'User custom permissions saved successfully!');
             queryClient.invalidateQueries({ queryKey: ['usersListForPermissions'] });
             queryClient.invalidateQueries({ queryKey: ['adminEmployees'] });
             setSelectedUser(prev => prev ? ({ ...prev, permissions: userPermissionsState, role_id: selectedRoleId }) : null);
         },
         onError: (err) => {
-            toast.error(err.message || 'فشل حفظ الصلاحيات');
+            toast.error(err.message || (isArabic ? 'فشل حفظ الصلاحيات' : 'Failed to save permissions'));
         }
     });
 
@@ -196,7 +212,6 @@ const AdminPermissions = () => {
             });
         } else {
             setEditingRole(null);
-            // Default initial view-only permissions
             const initPerms = {};
             PERMISSION_SECTIONS.forEach(sec => {
                 sec.permissions.forEach(p => {
@@ -241,7 +256,6 @@ const AdminPermissions = () => {
             } catch (e) { customPerms = {}; }
         }
 
-        // Merge role default permissions with custom user overrides so role permissions are checked by default
         const combinedPerms = { ...rolePerms, ...customPerms };
         setUserPermissionsState(combinedPerms);
     };
@@ -263,16 +277,19 @@ const AdminPermissions = () => {
         }));
     };
 
-    // If non super admin tries to access
     if (!isSuperAdmin) {
         return (
-            <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0">
+            <div className={`flex min-h-screen font-body relative pt-16 md:pt-0 ${isLight ? 'bg-[#F8FAFC] text-gray-900 admin-light-theme' : 'bg-[#000000] text-[#e5e2e1] admin-dark-theme'}`} dir={isArabic ? 'rtl' : 'ltr'}>
                 <AdminSidebar />
-                <main className="flex-1 flex items-center justify-center p-6 text-center" dir="rtl">
-                    <div className="max-w-md bg-white/[0.02] border border-white/10 rounded-3xl p-8 space-y-4 shadow-2xl">
+                <main className="flex-1 flex items-center justify-center p-6 text-center">
+                    <div className={`max-w-md rounded-3xl p-8 space-y-4 shadow-2xl border ${isLight ? 'bg-white border-gray-200' : 'bg-white/[0.02] border-white/10'}`}>
                         <span className="material-symbols-outlined text-5xl text-red-500 block">lock_person</span>
-                        <h2 className="text-xl font-bold text-white">غير مصرح بالوصول</h2>
-                        <p className="text-xs text-gray-400">صفحة إدارة الصلاحيات والأدوار مخصصة فقط لمدير النظام (السوبر أدمن Super Admin).</p>
+                        <h2 className={`text-xl font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>
+                            {isArabic ? 'غير مصرح بالوصول' : 'Access Denied'}
+                        </h2>
+                        <p className={`text-xs ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
+                            {isArabic ? 'صفحة إدارة الصلاحيات والأدوار مخصصة فقط لمدير النظام (السوبر أدمن Super Admin).' : 'Roles & Permissions is restricted to Super Admin.'}
+                        </p>
                     </div>
                 </main>
             </div>
@@ -280,47 +297,49 @@ const AdminPermissions = () => {
     }
 
     return (
-        <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0">
+        <div className={`flex min-h-screen font-body relative pt-16 md:pt-0 ${isLight ? 'bg-[#F8FAFC] text-gray-900 admin-light-theme' : 'bg-[#090A0F] text-white admin-dark-theme'}`} dir={isArabic ? 'rtl' : 'ltr'}>
             <AdminSidebar />
 
-            <main className="flex-1 overflow-y-auto p-6 lg:p-12 space-y-8" dir="rtl">
+            <main className="flex-1 overflow-y-auto p-6 lg:p-12 space-y-8">
                 {/* Header */}
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight flex items-center gap-3">
-                            <span className="material-symbols-outlined text-[#FF5C35] text-4xl">admin_panel_settings</span>
-                            صفحة إدارة الصلاحيات والأدوار (Roles & Permissions)
+                        <h1 className={`text-2xl md:text-3xl font-black tracking-tight flex items-center gap-3 ${isLight ? 'text-gray-900' : 'text-white'}`}>
+                            <span className="material-symbols-outlined text-[#8B5CF6] text-4xl">admin_panel_settings</span>
+                            {isArabic ? 'إدارة الصلاحيات والأدوار' : 'Roles & Permissions Management'}
                         </h1>
-                        <p className="text-xs text-gray-400 mt-1 font-bold">
-                            لوحة التحكم الإدارية للسوبر أدمن لإنشاء وتعديل الأدوار الصلاحية وتخصيص صلاحيات المستخدمين والعملاء.
+                        <p className={`text-xs mt-1 font-bold ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
+                            {isArabic 
+                                ? 'لوحة التحكم الإدارية لإنشاء وتعديل الأدوار الصلاحية وتخصيص صلاحيات المستخدمين والموظفين.' 
+                                : 'Administrative dashboard to create/modify roles and configure user permissions.'}
                         </p>
                     </div>
                 </header>
 
                 {/* Tab Selector */}
-                <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                <div className={`flex items-center gap-3 border-b pb-4 ${isLight ? 'border-gray-200' : 'border-white/10'}`}>
                     <button
                         type="button"
                         onClick={() => setActiveTab('roles')}
                         className={`px-6 py-3 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${activeTab === 'roles'
-                            ? 'bg-[#FF5C35] text-white shadow-[0_8px_20px_rgba(255,92,53,0.3)]'
-                            : 'bg-white/5 text-gray-400 hover:text-white'
+                            ? 'bg-[#5C24EB] text-white shadow-[0_8px_20px_rgba(92, 36, 235, 0.3)]'
+                            : isLight ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-white/5 text-gray-400 hover:text-white'
                             }`}
                     >
                         <span className="material-symbols-outlined text-base">badge</span>
-                        1. إدارة الأدوار المخصصة (Roles)
+                        {isArabic ? '1. إدارة الأدوار المخصصة (Roles)' : '1. Manage Custom Roles'}
                     </button>
 
                     <button
                         type="button"
                         onClick={() => setActiveTab('user_permissions')}
                         className={`px-6 py-3 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${activeTab === 'user_permissions'
-                            ? 'bg-[#FF5C35] text-white shadow-[0_8px_20px_rgba(255,92,53,0.3)]'
-                            : 'bg-white/5 text-gray-400 hover:text-white'
+                            ? 'bg-[#5C24EB] text-white shadow-[0_8px_20px_rgba(92, 36, 235, 0.3)]'
+                            : isLight ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-white/5 text-gray-400 hover:text-white'
                             }`}
                     >
                         <span className="material-symbols-outlined text-base">person_search</span>
-                        2. تخصيص صلاحيات عميل / مستخدم محدد
+                        {isArabic ? '2. تخصيص صلاحيات موظف / مستخدم محدد' : '2. Customize User Permissions'}
                     </button>
                 </div>
 
@@ -328,59 +347,69 @@ const AdminPermissions = () => {
                 {activeTab === 'roles' && (
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-bold text-white">قائمة الأدوار المتاحة للنظام ({rolesList.length}):</h2>
+                            <h2 className={`text-lg font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>
+                                {isArabic ? `قائمة الأدوار المتاحة للنظام (${rolesList.length}):` : `Available Roles (${rolesList.length}):`}
+                            </h2>
                             <button
                                 type="button"
                                 onClick={() => handleOpenRoleModal(null)}
-                                className="px-5 py-2.5 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white rounded-xl text-xs font-bold shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                                className="px-5 py-2.5 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white rounded-xl text-xs font-bold shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                             >
                                 <span className="material-symbols-outlined text-base">add_moderator</span>
-                                إضافة دور جديد (Role)
+                                {isArabic ? 'إضافة دور جديد' : 'Add New Role'}
                             </button>
                         </div>
 
                         {isLoadingRoles ? (
                             <div className="flex justify-center py-12">
-                                <div className="w-8 h-8 border-4 border-[#FF5C35] border-t-transparent rounded-full animate-spin"></div>
+                                <div className="w-8 h-8 border-4 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></div>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {rolesList.map((r) => {
                                     const permCount = Object.values(r.permissions || {}).filter(Boolean).length;
+                                    const totalPerms = PERMISSION_SECTIONS.reduce((sum, s) => sum + s.permissions.length, 0);
+
                                     return (
-                                        <div key={r.id || r.uuid} className="bg-white/[0.03] border border-white/5 rounded-3xl p-6 space-y-4 shadow-xl hover:border-[#FF5C35]/30 transition-all flex flex-col justify-between">
+                                        <div key={r.id || r.uuid} className={`rounded-3xl p-6 space-y-4 shadow-xl border transition-all flex flex-col justify-between ${
+                                            isLight ? 'bg-white border-gray-200 hover:border-[#5C24EB]/50' : 'bg-white/[0.03] border-white/5 hover:border-[#5C24EB]/30'
+                                        }`}>
                                             <div className="space-y-2">
                                                 <div className="flex items-center justify-between">
-                                                    <h3 className="text-lg font-black text-white">{r.name}</h3>
-                                                    <span className="text-[10px] font-bold text-[#FF5C35] bg-[#FF5C35]/10 px-2.5 py-0.5 rounded-full font-mono">
+                                                    <h3 className={`text-lg font-black ${isLight ? 'text-gray-900' : 'text-white'}`}>{r.name}</h3>
+                                                    <span className="text-[10px] font-bold text-[#8B5CF6] bg-[#5C24EB]/10 px-2.5 py-0.5 rounded-full font-mono">
                                                         {r.slug}
                                                     </span>
                                                 </div>
-                                                <p className="text-xs text-gray-400 leading-relaxed font-bold">{r.description || 'لا يوجد وصف محدد'}</p>
-                                                <div className="pt-2 text-[11px] text-emerald-400 font-bold">
-                                                    تم تفعيل {permCount} صلاحيات من أصل {PERMISSION_SECTIONS.reduce((sum, s) => sum + s.permissions.length, 0)}
+                                                <p className={`text-xs leading-relaxed font-bold ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
+                                                    {r.description || (isArabic ? 'لا يوجد وصف محدد' : 'No description')}
+                                                </p>
+                                                <div className="pt-2 text-[11px] text-emerald-600 font-bold">
+                                                    {isArabic ? `تم تفعيل ${permCount} صلاحيات من أصل ${totalPerms}` : `${permCount} of ${totalPerms} permissions enabled`}
                                                 </div>
                                             </div>
 
-                                            <div className="pt-4 border-t border-white/5 flex items-center justify-end gap-2">
+                                            <div className={`pt-4 border-t flex items-center justify-end gap-2 ${isLight ? 'border-gray-100' : 'border-white/5'}`}>
                                                 <button
                                                     type="button"
                                                     onClick={() => handleOpenRoleModal(r)}
-                                                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                                                        isLight ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white'
+                                                    }`}
                                                 >
                                                     <span className="material-symbols-outlined text-sm">edit</span>
-                                                    تعديل الصلاحيات
+                                                    {isArabic ? 'تعديل الصلاحيات' : 'Edit'}
                                                 </button>
 
                                                 <button
                                                     type="button"
                                                     onClick={() => {
-                                                        if (window.confirm(`هل أنت تأكد من حذف الدور (${r.name})؟`)) {
+                                                        if (window.confirm(isArabic ? `هل أنت متأكد من حذف الدور (${r.name})؟` : `Delete role (${r.name})?`)) {
                                                             deleteRoleMutation.mutate(r.id || r.uuid);
                                                         }
                                                     }}
-                                                    className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition-all cursor-pointer"
-                                                    title="حذف الدور"
+                                                    className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl transition-all cursor-pointer"
+                                                    title={isArabic ? 'حذف الدور' : 'Delete Role'}
                                                 >
                                                     <span className="material-symbols-outlined text-sm">delete</span>
                                                 </button>
@@ -396,35 +425,41 @@ const AdminPermissions = () => {
                 {/* TAB 2: Individual User Permission Customization */}
                 {activeTab === 'user_permissions' && (
                     <div className="space-y-6">
-                        <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 sm:p-8 space-y-4">
-                            <h2 className="text-base font-bold text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[#FF5C35]">person_search</span>
-                                ابحث عن عميل أو مستخدم لتخصيص صلاحياته:
+                        <div className={`rounded-3xl p-6 sm:p-8 space-y-4 border ${isLight ? 'bg-white border-gray-200 shadow-sm' : 'bg-white/[0.02] border-white/5'}`}>
+                            <h2 className={`text-base font-bold flex items-center gap-2 ${isLight ? 'text-gray-900' : 'text-white'}`}>
+                                <span className="material-symbols-outlined text-[#8B5CF6]">person_search</span>
+                                {isArabic ? 'ابحث عن موظف أو مستخدم لتخصيص صلاحياته:' : 'Search employee or user to customize permissions:'}
                             </h2>
 
                             <input
                                 type="text"
-                                placeholder="ابحث بالاسم أو رقم الجوال..."
+                                placeholder={isArabic ? 'ابحث بالاسم أو رقم الجوال...' : 'Search by name or phone...'}
                                 value={userSearch}
                                 onChange={(e) => setUserSearch(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-[#FF5C35]"
+                                className={`w-full rounded-2xl px-4 py-3 text-xs font-bold outline-none border transition-colors ${
+                                    isLight ? 'bg-white border-gray-300 text-gray-900 focus:border-[#5C24EB]' : 'bg-white/5 border-white/10 text-white focus:border-[#5C24EB]'
+                                }`}
                             />
 
                             {!userSearch.trim() && (
-                                <div className="p-8 text-center bg-white/[0.01] border border-dashed border-white/10 rounded-2xl space-y-2">
-                                    <span className="material-symbols-outlined text-3xl text-gray-500 block">search</span>
-                                    <p className="text-xs text-gray-400 font-bold">اكتب اسم الشخص أو رقم الجوال في مربع البحث لعرض النتائج واختياره لتعديل صلاحياته.</p>
+                                <div className={`p-8 text-center border border-dashed rounded-2xl space-y-2 ${isLight ? 'bg-gray-50 border-gray-300' : 'bg-white/[0.01] border-white/10'}`}>
+                                    <span className="material-symbols-outlined text-3xl text-gray-400 block">search</span>
+                                    <p className={`text-xs font-bold ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
+                                        {isArabic ? 'اكتب اسم الشخص أو رقم الجوال في مربع البحث لعرض النتائج واختياره لتعديل صلاحياته.' : 'Type a name or phone number in search box to select user.'}
+                                    </p>
                                 </div>
                             )}
 
                             {Boolean(userSearch.trim()) && isLoadingUsers && (
                                 <div className="flex justify-center py-6">
-                                    <div className="w-6 h-6 border-2 border-[#FF5C35] border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="w-6 h-6 border-2 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                             )}
 
                             {Boolean(userSearch.trim()) && !isLoadingUsers && usersList.length === 0 && (
-                                <p className="text-xs text-amber-400 font-bold p-4 bg-amber-500/10 rounded-xl">لم يتم العثور على مستخدمين يطابقون كلمة البحث.</p>
+                                <p className="text-xs text-amber-500 font-bold p-4 bg-amber-500/10 rounded-xl">
+                                    {isArabic ? 'لم يتم العثور على مستخدمين يطابقون كلمة البحث.' : 'No users match your query.'}
+                                </p>
                             )}
 
                             {Boolean(userSearch.trim()) && usersList.length > 0 && (
@@ -434,15 +469,15 @@ const AdminPermissions = () => {
                                             key={u.id || u.uuid}
                                             onClick={() => handleSelectUserForEdit(u)}
                                             className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between text-xs font-bold ${selectedUser?.id === u.id || selectedUser?.uuid === u.uuid
-                                                ? 'bg-[#FF5C35]/20 border-[#FF5C35] text-white shadow-lg'
-                                                : 'bg-white/[0.02] border-white/5 text-gray-300 hover:bg-white/5'
+                                                ? 'bg-[#5C24EB]/20 border-[#5C24EB] text-white shadow-lg'
+                                                : isLight ? 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100' : 'bg-white/[0.02] border-white/5 text-gray-300 hover:bg-white/5'
                                                 }`}
                                         >
                                             <div>
-                                                <div className="text-white font-extrabold">{u.full_name}</div>
+                                                <div className={`font-extrabold ${selectedUser?.id === u.id ? 'text-[#8B5CF6]' : isLight ? 'text-gray-900' : 'text-white'}`}>{u.full_name}</div>
                                                 <div className="text-gray-400 font-mono text-[11px]">{u.phone}</div>
                                             </div>
-                                            <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-gray-400 uppercase">
+                                            <span className={`text-[10px] px-2 py-0.5 rounded uppercase ${isLight ? 'bg-gray-200 text-gray-700' : 'bg-white/10 text-gray-400'}`}>
                                                 {u.role || 'client'}
                                             </span>
                                         </div>
@@ -452,23 +487,33 @@ const AdminPermissions = () => {
                         </div>
 
                         {selectedUser && (
-                            <div className="bg-white/[0.02] border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
-                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-white/10 pb-4 gap-4">
+                            <div className={`rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl border ${isLight ? 'bg-white border-gray-200' : 'bg-white/[0.02] border-white/10'}`}>
+                                <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-4 gap-4 ${isLight ? 'border-gray-200' : 'border-white/10'}`}>
                                     <div>
-                                        <h3 className="text-xl font-extrabold text-white">تعديل صلاحيات العميل: {selectedUser.full_name}</h3>
-                                        <p className="text-xs text-gray-400 font-mono mt-0.5">رقم الهاتف: {selectedUser.phone}</p>
+                                        <h3 className={`text-xl font-extrabold ${isLight ? 'text-gray-900' : 'text-white'}`}>
+                                            {isArabic ? `تعديل صلاحيات المستخدم: ${selectedUser.full_name}` : `Edit Permissions: ${selectedUser.full_name}`}
+                                        </h3>
+                                        <p className="text-xs text-gray-400 font-mono mt-0.5">
+                                            {isArabic ? 'رقم الهاتف:' : 'Phone:'} {selectedUser.phone}
+                                        </p>
                                     </div>
 
                                     <div className="flex items-center gap-3">
-                                        <label className="text-xs font-bold text-gray-300">اختر الدور (Role):</label>
+                                        <label className={`text-xs font-bold ${isLight ? 'text-gray-700' : 'text-gray-300'}`}>
+                                            {isArabic ? 'اختر الدور (Role):' : 'Select Role:'}
+                                        </label>
                                         <select
                                             value={selectedRoleId}
                                             onChange={(e) => handleRoleSelectChange(e.target.value)}
-                                            className="bg-[#1a1a1a] border border-white/10 rounded-xl px-3 py-2 text-white text-xs font-bold outline-none focus:border-[#FF5C35]"
+                                            className={`rounded-xl px-3 py-2 text-xs font-bold outline-none border cursor-pointer ${
+                                                isLight ? 'bg-white border-gray-300 text-gray-900 focus:border-[#5C24EB]' : 'bg-[#1a1a1a] border-white/10 text-white focus:border-[#5C24EB]'
+                                            }`}
                                         >
-                                            <option value="">بدون دور مخصص (عميل عادي)</option>
+                                            <option value="" className={isLight ? 'bg-white text-gray-900' : 'bg-[#0f0f0f] text-white'}>
+                                                {isArabic ? 'بدون دور مخصص' : 'No Custom Role'}
+                                            </option>
                                             {rolesList.map(r => (
-                                                <option key={r.id} value={r.id}>{r.name}</option>
+                                                <option key={r.id} value={r.id} className={isLight ? 'bg-white text-gray-900' : 'bg-[#0f0f0f] text-white'}>{r.name}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -477,10 +522,10 @@ const AdminPermissions = () => {
                                 {/* Granular Checkbox Matrix */}
                                 <div className="space-y-6">
                                     {PERMISSION_SECTIONS.map((sec, secIdx) => (
-                                        <div key={secIdx} className="space-y-3 bg-white/[0.02] p-4 rounded-2xl border border-white/5">
-                                            <h4 className="text-xs font-bold text-[#FF5C35] flex items-center gap-2 border-b border-white/5 pb-2">
+                                        <div key={secIdx} className={`p-4 rounded-2xl border space-y-3 ${isLight ? 'bg-gray-50 border-gray-200' : 'bg-white/[0.02] border-white/5'}`}>
+                                            <h4 className="text-xs font-bold text-[#8B5CF6] flex items-center gap-2 border-b pb-2">
                                                 <span className="material-symbols-outlined text-sm">folder_open</span>
-                                                {sec.title}
+                                                {isArabic ? sec.titleAr : sec.titleEn}
                                             </h4>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold">
                                                 {sec.permissions.map((p) => {
@@ -488,16 +533,16 @@ const AdminPermissions = () => {
                                                     return (
                                                         <label
                                                             key={p.key}
-                                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${isChecked ? 'bg-[#FF5C35]/15 border-[#FF5C35]/40 text-white' : 'bg-white/[0.02] border-white/5 text-gray-400'
+                                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${isChecked ? 'bg-[#5C24EB]/15 border-[#5C24EB]/40 text-[#8B5CF6]' : isLight ? 'bg-white border-gray-200 text-gray-600' : 'bg-white/[0.02] border-white/5 text-gray-400'
                                                                 }`}
                                                         >
                                                             <input
                                                                 type="checkbox"
                                                                 checked={isChecked}
                                                                 onChange={() => handleToggleUserPermission(p.key)}
-                                                                className="w-4 h-4 accent-[#FF5C35] rounded cursor-pointer"
+                                                                className="w-4 h-4 accent-[#5C24EB] rounded cursor-pointer"
                                                             />
-                                                            <span>{p.label}</span>
+                                                            <span>{isArabic ? p.labelAr : p.labelEn}</span>
                                                         </label>
                                                     );
                                                 })}
@@ -506,7 +551,7 @@ const AdminPermissions = () => {
                                     ))}
                                 </div>
 
-                                <div className="pt-4 border-t border-white/10 flex justify-end">
+                                <div className={`pt-4 border-t flex justify-end ${isLight ? 'border-gray-200' : 'border-white/10'}`}>
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -516,34 +561,41 @@ const AdminPermissions = () => {
                                             });
                                         }}
                                         disabled={saveUserPermissionsMutation.isPending}
-                                        className="px-6 py-3 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                                        className="px-6 py-3 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                                     >
                                         {saveUserPermissionsMutation.isPending && <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
-                                        حفظ صلاحيات العميل المخصصة
+                                        {isArabic ? 'حفظ صلاحيات المستخدم المخصصة' : 'Save Custom Permissions'}
                                     </button>
                                 </div>
                             </div>
                         )}
                     </div>
                 )}
-
             </main>
 
             {/* Role Add/Edit Modal */}
             {isRoleModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start justify-center pt-20 sm:pt-24 pb-6 px-4 sm:px-6 overflow-y-auto">
-                    <div className="bg-[#0f0f0f] border border-white/10 rounded-3xl max-w-3xl w-full flex flex-col max-h-[calc(100vh-7rem)] relative shadow-2xl overflow-hidden my-auto" dir="rtl">
+                <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-start justify-center pt-20 sm:pt-24 pb-6 px-4 sm:px-6 overflow-y-auto" dir={isArabic ? 'rtl' : 'ltr'}>
+                    <div className={`rounded-3xl max-w-3xl w-full flex flex-col max-h-[calc(100vh-7rem)] relative shadow-2xl overflow-hidden my-auto border ${
+                        isLight ? 'bg-white border-gray-200 text-gray-900' : 'bg-[#0f0f0f] border-white/10 text-white'
+                    }`}>
                         
                         {/* Modal Header */}
-                        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4 shrink-0 bg-[#0f0f0f] z-10">
-                            <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[#FF5C35]">badge</span>
-                                {editingRole ? `تعديل الدور: ${editingRole.name}` : 'إضافة دور جديد في النظام (Role)'}
+                        <div className={`flex items-center justify-between border-b px-6 py-4 shrink-0 z-10 ${
+                            isLight ? 'border-gray-200 bg-white' : 'border-white/10 bg-[#0f0f0f]'
+                        }`}>
+                            <h3 className={`text-lg font-extrabold flex items-center gap-2 ${isLight ? 'text-gray-900' : 'text-white'}`}>
+                                <span className="material-symbols-outlined text-[#8B5CF6]">badge</span>
+                                {editingRole 
+                                    ? (isArabic ? `تعديل الدور: ${editingRole.name}` : `Edit Role: ${editingRole.name}`)
+                                    : (isArabic ? 'إضافة دور جديد في النظام (Role)' : 'Add New Role')}
                             </h3>
                             <button
                                 type="button"
                                 onClick={handleCloseRoleModal}
-                                className="p-1.5 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all cursor-pointer"
+                                className={`p-1.5 rounded-xl transition-all cursor-pointer ${
+                                    isLight ? 'bg-gray-100 hover:bg-gray-200 text-gray-600' : 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white'
+                                }`}
                             >
                                 <span className="material-symbols-outlined text-sm">close</span>
                             </button>
@@ -554,7 +606,7 @@ const AdminPermissions = () => {
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 if (!roleForm.name) {
-                                    toast.warning('اسم الدور مطلوب');
+                                    toast.warning(isArabic ? 'اسم الدور مطلوب' : 'Role name is required');
                                     return;
                                 }
                                 saveRoleMutation.mutate(roleForm);
@@ -563,54 +615,64 @@ const AdminPermissions = () => {
                         >
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-gray-300 mb-1">اسم الدور (مثال: مدير فرع / مشرف فرع) *</label>
+                                    <label className={`block mb-1 ${isLight ? 'text-gray-700' : 'text-gray-300'}`}>
+                                        {isArabic ? 'اسم الدور (مثال: مدير فرع / مشرف فرع) *' : 'Role Name (e.g. Branch Manager) *'}
+                                    </label>
                                     <input
                                         type="text"
                                         required
-                                        placeholder="مثال: مدير فرع"
+                                        placeholder={isArabic ? 'مثال: مدير فرع' : 'e.g. Branch Supervisor'}
                                         value={roleForm.name}
                                         onChange={(e) => setRoleForm(prev => ({ ...prev, name: e.target.value }))}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#FF5C35]"
+                                        className={`w-full rounded-xl px-4 py-2.5 outline-none border transition-colors ${
+                                            isLight ? 'bg-white border-gray-300 text-gray-900 focus:border-[#5C24EB]' : 'bg-white/5 border-white/10 text-white focus:border-[#5C24EB]'
+                                        }`}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-gray-300 mb-1">وصف مختصر للدور</label>
+                                    <label className={`block mb-1 ${isLight ? 'text-gray-700' : 'text-gray-300'}`}>
+                                        {isArabic ? 'وصف مختصر للدور' : 'Role Description'}
+                                    </label>
                                     <input
                                         type="text"
-                                        placeholder="صلاحيات العرض فقط بدون تعديل..."
+                                        placeholder={isArabic ? 'صلاحيات العرض فقط بدون تعديل...' : 'View only permissions...'}
                                         value={roleForm.description}
                                         onChange={(e) => setRoleForm(prev => ({ ...prev, description: e.target.value }))}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white outline-none focus:border-[#FF5C35]"
+                                        className={`w-full rounded-xl px-4 py-2.5 outline-none border transition-colors ${
+                                            isLight ? 'bg-white border-gray-300 text-gray-900 focus:border-[#5C24EB]' : 'bg-white/5 border-white/10 text-white focus:border-[#5C24EB]'
+                                        }`}
                                     />
                                 </div>
                             </div>
 
-                            {/* Permissions Checkbox Grid grouped by Section */}
+                            {/* Permissions Checkbox Grid */}
                             <div className="space-y-5">
-                                <h4 className="text-sm font-black text-white flex items-center gap-2 border-b border-white/10 pb-2">
-                                    <span className="material-symbols-outlined text-[#FF5C35]">checklist</span>
-                                    جدول جميع الصلاحيات والميزات في الموقع (علم بجانب الصلاحية لمنحها):
+                                <h4 className={`text-sm font-black flex items-center gap-2 border-b pb-2 ${isLight ? 'text-gray-900 border-gray-200' : 'text-white border-white/10'}`}>
+                                    <span className="material-symbols-outlined text-[#8B5CF6]">checklist</span>
+                                    {isArabic ? 'جدول جميع الصلاحيات في النظام:' : 'System Permissions Matrix:'}
                                 </h4>
 
                                 {PERMISSION_SECTIONS.map((sec, secIdx) => (
-                                    <div key={secIdx} className="space-y-3 bg-white/[0.02] p-4 rounded-2xl border border-white/5">
-                                        <h5 className="text-xs font-bold text-[#FF5C35]">{sec.title}</h5>
+                                    <div key={secIdx} className={`p-4 rounded-2xl border space-y-3 ${isLight ? 'bg-gray-50 border-gray-200' : 'bg-white/[0.02] border-white/5'}`}>
+                                        <h5 className="text-xs font-bold text-[#8B5CF6]">
+                                            {isArabic ? sec.titleAr : sec.titleEn}
+                                        </h5>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                                             {sec.permissions.map((p) => {
                                                 const isChecked = Boolean(roleForm.permissions[p.key]);
                                                 return (
                                                     <label
                                                         key={p.key}
-                                                        className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${isChecked ? 'bg-[#FF5C35]/15 border-[#FF5C35]/40 text-white' : 'bg-white/[0.02] border-white/5 text-gray-400'
+                                                        className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${isChecked ? 'bg-[#5C24EB]/15 border-[#5C24EB]/40 text-[#8B5CF6]' : isLight ? 'bg-white border-gray-200 text-gray-600' : 'bg-white/[0.02] border-white/5 text-gray-400'
                                                             }`}
                                                     >
                                                         <input
                                                             type="checkbox"
                                                             checked={isChecked}
                                                             onChange={() => handleTogglePermission(p.key)}
-                                                            className="w-4 h-4 accent-[#FF5C35] rounded cursor-pointer"
+                                                            className="w-4 h-4 accent-[#5C24EB] rounded cursor-pointer"
                                                         />
-                                                        <span>{p.label}</span>
+                                                        <span>{isArabic ? p.labelAr : p.labelEn}</span>
                                                     </label>
                                                 );
                                             })}
@@ -620,29 +682,31 @@ const AdminPermissions = () => {
                             </div>
 
                             {/* Modal Footer */}
-                            <div className="pt-4 border-t border-white/10 flex justify-end gap-2 sticky bottom-0 bg-[#0f0f0f] pb-2 z-10">
+                            <div className={`pt-4 border-t flex justify-end gap-2 sticky bottom-0 pb-2 z-10 ${
+                                isLight ? 'bg-white border-gray-200' : 'bg-[#0f0f0f] border-white/10'
+                            }`}>
                                 <button
                                     type="button"
                                     onClick={handleCloseRoleModal}
-                                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl cursor-pointer"
+                                    className={`px-4 py-2 rounded-xl cursor-pointer ${
+                                        isLight ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' : 'bg-white/5 hover:bg-white/10 text-gray-300'
+                                    }`}
                                 >
-                                    إلغاء
+                                    {isArabic ? 'إلغاء' : 'Cancel'}
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={saveRoleMutation.isPending}
-                                    className="px-6 py-2.5 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                                    className="px-6 py-2.5 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                                 >
                                     {saveRoleMutation.isPending && <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
-                                    حفظ الدور والتغييرات
+                                    {isArabic ? 'حفظ الدور والتغييرات' : 'Save Role'}
                                 </button>
                             </div>
-
                         </form>
                     </div>
                 </div>
             )}
-
         </div>
     );
 };

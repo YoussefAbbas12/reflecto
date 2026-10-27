@@ -10,29 +10,41 @@ import FloatingContactWidget from './src/components/FloatingContactWidget';
 import FloatingAiAssistant from './src/components/FloatingAiAssistant';
 import { getSubdomainPortal } from './src/utils/portal';
 import { useAuth } from './src/contexts/AuthContext';
+import { useAdminTheme } from './src/contexts/AdminThemeContext';
 
 const App = () => {
   useLanguage();
   const location = useLocation();
   const { user } = useAuth();
+  const { isLight } = useAdminTheme();
 
   const portal = useMemo(() => getSubdomainPortal(), []);
   const pathname = location.pathname.toLowerCase();
 
-  const isAdminPortal = portal === 'admin' || pathname.startsWith('/admin');
-  const isTechPortal = portal === 'technical' || pathname.startsWith('/technical') || pathname.startsWith('/tech');
-  const isAdminLoginPage = pathname === '/admin/login';
+  const isAdminPortal = portal === 'admin';
+  const isTechPortal = portal === 'technical';
+  const isAdminLoginPage = pathname === '/admin/login' || pathname === '/login';
   const isTechLoginPage = pathname === '/technical/login' || pathname === '/tech/login';
+  const isAnyStaffLoginPage = pathname === '/admin/login' || pathname === '/technical/login' || pathname === '/tech/login';
+  const isClientLoginPage = portal === 'client' && pathname === '/login';
+
+  const isAboutSeedaPage = pathname === '/about-seeda' || pathname === '/seeda' || pathname === '/admin/about-seeda';
 
   const isStaffUser = (u) => u && (u.role === 'admin' || u.role === 'super_admin' || Boolean(u.is_super_admin) || Boolean(u.role_id) || (u.role && u.role !== 'client' && u.role !== 'technician'));
   const isTechUser = (u) => u && (u.role === 'technician' || isStaffUser(u));
 
   // Strict Subdomain Portal Routing Isolation:
-  // 1. ADMIN PORTAL (admin.reflecto.com.sa)
+  // 1. ADMIN PORTAL (admin.reflecto.com.sa / admin.localhost)
   if (portal === 'admin') {
     if (!user) {
-      // If not authenticated, ONLY /admin/login is allowed. Any other route redirects to /admin/login.
-      if (pathname !== '/admin/login') {
+      // If not authenticated, allow login and public about-seeda info page
+      const isPublicAdminRoute = 
+        pathname === '/admin/login' || 
+        pathname === '/login' || 
+        pathname === '/' || 
+        isAboutSeedaPage;
+
+      if (!isPublicAdminRoute) {
         return <Navigate to="/admin/login" replace />;
       }
     } else {
@@ -40,59 +52,92 @@ const App = () => {
       if (!isStaffUser(user)) {
         return <Navigate to="/admin/login" replace />;
       }
-      // If already logged in as admin and visiting login page or any non-admin route, redirect to /admin
-      if (pathname === '/admin/login' || pathname === '/' || pathname === '/login' || !pathname.startsWith('/admin')) {
+      // If already logged in as admin and visiting login page or home, redirect to /admin
+      if (pathname === '/admin/login' || pathname === '/' || pathname === '/login') {
         return <Navigate to="/admin" replace />;
       }
     }
   }
 
-  // 2. TECHNICAL PORTAL (technical.reflecto.com.sa or tech.reflecto.com.sa)
+  // 2. TECHNICAL PORTAL (technical.reflecto.com.sa / tech.reflecto.com.sa)
   if (portal === 'technical') {
     if (!user) {
       // If not authenticated, ONLY tech login is allowed
-      if (pathname !== '/technical/login' && pathname !== '/tech/login') {
+      if (pathname !== '/technical/login' && pathname !== '/tech/login' && pathname !== '/login' && pathname !== '/') {
         return <Navigate to="/technical/login" replace />;
       }
     } else {
       if (!isTechUser(user)) {
         return <Navigate to="/technical/login" replace />;
       }
-      // If already logged in and visiting login or any non-tech route, redirect to /technician
-      if (pathname === '/technical/login' || pathname === '/tech/login' || pathname === '/' || pathname === '/login' || (!pathname.startsWith('/technician') && !pathname.startsWith('/tech'))) {
+      // If already logged in and visiting login or root, redirect to /technician
+      if (pathname === '/technical/login' || pathname === '/tech/login' || pathname === '/' || pathname === '/login') {
         return <Navigate to="/technician" replace />;
       }
     }
   }
 
+  // 3. CLIENT PORTAL (reflecto.com.sa / www.reflecto.com.sa)
+  // Strictly isolate: NEVER allow admin or technician pages/logins on the public customer domain!
+  if (portal === 'client') {
+    if (
+      pathname.startsWith('/admin') ||
+      pathname.startsWith('/technical') ||
+      pathname.startsWith('/tech')
+    ) {
+      if (isAnyStaffLoginPage) {
+        return (
+          <div className="min-h-screen flex flex-col bg-[#07080a] text-white">
+            <main className="flex-grow pt-0">
+              <AppRoutes />
+            </main>
+          </div>
+        );
+      }
+      return (
+        <div className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
+          <Navbar />
+          <main className="flex-grow pt-20">
+            <AppRoutes />
+          </main>
+          <Footer />
+        </div>
+      );
+    }
+  }
+
   // Determine whether to hide the public navbar & footer
-  const hidePublicNavbarAndFooter = isAdminPortal || isTechPortal;
+  const hidePublicNavbarAndFooter = isAdminPortal || isTechPortal || isAnyStaffLoginPage || isClientLoginPage;
 
   return (
-    <div className={`min-h-screen flex flex-col bg-[#0a0a0a] text-white overflow-x-hidden ${isAdminPortal ? 'pb-0' : ''}`}>
+    <div className={`min-h-screen flex flex-col overflow-x-hidden transition-colors duration-300 ${isAdminPortal ? 'pb-0' : ''} ${
+      isAdminPortal
+        ? (isLight ? 'bg-[#F8FAFC] text-gray-900 admin-light-theme' : 'bg-[#0a0a0a] text-white admin-dark-theme')
+        : 'bg-[#0a0a0a] text-white'
+    }`}>
       <ToastContainer />
 
-      {/* Navigation Header Selection */}
-      {isAdminPortal ? (
-        // Show AdminNavbar only when logged in or inside admin area (not on admin login page)
-        !isAdminLoginPage && <AdminNavbar />
+      {/* Navigation Header Selection - strictly hidden on login pages */}
+      {isAnyStaffLoginPage || isClientLoginPage ? null : isAdminPortal ? (
+        // Show AdminNavbar only when logged in or inside admin area (not on admin login page or about-seeda)
+        !isAboutSeedaPage && <AdminNavbar />
       ) : isTechPortal ? (
         // Tech portal has a clean workspace header (no public navbar)
         null
       ) : (
-        // Main / Client Portal
-        <Navbar />
+        // Main / Client Portal — hide Navbar on about-seeda (standalone page)
+        !isAboutSeedaPage && <Navbar />
       )}
 
-      <main className={`flex-grow ${isAdminLoginPage || isTechLoginPage ? 'pt-0' : 'pt-20'} ${isAdminPortal && !isAdminLoginPage ? 'lg:pl-72' : ''}`}>
+      <main className={`flex-grow ${isAnyStaffLoginPage || isClientLoginPage || isAboutSeedaPage ? 'pt-0' : 'pt-20'} ${isAdminPortal && !isAnyStaffLoginPage && !isAboutSeedaPage ? 'lg:pl-72' : ''}`}>
         <AppRoutes />
       </main>
 
-      {/* Public Footer */}
-      {!hidePublicNavbarAndFooter && <Footer />}
+      {/* Public Footer — hidden on login pages and about-seeda */}
+      {!hidePublicNavbarAndFooter && !isAboutSeedaPage && <Footer />}
 
-      {/* Floating customer widgets — hidden on admin and technician portals */}
-      {!hidePublicNavbarAndFooter && (
+      {/* Floating customer widgets — hidden on admin/technician portals, login pages and about-seeda */}
+      {!hidePublicNavbarAndFooter && !isAboutSeedaPage && (
         <>
           <FloatingContactWidget />
           <FloatingAiAssistant />

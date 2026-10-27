@@ -18,6 +18,7 @@ const AddEmployee = React.memo(() => {
     fullName: '',
     phoneNumber: '',
     emailAddress: '',
+    employeeCode: '',
     role: 'technician',
     branch_name: 'جدة - الصفا',
     password: '',
@@ -65,6 +66,7 @@ const AddEmployee = React.memo(() => {
       full_name: formData.fullName,
       phone: formData.phoneNumber,
       email: formData.emailAddress || undefined,
+      employee_code: formData.employeeCode?.trim() || undefined,
       password: formData.password || undefined,
       role: formData.role,
       role_id: matchedRole ? matchedRole.id : undefined,
@@ -94,7 +96,7 @@ const AddEmployee = React.memo(() => {
           <span className="material-symbols-outlined text-6xl text-red-500">lock</span>
           <h1 className="text-2xl font-bold text-white">عفواً، لا تملك صلاحية إضافة موظف جديد</h1>
           <p className="text-gray-400 text-sm">تواصل مع السوبر أدمن للحصول على صلاحية (create_employee)</p>
-          <button onClick={() => navigate('/admin/employees')} className="px-6 py-2 bg-[#FF5C35] text-white rounded-xl font-bold text-xs cursor-pointer">
+          <button onClick={() => navigate('/admin/employees')} className="px-6 py-2 bg-[#5C24EB] text-white rounded-xl font-bold text-xs cursor-pointer">
             العودة لإدارة الموظفين
           </button>
         </main>
@@ -103,7 +105,7 @@ const AddEmployee = React.memo(() => {
   }
 
   return (
-    <div className="flex bg-[#050505] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0 selection:bg-[#FF5C35]/30">
+    <div className="flex bg-[#050505] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0 selection:bg-[#5C24EB]/30">
       
       <AdminSidebar />
       
@@ -116,10 +118,10 @@ const AddEmployee = React.memo(() => {
               <nav className="flex items-center gap-2 text-[11px] font-bold tracking-widest text-gray-500 mb-2">
                 <button type="button" onClick={handleCancel} className="hover:text-gray-300 transition-colors">إدارة الموظفين</button>
                 <span>/</span>
-                <span className="text-[#FF5C35]">إضافة موظف جديد</span>
+                <span className="text-[#8B5CF6]">إضافة موظف جديد</span>
               </nav>
               <h1 id="add-employee-heading" className="text-3xl md:text-4xl font-display font-extrabold text-white flex items-center gap-3">
-                <span className="material-symbols-outlined text-3xl text-[#FF5C35]">badge</span>
+                <span className="material-symbols-outlined text-3xl text-[#8B5CF6]">badge</span>
                 تسجيل موظف أو فني جديد
               </h1>
               <p className="text-xs text-gray-400 font-bold mt-1">
@@ -145,13 +147,13 @@ const AddEmployee = React.memo(() => {
               {/* Personal & Account Info */}
               <section className="bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl p-6 md:p-8 space-y-6 relative overflow-hidden shadow-2xl">
                 <div className="flex items-center gap-3 text-sm font-bold text-white border-b border-white/10 pb-4">
-                  <span className="w-8 h-8 rounded-xl bg-[#FF5C35]/10 flex items-center justify-center text-[#FF5C35] material-symbols-outlined text-base">person</span>
+                  <span className="w-8 h-8 rounded-xl bg-[#5C24EB]/10 flex items-center justify-center text-[#8B5CF6] material-symbols-outlined text-base">person</span>
                   البيانات الأساسية والحساب
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold text-gray-400">الاسم الكامل للموظف <span className="text-[#FF5C35]">*</span></label>
+                    <label className="block text-xs font-bold text-gray-400">الاسم الكامل للموظف <span className="text-[#8B5CF6]">*</span></label>
                     <input 
                       type="text"
                       name="fullName"
@@ -159,13 +161,13 @@ const AddEmployee = React.memo(() => {
                       onChange={handleInputChange}
                       required
                       disabled={createMutation.isPending}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600"
                       placeholder="مثال: أحمد عبد الله المحمادي"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold text-gray-400">رقم الجوال <span className="text-[#FF5C35]">*</span></label>
+                    <label className="block text-xs font-bold text-gray-400">رقم الجوال <span className="text-[#8B5CF6]">*</span></label>
                     <input 
                       type="tel"
                       name="phoneNumber"
@@ -173,7 +175,7 @@ const AddEmployee = React.memo(() => {
                       onChange={handleInputChange}
                       required
                       disabled={createMutation.isPending}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600 font-mono"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 font-mono"
                       placeholder="0501234567"
                     />
                   </div>
@@ -186,7 +188,7 @@ const AddEmployee = React.memo(() => {
                       value={formData.emailAddress}
                       onChange={handleInputChange}
                       disabled={createMutation.isPending}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600 font-mono"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 font-mono"
                       placeholder="employee@reflecto.sa"
                     />
                   </div>
@@ -199,8 +201,24 @@ const AddEmployee = React.memo(() => {
                       value={formData.password}
                       onChange={handleInputChange}
                       disabled={createMutation.isPending}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600 font-mono"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 font-mono"
                       placeholder="افتراضي: 00000"
+                    />
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="block text-xs font-bold text-gray-400 flex items-center justify-between">
+                      <span>الرقم الوظيفي (كود الموظف)</span>
+                      <span className="text-[10px] text-[#8B5CF6]">اختياري - يتم إنشاؤه تلقائياً إذا تُرِك فارغاً</span>
+                    </label>
+                    <input 
+                      type="text"
+                      name="employeeCode"
+                      value={formData.employeeCode}
+                      onChange={handleInputChange}
+                      disabled={createMutation.isPending}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 font-mono"
+                      placeholder="تلقائي (مثل: EMP-1001) أو أدخل كود مخصص"
                     />
                   </div>
                 </div>
@@ -209,19 +227,19 @@ const AddEmployee = React.memo(() => {
               {/* Work & Branch Assignment */}
               <section className="bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl">
                 <div className="flex items-center gap-3 text-sm font-bold text-white border-b border-white/10 pb-4">
-                  <span className="w-8 h-8 rounded-xl bg-[#FF5C35]/10 flex items-center justify-center text-[#FF5C35] material-symbols-outlined text-base">work</span>
+                  <span className="w-8 h-8 rounded-xl bg-[#5C24EB]/10 flex items-center justify-center text-[#8B5CF6] material-symbols-outlined text-base">work</span>
                   التكليف الوظيفي والفرع
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold text-gray-400">الصفة / الدور الوظيفي <span className="text-[#FF5C35]">*</span></label>
+                    <label className="block text-xs font-bold text-gray-400">الصفة / الدور الوظيفي <span className="text-[#8B5CF6]">*</span></label>
                     <select 
                       name="role"
                       value={formData.role}
                       onChange={handleInputChange}
                       disabled={createMutation.isPending}
-                      className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all cursor-pointer"
+                      className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all cursor-pointer"
                     >
                       <option value="technician">فني / تيكنيكال (Technician)</option>
                       <option value="admin">مدير فرع / أدمن (Admin)</option>
@@ -232,13 +250,13 @@ const AddEmployee = React.memo(() => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold text-gray-400">الفرع المخصص <span className="text-[#FF5C35]">*</span></label>
+                    <label className="block text-xs font-bold text-gray-400">الفرع المخصص <span className="text-[#8B5CF6]">*</span></label>
                     <select 
                       name="branch_name"
                       value={formData.branch_name}
                       onChange={handleInputChange}
                       disabled={createMutation.isPending}
-                      className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all cursor-pointer"
+                      className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all cursor-pointer"
                     >
                       <option value="جدة - شارع صاري">جدة - شارع صاري</option>
                       <option value="جدة - الصفا">جدة - الصفا</option>
@@ -261,7 +279,7 @@ const AddEmployee = React.memo(() => {
                     onChange={handleInputChange}
                     disabled={createMutation.isPending}
                     rows="3"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-xs font-bold text-white focus:outline-none focus:border-[#FF5C35] transition-all placeholder-gray-600 resize-none"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-xs font-bold text-white focus:outline-none focus:border-[#5C24EB] transition-all placeholder-gray-600 resize-none"
                     placeholder="أدخل أي ملاحظات حول خبرات الفني، الدورات الحاصل عليها، أو المهارات..."
                   />
                 </div>
@@ -280,7 +298,7 @@ const AddEmployee = React.memo(() => {
                 <button 
                   type="submit"
                   disabled={createMutation.isPending}
-                  className="px-8 py-3 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white font-bold text-xs rounded-xl transition-all shadow-[0_8px_25px_rgba(255,92,53,0.35)] flex items-center gap-2 cursor-pointer"
+                  className="px-8 py-3 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white font-bold text-xs rounded-xl transition-all shadow-[0_8px_25px_rgba(92,36,235,0.35)] flex items-center gap-2 cursor-pointer"
                 >
                   {createMutation.isPending && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>}
                   <span className="material-symbols-outlined text-base">how_to_reg</span>
@@ -292,10 +310,10 @@ const AddEmployee = React.memo(() => {
             {/* Employee Preview Badge Sidebar */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-gradient-to-b from-[#18181b] to-[#09090b] border border-white/10 rounded-3xl p-6 relative overflow-hidden shadow-2xl space-y-6">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF5C35]/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#5C24EB]/10 rounded-full blur-2xl pointer-events-none"></div>
 
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <span className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider flex items-center gap-1.5">
                     <span className="material-symbols-outlined text-sm">badge</span>
                     بطاقة تعريف الموظف
                   </span>
@@ -303,12 +321,12 @@ const AddEmployee = React.memo(() => {
                 </div>
 
                 <div className="text-center space-y-3 py-2">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#FF5C35] to-[#ff7b5c] mx-auto flex items-center justify-center text-white text-3xl font-extrabold shadow-lg border-2 border-white/20">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#5C24EB] to-[#7B4BF5] mx-auto flex items-center justify-center text-white text-3xl font-extrabold shadow-lg border-2 border-white/20">
                     {formData.fullName ? formData.fullName.charAt(0).toUpperCase() : '؟'}
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-white leading-snug">{formData.fullName || 'اسم الموظف'}</h3>
-                    <p className="text-xs text-[#FF5C35] font-bold mt-1">{formData.role === 'technician' ? 'فني معتمد' : 'حساب إداري'}</p>
+                    <p className="text-xs text-[#8B5CF6] font-bold mt-1">{formData.role === 'technician' ? 'فني معتمد' : 'حساب إداري'}</p>
                   </div>
                 </div>
 
@@ -338,7 +356,7 @@ const AddEmployee = React.memo(() => {
 
                 <div className="p-4 bg-white/[0.03] border border-white/5 rounded-2xl text-[11px] text-gray-400 font-bold space-y-2">
                   <div className="text-white font-bold flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-sm text-[#FF5C35]">verified_user</span>
+                    <span className="material-symbols-outlined text-sm text-[#8B5CF6]">verified_user</span>
                     معلومات الصلاحيات والدخول
                   </div>
                   <p className="text-[10px] text-gray-400 leading-relaxed">

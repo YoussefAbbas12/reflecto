@@ -3,12 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { pricingService, servicesService, clientService } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
+import { useAdminTheme } from '../contexts/AdminThemeContext';
+import { useLanguage } from '../hooks/useLanguage';
 import AdminSidebar from '../components/AdminSidebar';
 
 const AddPackage = React.memo(() => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isLight } = useAdminTheme();
+  const { language } = useLanguage();
+  const isArabic = language === 'ar';
 
   // Form State 
   const [nameEn, setNameEn] = useState('');
@@ -138,7 +143,9 @@ const AddPackage = React.memo(() => {
   };
 
   return (
-    <div className="flex bg-[#000000] min-h-[calc(100vh-5rem)] font-body text-[#e5e2e1] selection:bg-[#FF5C35]/30 relative mt-16 md:mt-0">
+    <div className={`flex min-h-[calc(100vh-5rem)] font-body selection:bg-[#5C24EB]/30 relative mt-16 md:mt-0 transition-colors duration-300 ${
+      isLight ? 'bg-[#F8FAFC] text-gray-900' : 'bg-[#000000] text-[#e5e2e1]'
+    }`}>
       <AdminSidebar />
       
       {/* Main Content Area */}
@@ -147,30 +154,42 @@ const AddPackage = React.memo(() => {
           
           {/* Breadcrumbs */}
           <nav className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-4" aria-label="Breadcrumb">
-            <Link to="/admin" className="hover:text-gray-300 cursor-pointer transition-colors focus:outline-none focus:underline">
+            <Link to="/admin" className={`cursor-pointer transition-colors focus:outline-none focus:underline ${
+              isLight ? 'hover:text-gray-700' : 'hover:text-gray-300'
+            }`}>
               Packages
             </Link>
             <span className="mx-2" aria-hidden="true">/</span>
-            <span className="text-[#FF5C35]" aria-current="page">Add Package</span>
+            <span className="text-[#8B5CF6]" aria-current="page">Add Package</span>
           </nav>
           
-          <h1 id="add-package-heading" className="text-4xl font-display font-black tracking-tight text-white mb-8">
+          <h1 id="add-package-heading" className={`text-4xl font-display font-black tracking-tight mb-8 ${
+            isLight ? 'text-gray-900' : 'text-white'
+          }`}>
             Create New Package | إضافة باقة جديدة
           </h1>
 
           {/* Form Container */}
           <div className="space-y-8">
             {/* Package Details Section */}
-            <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0" aria-labelledby="package-details-heading">
-              <h2 id="package-details-heading" className="text-lg font-bold text-white mb-8 tracking-widest uppercase flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+            <section className={`rounded-2xl p-8 border transition-colors ${
+              isLight
+                ? 'bg-white border-gray-200 shadow-sm'
+                : 'bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl border-0'
+            }`} aria-labelledby="package-details-heading">
+              <h2 id="package-details-heading" className={`text-lg font-bold mb-8 tracking-widest uppercase flex items-center gap-3 ${
+                isLight ? 'text-gray-800' : 'text-white'
+              }`}>
+                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                   <span className="material-symbols-outlined text-sm">settings</span>
                 </div>
                 Package Details / تفاصيل الباقة
               </h2>
 
               {/* Package Type Selection */}
-              <div className="mb-8 p-4 bg-white/[0.03] rounded-xl border border-white/5">
+              <div className={`mb-8 p-4 rounded-xl border ${
+                isLight ? 'bg-gray-50 border-gray-200' : 'bg-white/[0.03] border-white/5'
+              }`}>
                 <span className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">
                   Package Scope / نطاق الباقة
                 </span>
@@ -182,9 +201,9 @@ const AddPackage = React.memo(() => {
                       value="general" 
                       checked={packageType === 'general'} 
                       onChange={() => { setPackageType('general'); setSelectedClient(null); }}
-                      className="text-[#FF5C35] focus:ring-[#FF5C35]"
+                      className="text-[#8B5CF6] focus:ring-[#5C24EB]"
                     />
-                    <span className="text-sm font-bold text-white font-body">General Package (باقة عامة)</span>
+                    <span className={`text-sm font-bold font-body ${isLight ? 'text-gray-800' : 'text-white'}`}>General Package (باقة عامة)</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input 
@@ -193,9 +212,9 @@ const AddPackage = React.memo(() => {
                       value="service" 
                       checked={packageType === 'service'} 
                       onChange={() => { setPackageType('service'); setSelectedClient(null); }}
-                      className="text-[#FF5C35] focus:ring-[#FF5C35]"
+                      className="text-[#8B5CF6] focus:ring-[#5C24EB]"
                     />
-                    <span className="text-sm font-bold text-white font-body">Service Specific (سعر خدمة معينة)</span>
+                    <span className={`text-sm font-bold font-body ${isLight ? 'text-gray-800' : 'text-white'}`}>Service Specific (سعر خدمة معينة)</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input 
@@ -204,9 +223,9 @@ const AddPackage = React.memo(() => {
                       value="special" 
                       checked={packageType === 'special'} 
                       onChange={() => { setPackageType('special'); }}
-                      className="text-[#FF5C35] focus:ring-[#FF5C35]"
+                      className="text-[#8B5CF6] focus:ring-[#5C24EB]"
                     />
-                    <span className="text-sm font-bold text-white font-body">Special for Client (باقة مخصصة لعميل)</span>
+                    <span className={`text-sm font-bold font-body ${isLight ? 'text-gray-800' : 'text-white'}`}>Special for Client (باقة مخصصة لعميل)</span>
                   </label>
                 </div>
               </div>
@@ -226,16 +245,22 @@ const AddPackage = React.memo(() => {
                         value={searchQuery}
                         onChange={(e) => handleSearchClients(e.target.value)}
                         placeholder="Search by phone number (e.g. 050...) or name"
-                        className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                        className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all ${
+                            isLight
+                              ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400'
+                              : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder-gray-600'
+                          }`}
                       />
                       {isSearchingClients && (
                         <div className="absolute right-4 top-3.5">
-                          <div className="w-4 h-4 border-2 border-[#FF5C35] border-t-transparent rounded-full animate-spin"></div>
+                          <div className="w-4 h-4 border-2 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></div>
                         </div>
                       )}
                       
                       {searchResults.length > 0 && (
-                        <ul className="absolute z-50 w-full mt-2 bg-[#0e0e0e] border border-white/10 rounded-xl overflow-hidden shadow-2xl max-h-60 overflow-y-auto">
+                        <ul className={`absolute z-50 w-full mt-2 rounded-xl overflow-hidden shadow-2xl max-h-60 overflow-y-auto border ${
+                          isLight ? 'bg-white border-gray-200' : 'bg-[#0e0e0e] border-white/10'
+                        }`}>
                           {searchResults.map((cli) => (
                             <li key={cli.id}>
                               <button
@@ -245,9 +270,11 @@ const AddPackage = React.memo(() => {
                                   setSearchResults([]);
                                   setSearchQuery('');
                                 }}
-                                className="w-full text-left px-4 py-3 hover:bg-[#FF5C35]/10 hover:text-white transition-all border-b border-white/5 flex flex-col gap-1 text-sm text-gray-300 font-bold"
+                                className={`w-full text-left px-4 py-3 hover:bg-[#5C24EB]/10 transition-all flex flex-col gap-1 text-sm font-bold border-b ${
+                                  isLight ? 'border-gray-100 text-gray-700 hover:text-gray-900' : 'border-white/5 text-gray-300 hover:text-white'
+                                }`}
                               >
-                                <span className="text-white">{cli.full_name}</span>
+                                <span className={isLight ? 'text-gray-900' : 'text-white'}>{cli.full_name}</span>
                                 <span className="text-xs text-gray-500 font-semibold">{cli.phone} {cli.vehicle ? `(${cli.vehicle})` : ''}</span>
                               </button>
                             </li>
@@ -256,13 +283,13 @@ const AddPackage = React.memo(() => {
                       )}
                     </div>
                   ) : (
-                    <div className="p-4 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl flex items-center justify-between">
+                    <div className="p-4 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-[#FF5C35]/20 flex items-center justify-center text-[#FF5C35]">
+                        <div className="w-10 h-10 rounded-lg bg-[#5C24EB]/20 flex items-center justify-center text-[#8B5CF6]">
                           <span className="material-symbols-outlined">person</span>
                         </div>
                         <div>
-                          <div className="text-sm font-bold text-white">{selectedClient.full_name}</div>
+                          <div className={`text-sm font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>{selectedClient.full_name}</div>
                           <div className="text-xs text-gray-400 font-semibold">{selectedClient.phone} {selectedClient.vehicle ? `(${selectedClient.vehicle})` : ''}</div>
                         </div>
                       </div>
@@ -294,7 +321,7 @@ const AddPackage = React.memo(() => {
                     value={selectedServiceId}
                     onChange={(e) => setSelectedServiceId(e.target.value)}
                     disabled={servicesLoading}
-                    className="w-full bg-[#1c1b1b]/80 backdrop-blur-md shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-[#e5e2e1] focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-[#1c1b1b]/80 backdrop-blur-md shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-[#e5e2e1] focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="">
                       {servicesLoading ? '⏳ Loading services...' : services.length === 0 ? '❌ No services available' : '— Select Service —'}
@@ -315,7 +342,9 @@ const AddPackage = React.memo(() => {
                   </label>
                   <input
                     id="packageNameEn"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all ${
+                      isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder-gray-600'
+                    }`}
                     placeholder="e.g. Ultimate Protection"
                     type="text"
                     required
@@ -329,7 +358,9 @@ const AddPackage = React.memo(() => {
                   </label>
                   <input
                     id="packageNameAr"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all text-right"
+                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all text-right ${
+                      isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder-gray-600'
+                    }`}
                     placeholder="مثال: الباقة الماسية"
                     type="text"
                     required
@@ -346,7 +377,9 @@ const AddPackage = React.memo(() => {
                   </label>
                   <input
                     id="price"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all ${
+                      isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder-gray-600'
+                    }`}
                     placeholder="e.g. 1200.00"
                     type="number"
                     min="0"
@@ -362,7 +395,9 @@ const AddPackage = React.memo(() => {
                   </label>
                   <input
                     id="warranty"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                    className={`w-full rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all ${
+                      isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder-gray-600'
+                    }`}
                     placeholder="e.g. 5"
                     type="number"
                     min="0"
@@ -374,9 +409,13 @@ const AddPackage = React.memo(() => {
             </section>
 
             {/* Description Section */}
-            <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0" aria-labelledby="description-heading">
-              <h2 id="description-heading" className="text-lg font-bold text-white mb-8 tracking-widest uppercase flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+            <section className={`rounded-2xl p-8 border transition-colors ${
+              isLight ? 'bg-white border-gray-200 shadow-sm' : 'bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl border-0'
+            }`} aria-labelledby="description-heading">
+              <h2 id="description-heading" className={`text-lg font-bold mb-8 tracking-widest uppercase flex items-center gap-3 ${
+                isLight ? 'text-gray-800' : 'text-white'
+              }`}>
+                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                   <span className="material-symbols-outlined text-sm">description</span>
                 </div>
                 Subtitles & Marketing Copy / وصف وعنوان فرعي
@@ -388,7 +427,9 @@ const AddPackage = React.memo(() => {
                   </label>
                   <textarea
                     id="descriptionEn"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-4 px-4 text-sm font-bold tracking-wide text-white placeholder:text-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none resize-none transition-all leading-relaxed"
+                    className={`w-full rounded-xl py-4 px-4 text-sm font-bold tracking-wide focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none resize-none transition-all leading-relaxed ${
+                      isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder:text-gray-400' : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder:text-gray-600'
+                    }`}
                     placeholder="E.g. Essential protection for daily drivers..."
                     rows="3"
                     value={descriptionEn}
@@ -401,7 +442,9 @@ const AddPackage = React.memo(() => {
                   </label>
                   <textarea
                     id="descriptionAr"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-4 px-4 text-sm font-bold tracking-wide text-white placeholder:text-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none resize-none transition-all leading-relaxed text-right"
+                    className={`w-full rounded-xl py-4 px-4 text-sm font-bold tracking-wide focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none resize-none transition-all leading-relaxed text-right ${
+                      isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder:text-gray-400' : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder:text-gray-600'
+                    }`}
                     placeholder="مثال: حماية أساسية لسيارات الاستخدام اليومي..."
                     rows="3"
                     value={descriptionAr}
@@ -412,9 +455,13 @@ const AddPackage = React.memo(() => {
             </section>
 
             {/* Features (Points) Section */}
-            <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0" aria-labelledby="features-heading">
-              <h2 id="features-heading" className="text-lg font-bold text-white mb-8 tracking-widest uppercase flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+            <section className={`rounded-2xl p-8 border transition-colors ${
+              isLight ? 'bg-white border-gray-200 shadow-sm' : 'bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl border-0'
+            }`} aria-labelledby="features-heading">
+              <h2 id="features-heading" className={`text-lg font-bold mb-8 tracking-widest uppercase flex items-center gap-3 ${
+                isLight ? 'text-gray-800' : 'text-white'
+              }`}>
+                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                   <span className="material-symbols-outlined text-sm">checklist</span>
                 </div>
                 Package Features (Points) / خدمات ومميزات الباقة (نقاط تحت بعضها)
@@ -423,12 +470,14 @@ const AddPackage = React.memo(() => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 {/* English Features */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-2">Features (English)</h3>
+                  <h3 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-2">Features (English)</h3>
                   {featuresEn.map((feat, index) => (
                     <div key={`feat-en-${index}`} className="flex items-center gap-3">
-                      <span className="text-[#FF5C35] font-bold">{index + 1}.</span>
+                      <span className="text-[#8B5CF6] font-bold">{index + 1}.</span>
                       <input
-                        className="flex-1 bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                        className={`flex-1 rounded-lg py-2.5 px-4 text-sm font-bold focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all ${
+                          isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder-gray-600'
+                        }`}
                         placeholder="e.g. 9H Surface Hardness"
                         value={feat}
                         onChange={(e) => handleFeatureEnChange(index, e.target.value)}
@@ -446,7 +495,7 @@ const AddPackage = React.memo(() => {
                   <button
                     type="button"
                     onClick={addFeatureEn}
-                    className="text-[#FF5C35] bg-[#FF5C35]/10 shadow-inner rounded-xl px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#FF5C35]/20 transition-all flex items-center gap-2 mt-2"
+                    className="text-[#8B5CF6] bg-[#5C24EB]/10 shadow-inner rounded-xl px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#5C24EB]/20 transition-all flex items-center gap-2 mt-2"
                   >
                     <span className="material-symbols-outlined text-sm">add</span>
                     Add Point (EN)
@@ -455,12 +504,14 @@ const AddPackage = React.memo(() => {
 
                 {/* Arabic Features */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-2 text-right">المميزات (العربية)</h3>
+                  <h3 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-2 text-right">المميزات (العربية)</h3>
                   {featuresAr.map((feat, index) => (
                     <div key={`feat-ar-${index}`} className="flex items-center gap-3 dir-rtl">
-                      <span className="text-[#FF5C35] font-bold">{index + 1}.</span>
+                      <span className="text-[#8B5CF6] font-bold">{index + 1}.</span>
                       <input
-                        className="flex-1 bg-white/[0.05] shadow-inner border-0 rounded-lg py-2.5 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all text-right"
+                        className={`flex-1 rounded-lg py-2.5 px-4 text-sm font-bold focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all text-right ${
+                          isLight ? 'bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400' : 'bg-white/[0.05] shadow-inner border-0 text-white placeholder-gray-600'
+                        }`}
                         placeholder="مثال: صلابة سطح 9H"
                         value={feat}
                         onChange={(e) => handleFeatureArChange(index, e.target.value)}
@@ -478,7 +529,7 @@ const AddPackage = React.memo(() => {
                   <button
                     type="button"
                     onClick={addFeatureAr}
-                    className="text-[#FF5C35] bg-[#FF5C35]/10 shadow-inner rounded-xl px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#FF5C35]/20 transition-all flex items-center gap-2 mt-2 ml-auto"
+                    className="text-[#8B5CF6] bg-[#5C24EB]/10 shadow-inner rounded-xl px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-[#5C24EB]/20 transition-all flex items-center gap-2 mt-2 ml-auto"
                   >
                     <span className="material-symbols-outlined text-sm">add</span>
                     إضافة نقطة (AR)
@@ -493,7 +544,9 @@ const AddPackage = React.memo(() => {
             <button
               type="button"
               onClick={() => navigate('/admin')}
-              className="w-full sm:w-auto px-10 py-3.5 bg-white/[0.05] shadow-inner rounded-xl text-white font-bold text-[10px] uppercase tracking-widest hover:bg-white/[0.1] transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+              className={`w-full sm:w-auto px-10 py-3.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors focus:outline-none focus:ring-2 ${
+                isLight ? 'bg-gray-100 border border-gray-200 text-gray-700 hover:bg-gray-200 focus:ring-gray-300' : 'bg-white/[0.05] shadow-inner text-white hover:bg-white/[0.1] focus:ring-white/50'
+              }`}
             >
               Cancel
             </button>
@@ -501,7 +554,7 @@ const AddPackage = React.memo(() => {
               type="button"
               onClick={handlePublish}
               disabled={createMutation.isPending}
-              className="w-full sm:w-auto px-10 py-3.5 bg-[#FF5C35] rounded-xl text-white font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-[0_8px_30px_rgba(255,92,53,0.3)] active:scale-95 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="w-full sm:w-auto px-10 py-3.5 bg-[#5C24EB] rounded-xl text-white font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-[0_8px_30px_rgba(92,36,235,0.3)] active:scale-95 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50"
             >
               {createMutation.isPending ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true"></div>

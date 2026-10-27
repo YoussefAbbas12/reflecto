@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ordersService, clientService, companyService } from '../services/api';
@@ -75,15 +75,44 @@ const AddOrder = React.memo(() => {
     status: 'pending'
   });
 
-  // Fetch clients for customer autocomplete dropdown
+  // Fetch clients for customer autocomplete dropdown (limit 100 on initial fetch)
   const { data: clientsData, refetch: refetchClients } = useQuery({
     queryKey: ['adminClientsList'],
-    queryFn: () => clientService.getAll(1, 'client'),
-    staleTime: 0,
+    queryFn: () => clientService.getAll({ page: 1, limit: 100, role: 'client' }),
+    staleTime: 60000,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
   });
   const clientsList = useMemo(() => clientsData?.data || clientsData?.clients || [], [clientsData]);
+
+  // iPad & Touch Autocomplete State for Clients
+  const [clientSearchQuery, setClientSearchQuery] = useState('');
+  const [clientSearchResults, setClientSearchResults] = useState([]);
+  const [isSearchingClient, setIsSearchingClient] = useState(false);
+  const [showClientDropdown, setShowClientDropdown] = useState(false);
+  const clientDropdownRef = useRef(null);
+  const clientSearchTimeout = useRef(null);
+
+  // Vehicle Autocomplete State
+  const [showVehicleDropdown, setShowVehicleDropdown] = useState(false);
+  const vehicleDropdownRef = useRef(null);
+
+  // Close dropdowns on outside pointer down (iPad & Desktop safe)
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (clientDropdownRef.current && !clientDropdownRef.current.contains(e.target)) {
+        setShowClientDropdown(false);
+      }
+      if (vehicleDropdownRef.current && !vehicleDropdownRef.current.contains(e.target)) {
+        setShowVehicleDropdown(false);
+      }
+    };
+    document.addEventListener('pointerdown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('pointerdown', handleOutsideClick);
+      if (clientSearchTimeout.current) clearTimeout(clientSearchTimeout.current);
+    };
+  }, []);
 
   // Fetch technicians list
   const { data: techniciansData } = useQuery({
@@ -108,64 +137,105 @@ const AddOrder = React.memo(() => {
       .catch(() => {});
   }, []);
 
-  const handleSelectClient = useCallback(async (clientNameOrPhone) => {
-    if (!clientNameOrPhone) {
-      setFormData(prev => ({ ...prev, client_name: '' }));
+  // Client Selection Handler
+  const selectClientDirectly = useCallback(async (client) => {
+    setShowClientDropdown(false);
+    if (!client) return;
+
+    const chosenName = client.full_name || client.name || '';
+    const chosenPhone = client.phone || '';
+    const chosenBranch = client.branch_name || 'جدة - شارع صاري';
+
+    setFormData(prev => ({
+      ...prev,
+      client_name: chosenName,
+      client_phone: chosenPhone || prev.client_phone,
+      branch_name: chosenBranch || prev.branch_name || 'جدة - شارع صاري'
+    }));
+
+    // Fetch full client profile including all saved vehicles & company info
+    try {
+      const res = await clientService.getById(client.id || client.uuid);
+      const clientObj = res?.data || res;
+      const vehicles = clientObj?.vehicles || [];
+      setCustomerVehicles(vehicles);
+      if (vehicles.length > 0) {
+        const firstV = vehicles[0];
+        setFormData(prev => ({
+          ...prev,
+          vehicle_type: firstV.brand || firstV.vehicle_type || '',
+          vehicle_model: firstV.model || firstV.vehicle_model || '',
+          vehicle_year: firstV.year ? String(firstV.year) : prev.vehicle_year,
+          vehicle_color: firstV.color || '',
+          vehicle_plate: firstV.plate_number || firstV.plate || '',
+          chassis_number: firstV.chassis_number || ''
+        }));
+      }
+
+      // Fetch company details if client belongs to a corporate company
+      if (clientObj?.company_id) {
+        try {
+          const compRes = await companyService.getById(clientObj.company_id);
+          if (compRes?.data) {
+            setClientCompany(compRes.data);
+            toast.info(`هذا العميل تابع لشركة (${compRes.data.name}) - نسبة الخصم: ${compRes.data.discount_percent}%`);
+          }
+        } catch (e) {}
+      } else {
+        setClientCompany(null);
+      }
+    } catch (e) {
+      console.warn('Error fetching client details:', e);
+    }
+  }, [toast]);
+
+  // Handle client input text changes & dynamic live search
+  const handleClientInputChange = (val) => {
+    setFormData(prev => ({ ...prev, client_name: val }));
+    setClientSearchQuery(val);
+    setShowClientDropdown(true);
+
+    if (clientSearchTimeout.current) clearTimeout(clientSearchTimeout.current);
+
+    if (!val.trim()) {
+      setClientSearchResults([]);
       return;
     }
-    const cleanInput = String(clientNameOrPhone).trim().toLowerCase();
-    const selected = clientsList.find(c => {
-      const name = (c.full_name || c.name || '').trim().toLowerCase();
-      const phone = (c.phone || '').trim().toLowerCase();
-      return name === cleanInput || phone === cleanInput || (phone && cleanInput.includes(phone)) || (name && cleanInput.includes(name));
-    });
 
-    if (selected) {
-      setFormData(prev => ({
-        ...prev,
-        client_name: selected.full_name || selected.name || clientNameOrPhone,
-        client_phone: selected.phone || prev.client_phone,
-        branch_name: selected.branch_name || prev.branch_name || 'فرع جدة'
-      }));
-
-      // Fetch full client profile including all saved vehicles & company info
+    clientSearchTimeout.current = setTimeout(async () => {
+      setIsSearchingClient(true);
       try {
-        const res = await clientService.getById(selected.id);
-        const clientObj = res?.data || res;
-        const vehicles = clientObj?.vehicles || [];
-        setCustomerVehicles(vehicles);
-        if (vehicles.length > 0) {
-          const firstV = vehicles[0];
-          setFormData(prev => ({
-            ...prev,
-            vehicle_type: firstV.brand || firstV.vehicle_type || '',
-            vehicle_model: firstV.model || firstV.vehicle_model || '',
-            vehicle_year: firstV.year ? String(firstV.year) : prev.vehicle_year,
-            vehicle_color: firstV.color || '',
-            vehicle_plate: firstV.plate_number || firstV.plate || '',
-            chassis_number: firstV.chassis_number || ''
-          }));
-        }
-
-        // Fetch company details if client belongs to a corporate company
-        if (clientObj?.company_id) {
-          try {
-            const compRes = await companyService.getById(clientObj.company_id);
-            if (compRes?.data) {
-              setClientCompany(compRes.data);
-              toast.info(`هذا العميل تابع لشركة (${compRes.data.name}) - نسبة الخصم: ${compRes.data.discount_percent}%`);
-            }
-          } catch (e) {}
-        } else {
-          setClientCompany(null);
-        }
-      } catch (e) {
-        console.error('Failed to load client profile:', e);
+        const res = await clientService.search(val.trim(), 'client');
+        setClientSearchResults(res?.data || []);
+      } catch (err) {
+        console.error('Client search error:', err);
+      } finally {
+        setIsSearchingClient(false);
       }
-    } else {
-      setFormData(prev => ({ ...prev, client_name: clientNameOrPhone }));
-    }
-  }, [clientsList]);
+    }, 250);
+  };
+
+  // Filtered / Displayed clients list for the interactive dropdown
+  const displayedClients = useMemo(() => {
+    const q = (clientSearchQuery || formData.client_name || '').trim().toLowerCase();
+    const map = new Map();
+    (clientsList || []).forEach(c => {
+      const id = c.id || c.uuid || c.phone;
+      if (id) map.set(id, c);
+    });
+    (clientSearchResults || []).forEach(c => {
+      const id = c.id || c.uuid || c.phone;
+      if (id) map.set(id, c);
+    });
+    const all = Array.from(map.values());
+    if (!q) return all.slice(0, 30);
+    return all.filter(c => {
+      const name = (c.full_name || c.name || '').toLowerCase();
+      const phone = (c.phone || '').toLowerCase();
+      const vehicle = (c.vehicle || '').toLowerCase();
+      return name.includes(q) || phone.includes(q) || vehicle.includes(q);
+    }).slice(0, 30);
+  }, [clientsList, clientSearchResults, clientSearchQuery, formData.client_name]);
 
   const handleSelectVehicle = useCallback((vValue) => {
     const found = customerVehicles.find(v => {
@@ -348,7 +418,7 @@ const AddOrder = React.memo(() => {
     createMutation.mutate(payload);
   }, [formData, price, vat_amount, total_amount, paid_amount, remaining_amount, createMutation, toast]);
 
-  const inputStyle = "w-full bg-white/[0.05] border-0 shadow-inner rounded-xl px-4 py-3 text-white text-sm outline-none focus:ring-2 focus:ring-[#FF5C35]/50 transition-all font-medium";
+  const inputStyle = "w-full bg-white/[0.05] border-0 shadow-inner rounded-xl px-4 py-3 text-white text-sm outline-none focus:ring-2 focus:ring-[#5C24EB]/50 transition-all font-medium";
   const labelStyle = "block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2";
 
   if (!canCreate) {
@@ -359,7 +429,7 @@ const AddOrder = React.memo(() => {
           <span className="material-symbols-outlined text-6xl text-red-500">lock</span>
           <h1 className="text-2xl font-bold text-white">عفواً، لا تملك صلاحية إضافة أمر عمل / Check List جديد</h1>
           <p className="text-gray-400 text-sm">تواصل مع السوبر أدمن للحصول على صلاحية (create_checklist)</p>
-          <button onClick={() => navigate('/admin/orders')} className="px-6 py-2 bg-[#FF5C35] text-white rounded-xl font-bold text-xs cursor-pointer">
+          <button onClick={() => navigate('/admin/orders')} className="px-6 py-2 bg-[#5C24EB] text-white rounded-xl font-bold text-xs cursor-pointer">
             العودة لأوامر العمل
           </button>
         </main>
@@ -368,7 +438,7 @@ const AddOrder = React.memo(() => {
   }
 
   return (
-    <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-24 md:pt-8 selection:bg-[#FF5C35]/30">
+    <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-24 md:pt-8 selection:bg-[#5C24EB]/30">
       <AdminSidebar />
 
       <main className="flex-1 overflow-y-auto p-6 lg:p-12 pt-8 space-y-8" aria-labelledby="add-order-heading">
@@ -378,10 +448,10 @@ const AddOrder = React.memo(() => {
             <div className="flex items-center gap-2 text-gray-500 mb-2 text-xs font-bold uppercase tracking-wider">
               <button type="button" onClick={() => navigate('/admin/orders')} className="hover:text-white transition-colors">Orders</button>
               <span className="material-symbols-outlined text-xs">chevron_right</span>
-              <span className="text-[#FF5C35]">New Check List</span>
+              <span className="text-[#8B5CF6]">New Check List</span>
             </div>
-            <h1 id="add-order-heading" className="text-3xl md:text-5xl font-display font-black text-white tracking-tight flex items-center gap-3">
-              <span className="material-symbols-outlined text-3xl md:text-4xl text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-2xl border border-[#FF5C35]/20 shadow-inner" aria-hidden="true">assignment_add</span>
+            <h1 id="add-order-heading" className="text-2xl md:text-3xl font-display font-black text-white tracking-tight flex items-center gap-3">
+              <span className="material-symbols-outlined text-2xl md:text-3xl text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-2xl border border-[#5C24EB]/20 shadow-inner" aria-hidden="true">assignment_add</span>
               <span>إضافة نموذج استلام وفحص جديد (Check List)</span>
             </h1>
             <p className="text-gray-400 text-sm mt-1">تعبئة نموذج فحص السيارة واستلامها بناءً على المرفق الرسمي (Work Order)</p>
@@ -392,34 +462,107 @@ const AddOrder = React.memo(() => {
           {/* Section 1: Basic & Customer Details */}
           <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
             <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">badge</span>
+              <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">badge</span>
               بيانات العميل ورقم الطلب (Customer Information)
             </legend>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
                 <label className={labelStyle}>رقم الطلب (Work Order #)</label>
-                <input type="text" name="work_order_number" value={formData.work_order_number} onChange={handleInputChange} className={`${inputStyle} font-mono font-bold text-[#FF5C35]`} />
+                <input type="text" name="work_order_number" value={formData.work_order_number} onChange={handleInputChange} className={`${inputStyle} font-mono font-bold text-[#8B5CF6]`} />
               </div>
-              <div>
-                <label className={labelStyle}>اسم العميل (اختيار أو كتابة) *</label>
-                <input
-                  type="text"
-                  list="clients-datalist"
-                  name="client_name"
-                  value={formData.client_name}
-                  onChange={(e) => handleSelectClient(e.target.value)}
-                  onFocus={() => refetchClients()}
-                  placeholder="ابحث أو اختر اسم العميل..."
-                  className={inputStyle}
-                  required
-                />
-                <datalist id="clients-datalist">
-                  {clientsList.map((c, i) => (
-                    <option key={c.id || i} value={c.full_name || c.name}>
-                      {c.phone ? `${c.full_name || c.name} (${c.phone})` : (c.full_name || c.name)}
-                    </option>
-                  ))}
-                </datalist>
+              {/* Customer Autocomplete with iPad Touch Support */}
+              <div ref={clientDropdownRef} className="relative">
+                <div className="flex items-center justify-between mb-2">
+                  <label className={labelStyle}>اسم العميل (اختيار أو كتابة) *</label>
+                  {isSearchingClient && (
+                    <span className="text-[10px] text-[#8B5CF6] font-bold flex items-center gap-1">
+                      <span className="inline-block w-2.5 h-2.5 border-2 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></span>
+                      جاري البحث...
+                    </span>
+                  )}
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="client_name"
+                    value={formData.client_name}
+                    onChange={(e) => handleClientInputChange(e.target.value)}
+                    onFocus={() => {
+                      refetchClients();
+                      setShowClientDropdown(true);
+                    }}
+                    onClick={() => setShowClientDropdown(true)}
+                    placeholder="اكتب اسم العميل أو رقمه للاختيار..."
+                    className={`${inputStyle} pr-10`}
+                    autoComplete="off"
+                    required
+                  />
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                    {formData.client_name && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, client_name: '', client_phone: '' }));
+                          setCustomerVehicles([]);
+                        }}
+                        className="text-gray-400 hover:text-white p-1"
+                        title="مسح"
+                      >
+                        <span className="material-symbols-outlined text-sm">close</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setShowClientDropdown(prev => !prev)}
+                      className="text-gray-400 hover:text-[#8B5CF6] p-1"
+                      title="عرض قائمة العملاء"
+                    >
+                      <span className="material-symbols-outlined text-base">expand_more</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* iPad-Optimized Floating Dropdown */}
+                {showClientDropdown && (
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-[#0f1015] border border-white/15 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] max-h-64 overflow-y-auto overflow-x-hidden p-1.5 custom-scrollbar">
+                    {displayedClients.length > 0 ? (
+                      displayedClients.map((c, i) => (
+                        <div
+                          key={c.id || c.uuid || i}
+                          onPointerDown={(e) => {
+                            e.preventDefault();
+                            selectClientDirectly(c);
+                          }}
+                          className="p-2.5 rounded-xl hover:bg-[#5C24EB]/20 active:bg-[#5C24EB]/30 transition-colors cursor-pointer flex items-center justify-between gap-3 text-right"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-full bg-[#5C24EB]/20 text-[#8B5CF6] flex items-center justify-center font-bold text-xs shrink-0 border border-[#5C24EB]/30">
+                              {(c.full_name || c.name || 'C').charAt(0).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-xs font-bold text-white truncate">
+                                {c.full_name || c.name}
+                              </div>
+                              <div className="text-[10px] text-gray-400 font-mono truncate">
+                                {c.phone} {c.vehicle ? `• ${c.vehicle}` : ''}
+                              </div>
+                            </div>
+                          </div>
+                          {c.branch_name && (
+                            <span className="text-[9px] px-2 py-0.5 rounded bg-white/5 text-gray-300 shrink-0 font-medium border border-white/5">
+                              {c.branch_name}
+                            </span>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="py-6 text-center text-gray-400 text-xs">
+                        <p className="font-bold">لا يوجد عميل مسجل بهذا الاسم</p>
+                        <p className="text-[10px] text-gray-500 mt-1">يمكنك الاستمرار في الكتابة لتسجيل هذا العميل</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               <div>
                 <label className={labelStyle}>جوال العميل *</label>
@@ -454,19 +597,19 @@ const AddOrder = React.memo(() => {
           {/* Section 2: Services Check List */}
           <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
             <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">checklist</span>
+              <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">checklist</span>
               خدمات الفحص المطلوبة (Check List Options)
             </legend>
 
             <div className="space-y-8">
               {/* Heat Insulation */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">عازل حراري (Heat Insulation)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">عازل حراري (Heat Insulation)</h4>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {['امامي', 'سائق وركاب', 'خلف السائق', 'مثلث', 'خلفي شنطه', 'بنوراما', 'سيكورتي'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.heat_insulation.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.heat_insulation.includes(opt)} onChange={() => handleCheckboxToggle('heat_insulation', opt)} />
@@ -475,15 +618,15 @@ const AddOrder = React.memo(() => {
                   ))}
                 </div>
                 {formData.heat_insulation.length > 0 && (
-                  <div className="p-4 bg-white/[0.03] border border-[#FF5C35]/30 rounded-xl space-y-3 mb-3">
-                    <p className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider mb-1">درجة العزل الحراري لكل خيار</p>
+                  <div className="p-4 bg-white/[0.03] border border-[#5C24EB]/30 rounded-xl space-y-3 mb-3">
+                    <p className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider mb-1">درجة العزل الحراري لكل خيار</p>
                     {formData.heat_insulation.map(opt => (
                       <div key={opt} className="flex items-center gap-3">
                         <span className="text-xs font-bold text-white min-w-[90px]">{opt}</span>
                         <select
                           value={formData.heat_insulation_details?.[opt] || ''}
                           onChange={(e) => handleHeatInsulationDetail(opt, e.target.value)}
-                          className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35] transition-colors"
+                          className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB] transition-colors"
                         >
                           <option value="" className="bg-[#121212]">-- اختر الدرجة --</option>
                           {['00', '01', '02', '03', '04', '05'].map(grade => (
@@ -518,13 +661,13 @@ const AddOrder = React.memo(() => {
                         <option value="months" className="bg-[#121212]">أشهر</option>
                       </select>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                      <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                      <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني العازل الحراري:</span>
+                    <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                      <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                      <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني العازل الحراري:</span>
                       <select
                         value={formData.service_technicians['heat_insulation'] || ''}
                         onChange={e => handleServiceTechnicianChange('heat_insulation', e.target.value)}
-                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                       >
                         <option value="">اختر الفني...</option>
                         {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -569,12 +712,12 @@ const AddOrder = React.memo(() => {
 
               {/* Polishing */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">تلميع (Polishing)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">تلميع (Polishing)</h4>
                 <div className="flex flex-wrap gap-3">
                   {['خارجي', 'داخلي', 'مقاعد', 'مائي'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.polishing.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.polishing.includes(opt)} onChange={() => handleCheckboxToggle('polishing', opt)} />
@@ -605,13 +748,13 @@ const AddOrder = React.memo(() => {
                         <option value="months" className="bg-[#121212]">أشهر</option>
                       </select>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                      <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                      <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني التلميع:</span>
+                    <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                      <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                      <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني التلميع:</span>
                       <select
                         value={formData.service_technicians['polishing'] || ''}
                         onChange={e => handleServiceTechnicianChange('polishing', e.target.value)}
-                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                       >
                         <option value="">اختر الفني...</option>
                         {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -656,12 +799,12 @@ const AddOrder = React.memo(() => {
 
               {/* Nano Ceramic */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">نانو سيراميك (Nano Ceramic)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">نانو سيراميك (Nano Ceramic)</h4>
                 <div className="flex flex-wrap gap-3">
                   {['داخلي', 'طبلون + أبواب', 'جنوط', 'خارجي (طبقة واحدة)', 'خارجي (طبقتين)', 'خارجي (3 طبقات)'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.nano_ceramic.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.nano_ceramic.includes(opt)} onChange={() => handleCheckboxToggle('nano_ceramic', opt)} />
@@ -692,13 +835,13 @@ const AddOrder = React.memo(() => {
                         <option value="months" className="bg-[#121212]">أشهر</option>
                       </select>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                      <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                      <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني النانو سيراميك:</span>
+                    <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                      <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                      <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني النانو سيراميك:</span>
                       <select
                         value={formData.service_technicians['nano_ceramic'] || ''}
                         onChange={e => handleServiceTechnicianChange('nano_ceramic', e.target.value)}
-                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                       >
                         <option value="">اختر الفني...</option>
                         {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -743,12 +886,12 @@ const AddOrder = React.memo(() => {
 
               {/* PPF */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">حماية PPF</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">حماية PPF</h4>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {['شمعات', 'أطراف الأبواب + تحت المقابض', 'مرايا', 'جزئي', 'كامل'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.ppf.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.ppf.includes(opt)} onChange={() => handleCheckboxToggle('ppf', opt)} />
@@ -757,7 +900,7 @@ const AddOrder = React.memo(() => {
                   ))}
                 </div>
                 {formData.ppf.includes('جزئي') && (
-                  <div className="p-4 bg-white/[0.03] border border-[#FF5C35]/30 rounded-xl">
+                  <div className="p-4 bg-white/[0.03] border border-[#5C24EB]/30 rounded-xl">
                     <label className={labelStyle}>تفاصيل الجزئي (Partial PPF Coverage Details)</label>
                     <input
                       type="text"
@@ -791,13 +934,13 @@ const AddOrder = React.memo(() => {
                         <option value="months" className="bg-[#121212]">أشهر</option>
                       </select>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                      <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                      <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني حماية PPF:</span>
+                    <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                      <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                      <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني حماية PPF:</span>
                       <select
                         value={formData.service_technicians['ppf'] || ''}
                         onChange={e => handleServiceTechnicianChange('ppf', e.target.value)}
-                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                        className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                       >
                         <option value="">اختر الفني...</option>
                         {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -843,12 +986,12 @@ const AddOrder = React.memo(() => {
 
               {/* Removal */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">إزالة (Removal Services)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">إزالة (Removal Services)</h4>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {['عازل كامل', 'عازل جزئي', 'سيكورتي زجاج', 'ستيكرات', 'كامل PPF', 'جزئي PPF'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.removal_services.includes(opt)
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="checkbox" className="hidden" checked={formData.removal_services.includes(opt)} onChange={() => handleCheckboxToggle('removal_services', opt)} />
@@ -857,13 +1000,13 @@ const AddOrder = React.memo(() => {
                   ))}
                 </div>
                 {formData.removal_services.length > 0 && (
-                  <div className="flex items-center gap-3 p-3 bg-[#FF5C35]/10 border border-[#FF5C35]/30 rounded-xl">
-                    <span className="material-symbols-outlined text-[#FF5C35] text-sm">engineering</span>
-                    <span className="text-xs font-bold text-[#FF5C35] whitespace-nowrap">فني خدمات الإزالة:</span>
+                  <div className="flex items-center gap-3 p-3 bg-[#5C24EB]/10 border border-[#5C24EB]/30 rounded-xl">
+                    <span className="material-symbols-outlined text-[#8B5CF6] text-sm">engineering</span>
+                    <span className="text-xs font-bold text-[#8B5CF6] whitespace-nowrap">فني خدمات الإزالة:</span>
                     <select
                       value={formData.service_technicians['removal_services'] || ''}
                       onChange={e => handleServiceTechnicianChange('removal_services', e.target.value)}
-                      className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#FF5C35]"
+                      className="flex-1 bg-[#1a1a1a] border border-white/15 text-white text-xs font-bold rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-[#5C24EB]"
                     >
                       <option value="">اختر الفني...</option>
                       {techniciansList.map(tech => <option key={tech.id} value={tech.id}>{tech.full_name}</option>)}
@@ -874,12 +1017,12 @@ const AddOrder = React.memo(() => {
 
               {/* Client Type */}
               <div>
-                <h4 className="text-sm font-bold text-[#FF5C35] uppercase tracking-wider mb-3">نوع العميل (Client Type)</h4>
+                <h4 className="text-sm font-bold text-[#8B5CF6] uppercase tracking-wider mb-3">نوع العميل (Client Type)</h4>
                 <div className="flex flex-wrap gap-3">
                   {['عميل مباشر', 'عميل سابق', 'عميل صيانة', 'عميل ضمان', 'عميل وكالة سيارات', 'AutoHub'].map(opt => (
                     <label key={opt} className={`px-4 py-2.5 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
                       formData.client_type === opt
-                        ? 'bg-[#FF5C35] border-[#FF5C35] text-white shadow-lg'
+                        ? 'bg-[#5C24EB] border-[#5C24EB] text-white shadow-lg'
                         : 'bg-white/[0.03] border-white/10 text-gray-300 hover:bg-white/[0.08]'
                     }`}>
                       <input type="radio" name="client_type" className="hidden" checked={formData.client_type === opt} onChange={() => setFormData(prev => ({ ...prev, client_type: opt }))} />
@@ -894,25 +1037,25 @@ const AddOrder = React.memo(() => {
           {/* Section 3: Financial Calculations */}
           <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
             <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">payments</span>
+              <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">payments</span>
               حساب المبالغ (Financial Breakdown)
             </legend>
 
             <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
               {clientCompany && (
-                <div className="md:col-span-6 bg-[#FF5C35]/10 border border-[#FF5C35]/30 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="md:col-span-6 bg-[#5C24EB]/10 border border-[#5C24EB]/30 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-white/10 p-1 flex items-center justify-center border border-white/20 shrink-0">
                       {clientCompany.logo_url ? (
                         <img src={getCompanyLogoUrl(clientCompany.logo_url)} alt="" className="w-full h-full object-contain" />
                       ) : (
-                        <span className="material-symbols-outlined text-[#FF5C35]">domain</span>
+                        <span className="material-symbols-outlined text-[#8B5CF6]">domain</span>
                       )}
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-white flex items-center gap-2">
                         <span>العميل تابع لجهة / شركة: {clientCompany.name}</span>
-                        <span className="bg-[#FF5C35] text-white px-2 py-0.5 rounded text-[10px]">خصم {clientCompany.discount_percent}%</span>
+                        <span className="bg-[#5C24EB] text-white px-2 py-0.5 rounded text-[10px]">خصم {clientCompany.discount_percent}%</span>
                       </h4>
                       {clientCompany.custom_message && (
                         <p className="text-[11px] text-amber-200 mt-0.5">{clientCompany.custom_message}</p>
@@ -943,7 +1086,7 @@ const AddOrder = React.memo(() => {
                           toast.warning('يرجى كتابة السعر الأصلي أولاً لتطبيق نسبة الخصم');
                         }
                       }}
-                      className="px-4 py-2 bg-[#FF5C35] hover:bg-[#FF5C35]/90 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer whitespace-nowrap"
+                      className="px-4 py-2 bg-[#5C24EB] hover:bg-[#5C24EB]/90 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer whitespace-nowrap"
                     >
                       تطبيق خصم الشركة ({clientCompany.discount_percent}%)
                     </button>
@@ -992,7 +1135,7 @@ const AddOrder = React.memo(() => {
                   value={formData.total_amount || ''}
                   onChange={(e) => handleTotalChange(e.target.value)}
                   placeholder="2070.00"
-                  className={`${inputStyle} bg-[#FF5C35]/20 text-[#FF5C35] font-black text-base`}
+                  className={`${inputStyle} bg-[#5C24EB]/20 text-[#8B5CF6] font-black text-base`}
                 />
               </div>
               <div>
@@ -1009,15 +1152,15 @@ const AddOrder = React.memo(() => {
           {/* Section 4: Vehicle & Inspection Notes */}
           <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-xl p-8 shadow-2xl border-0">
             <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">directions_car</span>
+              <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">directions_car</span>
               2. VEHICLE (بيانات المركبة والفحص)
             </legend>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               {customerVehicles.length > 0 && (
-                <div className="md:col-span-4 bg-white/[0.03] border border-[#FF5C35]/30 p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="md:col-span-4 bg-white/[0.03] border border-[#5C24EB]/30 p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#FF5C35]">directions_car</span>
+                    <span className="material-symbols-outlined text-[#8B5CF6]">directions_car</span>
                     <div>
                       <h4 className="text-xs font-bold text-white">تم العثور على سيارات مسجلة لهذا العميل ({customerVehicles.length} سيارة)</h4>
                       <p className="text-[11px] text-gray-400">تم تعبئة السيارة الأولى تلقائياً، يمكنك التبديل بين سياراته هنا:</p>
@@ -1038,7 +1181,7 @@ const AddOrder = React.memo(() => {
                         }));
                       }
                     }}
-                    className="bg-[#121212] border border-white/20 rounded-xl px-4 py-2.5 text-xs font-bold text-white outline-none cursor-pointer focus:border-[#FF5C35]"
+                    className="bg-[#121212] border border-white/20 rounded-xl px-4 py-2.5 text-xs font-bold text-white outline-none cursor-pointer focus:border-[#5C24EB]"
                   >
                     {customerVehicles.map((v, idx) => (
                       <option key={idx} value={idx}>
@@ -1048,30 +1191,63 @@ const AddOrder = React.memo(() => {
                   </select>
                 </div>
               )}
-              <div>
+              {/* Vehicle Autocomplete with iPad Touch Support */}
+              <div ref={vehicleDropdownRef} className="relative">
                 <label className={labelStyle}>
-                  المركبة (Type / Brand) * {customerVehicles.length > 0 && <span className="text-[#FF5C35] font-normal text-[11px]">({customerVehicles.length} سيارات)</span>}
+                  المركبة (Type / Brand) * {customerVehicles.length > 0 && <span className="text-[#8B5CF6] font-normal text-[11px]">({customerVehicles.length} سيارات مسجلة)</span>}
                 </label>
-                <input
-                  type="text"
-                  list="customer-vehicles-datalist"
-                  name="vehicle_type"
-                  value={formData.vehicle_type}
-                  onChange={(e) => handleSelectVehicle(e.target.value)}
-                  placeholder="اختر أو اكتب اسم المركبة (مثلاً Mercedes)..."
-                  className={inputStyle}
-                  required
-                />
-                <datalist id="customer-vehicles-datalist">
-                  {customerVehicles.map((v, idx) => {
-                    const fullLabel = `${v.brand || ''} ${v.model || ''}`.trim();
-                    return (
-                      <option key={v.id || idx} value={fullLabel}>
-                        {`${fullLabel} ${v.plate_number || v.plate ? `(لوحة: ${v.plate_number || v.plate})` : ''}`}
-                      </option>
-                    );
-                  })}
-                </datalist>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="vehicle_type"
+                    value={formData.vehicle_type}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      setShowVehicleDropdown(true);
+                    }}
+                    onFocus={() => {
+                      if (customerVehicles.length > 0) setShowVehicleDropdown(true);
+                    }}
+                    placeholder="اختر أو اكتب اسم المركبة (مثلاً Mercedes)..."
+                    className={`${inputStyle} pr-8`}
+                    autoComplete="off"
+                    required
+                  />
+                  {customerVehicles.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowVehicleDropdown(prev => !prev)}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-1"
+                      title="عرض سيارات العميل"
+                    >
+                      <span className="material-symbols-outlined text-base">expand_more</span>
+                    </button>
+                  )}
+                </div>
+
+                {showVehicleDropdown && customerVehicles.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-[#0f1015] border border-white/15 rounded-2xl shadow-2xl p-1.5 max-h-56 overflow-y-auto custom-scrollbar">
+                    {customerVehicles.map((v, idx) => {
+                      const fullLabel = `${v.brand || ''} ${v.model || ''}`.trim();
+                      return (
+                        <div
+                          key={v.id || idx}
+                          onPointerDown={(e) => {
+                            e.preventDefault();
+                            handleSelectVehicle(fullLabel);
+                            setShowVehicleDropdown(false);
+                          }}
+                          className="p-2.5 rounded-xl hover:bg-[#5C24EB]/20 transition-colors cursor-pointer flex items-center justify-between text-xs"
+                        >
+                          <span className="font-bold text-white">{fullLabel}</span>
+                          <span className="text-[10px] text-amber-400 font-mono">
+                            {v.plate_number || v.plate ? `لوحة: ${v.plate_number || v.plate}` : ''}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
               <div>
                 <label className={labelStyle}>الموديل (Model) *</label>
@@ -1117,7 +1293,7 @@ const AddOrder = React.memo(() => {
           {/* Section 5: Signatures & Responsibilities */}
           <fieldset className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 shadow-2xl border-0">
             <legend className="text-lg font-bold font-headline text-white mb-6 flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-xl">draw</span>
+              <span className="material-symbols-outlined text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-xl">draw</span>
               التوقيعات ومسؤوليات التسليم والضمان (Signatures, Handover & Warranty)
             </legend>
 
@@ -1143,7 +1319,7 @@ const AddOrder = React.memo(() => {
             {/* Per-Service Warranty Summary Note */}
             <div className="mt-8 pt-6 border-t border-white/10">
               <div className="flex items-center gap-2 text-xs text-gray-400 bg-white/[0.03] p-3 rounded-xl border border-white/5">
-                <span className="material-symbols-outlined text-[#FF5C35] text-base">info</span>
+                <span className="material-symbols-outlined text-[#8B5CF6] text-base">info</span>
                 <span>الضمانات تُسجل أسفل كل خدمة في القسم أعلاه. ستظهر للعميل فقط بعد تفعيلها من لوحة التحكم أو عند تسليم الطلب.</span>
               </div>
             </div>
@@ -1152,13 +1328,13 @@ const AddOrder = React.memo(() => {
           {/* Submit Floating Action */}
           <div className="fixed bottom-0 right-0 left-0 md:left-[280px] p-6 pointer-events-none z-50 flex justify-end">
             <div className="bg-[#000000]/90 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-4 pointer-events-auto">
-              <button type="button" onClick={() => navigate('/admin/orders')} className="px-6 py-3 text-white text-sm font-semibold hover:text-[#FF5C35] transition-colors cursor-pointer">
+              <button type="button" onClick={() => navigate('/admin/orders')} className="px-6 py-3 text-white text-sm font-semibold hover:text-[#8B5CF6] transition-colors cursor-pointer">
                 إلغاء (Cancel)
               </button>
               <button
                 type="submit"
                 disabled={createMutation.isPending}
-                className="bg-[#FF5C35] hover:brightness-110 text-white px-8 py-3.5 rounded-xl font-bold text-sm shadow-[0_8px_30px_rgba(255,92,53,0.4)] flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                className="bg-[#5C24EB] hover:brightness-110 text-white px-8 py-3.5 rounded-xl font-bold text-sm shadow-[0_8px_30px_rgba(92, 36, 235, 0.4)] flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
               >
                 {createMutation.isPending ? (
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

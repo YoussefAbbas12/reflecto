@@ -49,7 +49,7 @@ const AddService = React.memo(() => {
   }, [nameEn, nameAr, price, descriptionEn, descriptionAr, createMutation, toast]);
 
   return (
-    <div className="flex bg-[#000000] min-h-[calc(100vh-5rem)] font-body text-[#e5e2e1] selection:bg-[#FF5C35]/30 relative mt-16 md:mt-0">
+    <div className="flex bg-[#000000] min-h-[calc(100vh-5rem)] font-body text-[#e5e2e1] selection:bg-[#5C24EB]/30 relative mt-16 md:mt-0">
       <AdminSidebar />
       
       {/* Main Content Area */}
@@ -62,7 +62,7 @@ const AddService = React.memo(() => {
               Services
             </Link>
             <span className="mx-2" aria-hidden="true">/</span>
-            <span className="text-[#FF5C35]" aria-current="page">Add Service</span>
+            <span className="text-[#8B5CF6]" aria-current="page">Add Service</span>
           </nav>
           
           <h1 id="add-service-heading" className="text-4xl font-display font-black tracking-tight text-white mb-8">
@@ -74,7 +74,7 @@ const AddService = React.memo(() => {
             {/* Service Details Section */}
             <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0" aria-labelledby="service-details-heading">
               <h2 id="service-details-heading" className="text-lg font-bold text-white mb-8 tracking-widest uppercase flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                   <span className="material-symbols-outlined text-sm">settings</span>
                 </div>
                 Service Details / تفاصيل الخدمة
@@ -86,7 +86,7 @@ const AddService = React.memo(() => {
                   </label>
                   <input
                     id="serviceNameEn"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all"
                     placeholder="e.g. Premium Detailing"
                     type="text"
                     required
@@ -100,7 +100,7 @@ const AddService = React.memo(() => {
                   </label>
                   <input
                     id="serviceNameAr"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all text-right"
+                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all text-right"
                     placeholder="مثال: تلميع ساطع"
                     type="text"
                     required
@@ -117,7 +117,7 @@ const AddService = React.memo(() => {
                   </label>
                   <input
                     id="price"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none transition-all"
+                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-3 px-4 text-sm font-bold text-white placeholder-gray-600 focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none transition-all"
                     placeholder="e.g. 450.00"
                     type="number"
                     min="0"
@@ -133,7 +133,7 @@ const AddService = React.memo(() => {
             {/* Description Section */}
             <section className="bg-white/[0.02] shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl rounded-2xl p-8 border-0" aria-labelledby="description-heading">
               <h2 id="description-heading" className="text-lg font-bold text-white mb-8 tracking-widest uppercase flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#FF5C35]/10 shadow-inner flex items-center justify-center text-[#FF5C35]" aria-hidden="true">
+                <div className="w-8 h-8 rounded-lg bg-[#5C24EB]/10 shadow-inner flex items-center justify-center text-[#8B5CF6]" aria-hidden="true">
                   <span className="material-symbols-outlined text-sm">description</span>
                 </div>
                 Service Description / وصف الخدمة
@@ -145,7 +145,7 @@ const AddService = React.memo(() => {
                   </label>
                   <textarea
                     id="descriptionEn"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-4 px-4 text-sm font-bold tracking-wide text-white placeholder:text-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none resize-none transition-all leading-relaxed"
+                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-4 px-4 text-sm font-bold tracking-wide text-white placeholder:text-gray-600 focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none resize-none transition-all leading-relaxed"
                     placeholder="E.g. Full interior polishing and sanitation..."
                     rows="4"
                     value={descriptionEn}
@@ -158,7 +158,7 @@ const AddService = React.memo(() => {
                   </label>
                   <textarea
                     id="descriptionAr"
-                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-4 px-4 text-sm font-bold tracking-wide text-white placeholder:text-gray-600 focus:ring-2 focus:ring-[#FF5C35]/50 focus:outline-none resize-none transition-all leading-relaxed text-right"
+                    className="w-full bg-white/[0.05] shadow-inner border-0 rounded-xl py-4 px-4 text-sm font-bold tracking-wide text-white placeholder:text-gray-600 focus:ring-2 focus:ring-[#5C24EB]/50 focus:outline-none resize-none transition-all leading-relaxed text-right"
                     placeholder="مثال: تنظيف وتلميع كامل للأجزاء الداخلية للسيارة..."
                     rows="4"
                     value={descriptionAr}
@@ -182,7 +182,7 @@ const AddService = React.memo(() => {
               type="button"
               onClick={handlePublish}
               disabled={createMutation.isPending}
-              className="w-full sm:w-auto px-10 py-3.5 bg-[#FF5C35] rounded-xl text-white font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-[0_8px_30px_rgba(255,92,53,0.3)] active:scale-95 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="w-full sm:w-auto px-10 py-3.5 bg-[#5C24EB] rounded-xl text-white font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-[0_8px_30px_rgba(92,36,235,0.3)] active:scale-95 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50"
             >
               {createMutation.isPending ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true"></div>

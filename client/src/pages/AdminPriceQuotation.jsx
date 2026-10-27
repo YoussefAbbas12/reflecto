@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import AdminSidebar from "../components/AdminSidebar";
 import { pricingService } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
+import { useAdminTheme } from "../contexts/AdminThemeContext";
 
 const BRANCHES = [
   "جدة - شارع صاري","جدة - الصفا","جدة - البوادي",
@@ -112,6 +113,7 @@ const buildNew = (list) => ({
 const AdminPriceQuotation = () => {
   const navigate = useNavigate();
   const { hasPermission } = useAuth();
+  const { isLight } = useAdminTheme();
 
   const canView   = hasPermission('view_quotations');
   const canCreate = hasPermission('create_quotation');
@@ -217,12 +219,14 @@ const AdminPriceQuotation = () => {
     setQuotations(nl); saveQs(nl);
   };
 
-  const inp = "w-full bg-black/60 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-xs focus:border-[#FF5C35] focus:outline-none transition-colors";
+  const inp = "w-full bg-black/60 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-xs focus:border-[#5C24EB] focus:outline-none transition-colors";
   const lbl = "block text-gray-400 mb-1.5 text-xs font-bold";
 
   /* ═══════════ LIST VIEW ═══════════ */
   if (view === "list") return (
-    <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-24 md:pt-8 selection:bg-[#FF5C35]/30">
+    <div className={`flex min-h-screen font-body relative pt-24 md:pt-8 selection:bg-[#5C24EB]/30 transition-colors duration-300 ${
+      isLight ? 'bg-[#F8FAFC] text-gray-900' : 'bg-[#000000] text-[#e5e2e1]'
+    }`}>
       <AdminSidebar />
 
       <main className="flex-1 overflow-y-auto p-6 lg:p-12 pt-8 space-y-8" aria-labelledby="quotations-heading">
@@ -242,13 +246,15 @@ const AdminPriceQuotation = () => {
                 <div className="flex items-center gap-2 text-gray-500 mb-2 text-xs font-bold uppercase tracking-wider">
                   <span>Reflecto Admin</span>
                   <span className="material-symbols-outlined text-xs">chevron_right</span>
-                  <span className="text-[#FF5C35]">Price Quotations</span>
+                  <span className="text-[#8B5CF6]">Price Quotations</span>
                 </div>
-                <h1 id="quotations-heading" className="text-3xl md:text-5xl font-display font-black text-white tracking-tight flex items-center gap-3">
-                  <span className="material-symbols-outlined text-3xl md:text-4xl text-[#FF5C35] bg-[#FF5C35]/10 p-2 rounded-2xl border border-[#FF5C35]/20 shadow-inner" aria-hidden="true">request_quote</span>
-                  <span>عروض الأسعار <span className="text-lg font-normal text-gray-400">(Price Quotations)</span></span>
+                <h1 id="quotations-heading" className={`text-2xl md:text-3xl font-display font-black tracking-tight flex items-center gap-3 ${
+                  isLight ? 'text-gray-900' : 'text-white'
+                }`}>
+                  <span className="material-symbols-outlined text-2xl md:text-3xl text-[#8B5CF6] bg-[#5C24EB]/10 p-2 rounded-2xl border border-[#5C24EB]/20 shadow-inner" aria-hidden="true">request_quote</span>
+                  <span>عروض الأسعار <span className={`text-lg font-normal ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>(Price Quotations)</span></span>
                 </h1>
-                <p className="text-gray-400 text-sm mt-1">إدارة وإنشاء عروض الأسعار الاحترافية للعملاء — {quotations.length} عرض محفوظ</p>
+                <p className={`text-sm mt-1 ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>إدارة وإنشاء عروض الأسعار الاحترافية للعملاء — {quotations.length} عرض محفوظ</p>
               </div>
 
               <button
@@ -259,7 +265,7 @@ const AdminPriceQuotation = () => {
                   }
                   openNew();
                 }}
-                className={`px-6 py-3.5 bg-[#FF5C35] hover:brightness-110 text-white font-bold text-sm rounded-xl shadow-[0_8px_30px_rgba(255,92,53,0.3)] transition-all flex items-center gap-2 w-fit active:scale-95 cursor-pointer ${!canCreate ? 'opacity-40 filter grayscale cursor-not-allowed' : ''}`}
+                className={`px-6 py-3.5 bg-[#5C24EB] hover:brightness-110 text-white font-bold text-sm rounded-xl shadow-[0_8px_30px_rgba(92, 36, 235, 0.3)] transition-all flex items-center gap-2 w-fit active:scale-95 cursor-pointer ${!canCreate ? 'opacity-40 filter grayscale cursor-not-allowed' : ''}`}
               >
                 <span className="material-symbols-outlined text-lg">add_circle</span>
                 عرض سعر جديد (New Quotation)
@@ -269,14 +275,16 @@ const AdminPriceQuotation = () => {
             {/* Stats */}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Quotations Stats">
               {[
-                { label: 'إجمالي عروض الأسعار', value: quotations.length, icon: 'request_quote', color: 'text-[#FF5C35] bg-[#FF5C35]/10' },
+                { label: 'إجمالي عروض الأسعار', value: quotations.length, icon: 'request_quote', color: 'text-[#8B5CF6] bg-[#5C24EB]/10' },
                 { label: 'مسودة', value: quotations.filter(q => (q.quoteInfo?.status || 'draft') === 'draft').length, icon: 'edit_note', color: 'text-gray-400 bg-gray-400/10' },
                 { label: 'تم الارسال', value: quotations.filter(q => q.quoteInfo?.status === 'sent').length, icon: 'send', color: 'text-blue-400 bg-blue-400/10' },
                 { label: 'تمت الموافقة', value: quotations.filter(q => q.quoteInfo?.status === 'approved').length, icon: 'check_circle', color: 'text-emerald-400 bg-emerald-400/10' },
               ].map((stat, i) => (
-                <div key={i} className="bg-white/[0.02] backdrop-blur-xl p-5 rounded-2xl shadow-xl flex items-center justify-between border-0">
+                <div key={i} className={`backdrop-blur-xl p-5 rounded-2xl shadow-xl flex items-center justify-between border-0 ${
+                    isLight ? 'bg-white border border-gray-200 shadow-sm' : 'bg-white/[0.02]'
+                  }`}>
                   <div>
-                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{stat.label}</div>
+                    <div className={`text-xs font-bold uppercase tracking-wider mb-1 ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>{stat.label}</div>
                     <div className={`text-2xl font-black ${stat.color.split(' ')[0]}`}>{stat.value}</div>
                   </div>
                   <span className={`material-symbols-outlined text-3xl p-2.5 rounded-xl ${stat.color}`}>{stat.icon}</span>
@@ -285,14 +293,16 @@ const AdminPriceQuotation = () => {
             </section>
 
             {/* Table */}
-            <section className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-6 shadow-2xl border-0 overflow-hidden">
+            <section className={`backdrop-blur-xl rounded-2xl p-6 shadow-2xl border-0 overflow-hidden ${
+              isLight ? 'bg-white border border-gray-200 shadow-sm' : 'bg-white/[0.02]'
+            }`}>
               {quotations.length === 0 ? (
                 <div className="text-center py-16">
                   <span className="material-symbols-outlined text-6xl text-gray-600 mb-4">request_quote</span>
                   <p className="text-gray-400 font-bold text-lg mb-2">لا توجد عروض أسعار بعد</p>
                   <p className="text-gray-600 text-xs mb-6">اضغط على زر "عرض سعر جديد" للبدء</p>
                   {canCreate && (
-                    <button onClick={openNew} className="px-6 py-2.5 bg-[#FF5C35] text-white font-bold text-xs rounded-xl shadow-md cursor-pointer">
+                    <button onClick={openNew} className="px-6 py-2.5 bg-[#5C24EB] text-white font-bold text-xs rounded-xl shadow-md cursor-pointer">
                       إنشاء عرض سعر
                     </button>
                   )}
@@ -301,7 +311,9 @@ const AdminPriceQuotation = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-right border-collapse">
                     <thead>
-                      <tr className="border-b border-white/10 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                      <tr className={`border-b text-xs font-bold uppercase tracking-wider ${
+                      isLight ? 'border-gray-200 text-gray-500' : 'border-white/10 text-gray-400'
+                    }`}>
                         <th className="pb-4 px-4 text-right">رقم العرض</th>
                         <th className="pb-4 px-4 text-right">العميل</th>
                         <th className="pb-4 px-4 text-right">الفرع</th>
@@ -322,17 +334,17 @@ const AdminPriceQuotation = () => {
                           <tr key={q.id || idx} className="hover:bg-white/[0.02] transition-colors group">
                             <td className="py-4 px-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-xl bg-[#FF5C35]/10 border border-[#FF5C35]/20 text-[#FF5C35] flex items-center justify-center shrink-0 text-xs font-bold font-mono">
+                                <div className="w-9 h-9 rounded-xl bg-[#5C24EB]/10 border border-[#5C24EB]/20 text-[#8B5CF6] flex items-center justify-center shrink-0 text-xs font-bold font-mono">
                                   {String(idx + 1).padStart(2, "0")}
                                 </div>
-                                <span className="text-white font-bold text-sm font-mono">{info.quoteNo || ("RQ-" + (idx + 1))}</span>
+                                <span className={`font-bold text-sm font-mono ${isLight ? 'text-gray-900' : 'text-white'}`}>{info.quoteNo || ("RQ-" + (idx + 1))}</span>
                               </div>
                             </td>
                             <td className="py-4 px-4">
-                              <div className="font-bold text-white text-sm">
+                              <div className={`font-bold text-sm ${isLight ? 'text-gray-900' : 'text-white'}`}>
                                 {info.clientType === "company" ? (info.companyName || "—") : (info.clientName || "—")}
                               </div>
-                              <div className="text-xs text-gray-400 font-mono">{info.phone || "—"}</div>
+                              <div className={`text-xs font-mono ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>{info.phone || "—"}</div>
                             </td>
                             <td className="py-4 px-4 text-gray-300 text-xs">{info.branch || "—"}</td>
                             <td className="py-4 px-4 text-gray-400 text-xs font-mono">{info.date || "—"}</td>
@@ -355,7 +367,7 @@ const AdminPriceQuotation = () => {
                                 <button
                                   onClick={() => doPreview(idx)}
                                   title="معاينة عرض السعر"
-                                  className="p-2 rounded-lg bg-white/[0.05] hover:bg-[#FF5C35] hover:text-white text-gray-300 transition-colors shadow-inner cursor-pointer"
+                                  className="p-2 rounded-lg bg-white/[0.05] hover:bg-[#5C24EB] hover:text-white text-gray-300 transition-colors shadow-inner cursor-pointer"
                                 >
                                   <span className="material-symbols-outlined text-sm">visibility</span>
                                 </button>
@@ -430,7 +442,7 @@ const AdminPriceQuotation = () => {
                   /* ─── Edit mode: only Save ─── */
                   <button
                     onClick={doSave}
-                    className="px-6 py-2.5 bg-[#FF5C35] hover:bg-[#e04b27] text-white rounded-xl text-xs font-bold shadow-[0_4px_20px_rgba(255,92,53,0.4)] flex items-center gap-2 cursor-pointer transition-all active:scale-95"
+                    className="px-6 py-2.5 bg-[#5C24EB] hover:bg-[#4d1ec7] text-white rounded-xl text-xs font-bold shadow-[0_4px_20px_rgba(92, 36, 235, 0.4)] flex items-center gap-2 cursor-pointer transition-all active:scale-95"
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
                     حفظ التعديلات
@@ -442,7 +454,7 @@ const AdminPriceQuotation = () => {
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
                       حفظ
                     </button>
-                    <button onClick={() => doPreview(null)} className="px-5 py-2.5 bg-[#FF5C35] hover:bg-[#e04b27] text-white rounded-xl text-xs font-bold shadow-[0_4px_20px_rgba(255,92,53,0.4)] flex items-center gap-2 cursor-pointer transition-all">
+                    <button onClick={() => doPreview(null)} className="px-5 py-2.5 bg-[#5C24EB] hover:bg-[#4d1ec7] text-white rounded-xl text-xs font-bold shadow-[0_4px_20px_rgba(92, 36, 235, 0.4)] flex items-center gap-2 cursor-pointer transition-all">
                       معاينة وتنزيل PDF
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </button>
@@ -454,8 +466,8 @@ const AdminPriceQuotation = () => {
             {/* Section 1: Client Info */}
             <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl space-y-4">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <h2 className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#FF5C35]" /> بيانات العميل وعرض السعر
+                <h2 className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#5C24EB]" /> بيانات العميل وعرض السعر
                 </h2>
                 <span className="text-[10px] text-gray-400 bg-white/5 px-3 py-1 rounded-full font-mono">غير مرتبط بعميل محدد</span>
               </div>
@@ -467,7 +479,7 @@ const AdminPriceQuotation = () => {
                   <div className="flex gap-2">
                     {["en", "ar"].map(lang => (
                       <button key={lang} type="button" onClick={() => setQuoteInfo(p => ({ ...p, language: lang }))}
-                        className={"flex-1 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer " + (quoteInfo.language === lang ? "bg-[#FF5C35] text-white" : "bg-white/5 text-gray-400 border border-white/10")}>
+                        className={"flex-1 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer " + (quoteInfo.language === lang ? "bg-[#5C24EB] text-white" : "bg-white/5 text-gray-400 border border-white/10")}>
                         {lang === "en" ? "English" : "العربية"}
                       </button>
                     ))}
@@ -483,11 +495,11 @@ const AdminPriceQuotation = () => {
                   <span className="block text-gray-400 text-[10px] font-bold mb-2">نوع العميل</span>
                   <div className="flex gap-2">
                     <button type="button" onClick={() => setQuoteInfo(p => ({ ...p, clientType: "individual" }))}
-                      className={"flex-1 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer " + (quoteInfo.clientType === "individual" ? "bg-[#FF5C35] text-white" : "bg-white/5 text-gray-400 border border-white/10")}>
+                      className={"flex-1 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer " + (quoteInfo.clientType === "individual" ? "bg-[#5C24EB] text-white" : "bg-white/5 text-gray-400 border border-white/10")}>
                       عميل
                     </button>
                     <button type="button" onClick={() => setQuoteInfo(p => ({ ...p, clientType: "company" }))}
-                      className={"flex-1 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer " + (quoteInfo.clientType === "company" ? "bg-[#FF5C35] text-white" : "bg-white/5 text-gray-400 border border-white/10")}>
+                      className={"flex-1 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer " + (quoteInfo.clientType === "company" ? "bg-[#5C24EB] text-white" : "bg-white/5 text-gray-400 border border-white/10")}>
                       شركة
                     </button>
                   </div>
@@ -559,16 +571,16 @@ const AdminPriceQuotation = () => {
             {/* Section 2: Services */}
             <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl space-y-5">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-                <h2 className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#FF5C35]" /> الخدمات (Services Checklist)
+                <h2 className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#5C24EB]" /> الخدمات (Services Checklist)
                 </h2>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <select onChange={e => { if (e.target.value) { addPreset(e.target.value); e.target.value = ""; } }} className="bg-black/70 border border-white/20 text-white rounded-xl px-3 py-1.5 text-xs font-bold focus:border-[#FF5C35] focus:outline-none cursor-pointer">
+                  <select onChange={e => { if (e.target.value) { addPreset(e.target.value); e.target.value = ""; } }} className="bg-black/70 border border-white/20 text-white rounded-xl px-3 py-1.5 text-xs font-bold focus:border-[#5C24EB] focus:outline-none cursor-pointer">
                     <option value="">+ إضافة خدمة</option>
                     {PRESET_SERVICES.map(s => <option key={s.id} value={s.id}>{s.title} ({s.price} SAR)</option>)}
                   </select>
                   {apiPkgs.length > 0 && (
-                    <select onChange={e => { if (e.target.value) { const p = apiPkgs.find(x => String(x.id) === e.target.value); if (p) addApiPkg(p); e.target.value = ""; } }} className="bg-black/70 border border-white/20 text-white rounded-xl px-3 py-1.5 text-xs font-bold focus:border-[#FF5C35] focus:outline-none cursor-pointer">
+                    <select onChange={e => { if (e.target.value) { const p = apiPkgs.find(x => String(x.id) === e.target.value); if (p) addApiPkg(p); e.target.value = ""; } }} className="bg-black/70 border border-white/20 text-white rounded-xl px-3 py-1.5 text-xs font-bold focus:border-[#5C24EB] focus:outline-none cursor-pointer">
                       <option value="">+ باقات الداتابيز</option>
                       {apiPkgs.map(p => <option key={p.id} value={p.id}>{p.name_en || p.name} ({p.price} SAR)</option>)}
                     </select>
@@ -584,30 +596,30 @@ const AdminPriceQuotation = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pr-2">
                       <div className="sm:col-span-2">
                         <label className="block text-gray-400 mb-1 font-bold">اسم الخدمة</label>
-                        <input type="text" value={svc.title} onChange={e => updateSvc(index, "title", e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-bold focus:border-[#FF5C35] focus:outline-none text-xs" />
+                        <input type="text" value={svc.title} onChange={e => updateSvc(index, "title", e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-bold focus:border-[#5C24EB] focus:outline-none text-xs" />
                       </div>
                       <div>
                         <label className="block text-gray-400 mb-1 font-bold">Subtitle</label>
-                        <input type="text" value={svc.subtitle} onChange={e => updateSvc(index, "subtitle", e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-[#FF5C35] focus:outline-none text-xs" />
+                        <input type="text" value={svc.subtitle} onChange={e => updateSvc(index, "subtitle", e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-[#5C24EB] focus:outline-none text-xs" />
                       </div>
                       <div>
                         <label className="block text-gray-400 mb-1 font-bold">السعر (SAR)</label>
-                        <input type="number" value={svc.price} onChange={e => updateSvc(index, "price", e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-mono font-bold focus:border-[#FF5C35] focus:outline-none text-xs" />
+                        <input type="number" value={svc.price} onChange={e => updateSvc(index, "price", e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-mono font-bold focus:border-[#5C24EB] focus:outline-none text-xs" />
                       </div>
                       <div className="sm:col-span-2">
                         <label className="block text-gray-400 mb-1 font-bold">الوصف</label>
-                        <input type="text" value={svc.description} onChange={e => updateSvc(index, "description", e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-[#FF5C35] focus:outline-none text-xs" />
+                        <input type="text" value={svc.description} onChange={e => updateSvc(index, "description", e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:border-[#5C24EB] focus:outline-none text-xs" />
                       </div>
                     </div>
                     <div className="bg-white/[0.02] p-3 rounded-lg border border-white/5 space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-[11px] font-bold text-gray-400">المميزات:</span>
-                        <button onClick={() => addFeat(index)} className="text-[10px] text-[#FF5C35] font-bold cursor-pointer">+ إضافة</button>
+                        <button onClick={() => addFeat(index)} className="text-[10px] text-[#8B5CF6] font-bold cursor-pointer">+ إضافة</button>
                       </div>
                       {(svc.features || []).map((feat, fi) => (
                         <div key={fi} className="flex items-center gap-2 text-xs">
-                          <span className="text-[#FF5C35] font-bold">✔</span>
-                          <input type="text" value={feat} onChange={e => updateFeat(index, fi, e.target.value)} className="flex-1 bg-white/5 border border-white/10 rounded px-2.5 py-1 text-white text-xs focus:border-[#FF5C35] focus:outline-none" />
+                          <span className="text-[#8B5CF6] font-bold">✔</span>
+                          <input type="text" value={feat} onChange={e => updateFeat(index, fi, e.target.value)} className="flex-1 bg-white/5 border border-white/10 rounded px-2.5 py-1 text-white text-xs focus:border-[#5C24EB] focus:outline-none" />
                           <button onClick={() => removeFeat(index, fi)} className="text-gray-500 hover:text-red-400 text-xs px-1 cursor-pointer">✕</button>
                         </div>
                       ))}
@@ -630,8 +642,8 @@ const AdminPriceQuotation = () => {
 
             {/* Section 3: Discount + Tax + Terms */}
             <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl space-y-4 text-xs">
-              <h2 className="text-xs font-bold text-[#FF5C35] uppercase tracking-wider flex items-center gap-2 border-b border-white/10 pb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FF5C35]" /> الخصومات والضريبة والشروط
+              <h2 className="text-xs font-bold text-[#8B5CF6] uppercase tracking-wider flex items-center gap-2 border-b border-white/10 pb-3">
+                <span className="w-2 h-2 rounded-full bg-[#5C24EB]" /> الخصومات والضريبة والشروط
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
@@ -669,7 +681,7 @@ const AdminPriceQuotation = () => {
                   <span>الضريبة ({quoteInfo.taxRate}%):</span>
                   <span className="font-mono text-white">{vatAmt.toLocaleString()} SAR</span>
                 </div>
-                <div className="flex justify-between text-[#FF5C35] font-bold pt-2 border-t border-white/10 text-sm">
+                <div className="flex justify-between text-[#8B5CF6] font-bold pt-2 border-t border-white/10 text-sm">
                   <span>الإجمالي النهائي:</span>
                   <span className="font-mono">{total.toLocaleString()} SAR</span>
                 </div>
@@ -677,7 +689,7 @@ const AdminPriceQuotation = () => {
 
               <div>
                 <label className={lbl}>الشروط والأحكام (كل شرط في سطر):</label>
-                <textarea rows="4" value={quoteInfo.terms.join("\n")} onChange={e => setQuoteInfo(p => ({ ...p, terms: e.target.value.split("\n") }))} className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white focus:border-[#FF5C35] focus:outline-none text-xs leading-relaxed" />
+                <textarea rows="4" value={quoteInfo.terms.join("\n")} onChange={e => setQuoteInfo(p => ({ ...p, terms: e.target.value.split("\n") }))} className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white focus:border-[#5C24EB] focus:outline-none text-xs leading-relaxed" />
               </div>
             </div>
 
@@ -686,7 +698,7 @@ const AdminPriceQuotation = () => {
               {editIdx !== null ? (
                 <button
                   onClick={doSave}
-                  className="px-10 py-3.5 bg-[#FF5C35] hover:bg-[#e04b27] text-white rounded-2xl text-sm font-bold shadow-[0_6px_30px_rgba(255,92,53,0.5)] flex items-center justify-center gap-3 cursor-pointer transition-all active:scale-95"
+                  className="px-10 py-3.5 bg-[#5C24EB] hover:bg-[#4d1ec7] text-white rounded-2xl text-sm font-bold shadow-[0_6px_30px_rgba(92, 36, 235, 0.5)] flex items-center justify-center gap-3 cursor-pointer transition-all active:scale-95"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
                   حفظ التعديلات
@@ -696,7 +708,7 @@ const AdminPriceQuotation = () => {
                   <button onClick={doSave} className="px-8 py-3.5 bg-white/10 hover:bg-white/20 text-white rounded-2xl text-xs font-bold border border-white/10 flex items-center justify-center gap-2 cursor-pointer transition-all">
                     حفظ عرض السعر
                   </button>
-                  <button onClick={() => doPreview(null)} className="px-8 py-3.5 bg-[#FF5C35] hover:bg-[#e04b27] text-white rounded-2xl text-sm font-bold shadow-[0_6px_30px_rgba(255,92,53,0.5)] flex items-center justify-center gap-3 cursor-pointer transition-all">
+                  <button onClick={() => doPreview(null)} className="px-8 py-3.5 bg-[#5C24EB] hover:bg-[#4d1ec7] text-white rounded-2xl text-sm font-bold shadow-[0_6px_30px_rgba(92, 36, 235, 0.5)] flex items-center justify-center gap-3 cursor-pointer transition-all">
                     معاينة عرض السعر وتنزيل PDF
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </button>

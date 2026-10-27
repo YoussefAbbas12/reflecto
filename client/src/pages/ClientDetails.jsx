@@ -8,6 +8,7 @@ import Icon from '../components/Icon';
 import WarrantyCertificateModal from '../components/WarrantyCertificateModal';
 import { formatPhoneDisplay } from '../utils/phone';
 import useBodyScrollLock from '../hooks/useBodyScrollLock';
+import { useAdminTheme } from '../contexts/AdminThemeContext';
 
 const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, allWarranties }) => {
   useBodyScrollLock(Boolean(item));
@@ -132,10 +133,10 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-24 sm:pt-28 h-screen w-screen overflow-hidden overscroll-contain" dir="rtl">
-      <div className="bg-[#0c0c0c] border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full space-y-6 shadow-2xl relative overflow-hidden max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar overscroll-contain font-body text-white">
+      <div className="bg-[#0c0c0c] keep-white border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full space-y-6 shadow-2xl relative overflow-hidden max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar overscroll-contain font-body text-white">
         <div className="flex items-center justify-between border-b border-white/10 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#FF5C35]/10 text-[#FF5C35] flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-xl bg-[#5C24EB]/10 text-[#8B5CF6] flex items-center justify-center font-bold">
               <span className="material-symbols-outlined text-xl">description</span>
             </div>
             <div>
@@ -155,15 +156,15 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
         </div>
 
         {/* Technician Info Banner */}
-        <div className="p-4 bg-[#FF5C35]/10 border border-[#FF5C35]/20 rounded-2xl flex items-center justify-between">
+        <div className="p-4 bg-[#5C24EB]/10 border border-[#5C24EB]/20 rounded-2xl flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#FF5C35] text-2xl">engineering</span>
+            <span className="material-symbols-outlined text-[#8B5CF6] text-2xl">engineering</span>
             <div>
               <span className="text-[11px] text-gray-400 font-bold block">الفني المسؤول عن المركبة:</span>
               <span className="text-sm font-black text-white">{item.technician_name || 'لم يحدد بعد'}</span>
             </div>
           </div>
-          <span className="px-3 py-1 bg-[#FF5C35] text-white rounded-full text-[10px] font-bold">
+          <span className="px-3 py-1 bg-[#5C24EB] text-white rounded-full text-[10px] font-bold">
             {item.status === 'completed' ? 'مكتمل ✅' : (item.status === 'in_progress' ? 'قيد التنفيذ 🛠️' : 'مسجل ⏳')}
           </span>
         </div>
@@ -198,7 +199,7 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
           </div>
           <div>
             <span className="text-gray-500 block mb-0.5">النقاط المكتسبة:</span>
-            <span className="font-bold text-[#FF5C35] font-mono">+{item.points_earned || 50} pts</span>
+            <span className="font-bold text-[#8B5CF6] font-mono">+{item.points_earned || 50} pts</span>
           </div>
         </div>
 
@@ -249,7 +250,7 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
         {/* Financial Breakdown */}
         <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl space-y-3 text-xs">
           <h3 className="font-bold text-white text-xs flex items-center gap-1.5 border-b border-white/5 pb-2">
-            <span className="material-symbols-outlined text-[#FF5C35] text-sm">payments</span>
+            <span className="material-symbols-outlined text-[#8B5CF6] text-sm">payments</span>
             العمليات المالية والدفع:
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -263,7 +264,7 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
             </div>
             <div>
               <span className="text-gray-500 block mb-0.5">المتبقي:</span>
-              <span className={`font-bold font-mono ${Number(item.remaining_amount) > 0 ? 'text-[#FF5C35]' : 'text-emerald-400'}`}>
+              <span className={`font-bold font-mono ${Number(item.remaining_amount) > 0 ? 'text-[#8B5CF6]' : 'text-emerald-400'}`}>
                 {(item.remaining_amount || 0).toLocaleString()} SAR
               </span>
             </div>
@@ -277,7 +278,7 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
         {/* Timeline & Duration */}
         <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl space-y-2 text-xs">
           <h3 className="font-bold text-white text-xs flex items-center gap-1.5 mb-2">
-            <span className="material-symbols-outlined text-[#FF5C35] text-sm">schedule</span>
+            <span className="material-symbols-outlined text-[#8B5CF6] text-sm">schedule</span>
             التوقيت الزمني والأداء:
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -295,7 +296,7 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
             </div>
             <div>
               <span className="text-gray-500 block">المدة المستغرقة:</span>
-              <span className="font-bold text-[#FF5C35] font-mono">
+              <span className="font-bold text-[#8B5CF6] font-mono">
                 {duration || 'غير مسجل'}
               </span>
             </div>
@@ -306,7 +307,7 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
         {servicesList.length > 0 && (
           <div id="service-checklist-section" className="space-y-3 text-xs">
             <h3 className="font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[#FF5C35] text-sm">checklist</span>
+              <span className="material-symbols-outlined text-[#8B5CF6] text-sm">checklist</span>
               تفاصيل الخدمات والمراحل المختارة (Check List):
             </h3>
             <div className="space-y-2">
@@ -361,7 +362,7 @@ const AdminServiceDetailsModal = React.memo(({ item, onClose, onOpenWarranty, al
                   alert('لا يوجد كارت فحص أو أمر عمل مسجل لهذه الخدمة.');
                 }
               }}
-              className="py-3 px-4 bg-[#FF5C35] hover:bg-[#ff4517] text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#FF5C35]/20"
+              className="py-3 px-4 bg-[#5C24EB] hover:bg-[#4d1ec7] text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#5C24EB]/20"
             >
               <span className="material-symbols-outlined text-sm">open_in_new</span>
               استعراض وطباعة الـ Check List الكامل
@@ -403,6 +404,7 @@ const ClientDetails = React.memo(() => {
   const params = useParams();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isLight } = useAdminTheme();
 
   const searchParams = new URLSearchParams(location.search);
   const clientId = searchParams.get('id') || params.id;
@@ -481,20 +483,22 @@ const ClientDetails = React.memo(() => {
     navigate('/admin/client-details');
   };
 
-  // Search mode view if no client ID is provided
+  // Search mode view if no  client ID is provided
   if (!clientId) {
     return (
-      <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0 selection:bg-[#FF5C35]/30">
+      <div className={`flex min-h-screen font-body relative pt-16 md:pt-0 selection:bg-[#5C24EB]/30 transition-colors duration-300 ${
+        isLight ? 'bg-[#F8FAFC] text-gray-900 admin-light-theme' : 'bg-[#090A0F] text-[#e5e2e1] admin-dark-theme'
+      }`}>
         <AdminSidebar />
         <main className="flex-1 overflow-y-auto p-6 lg:p-12 space-y-8" dir="rtl">
           <header className="space-y-2">
-            <h1 className="text-3xl md:text-4xl font-black text-white">صفحة تفاصيل العملاء والاستعلام الشامل</h1>
-            <p className="text-sm text-gray-400">ابحث عن أي عميل برقم الجوال أو الاسم لاستعراض تفاصيله الكاملة وسجل خدماته ونقاط الولاء.</p>
+            <h1 className={`text-3xl md:text-4xl font-black ${isLight ? 'text-gray-900' : 'text-white'}`}>صفحة تفاصيل العملاء والاستعلام الشامل</h1>
+            <p className={`text-sm ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>ابحث عن أي عميل برقم الجوال أو الاسم لاستعراض تفاصيله الكاملة وسجل خدماته ونقاط الولاء.</p>
           </header>
 
           {/* Search Box */}
-          <div className="bg-white/[0.02] border border-white/10 rounded-3xl p-6 sm:p-8 space-y-4 shadow-2xl">
-            <label className="block text-sm font-bold text-gray-300">البحث بالاسم أو رقم الهاتف:</label>
+          <div className={`${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-white/[0.02] border-white/10 shadow-2xl'} border rounded-3xl p-6 sm:p-8 space-y-4`}>
+            <label className={`block text-sm font-bold ${isLight ? 'text-gray-800' : 'text-gray-300'}`}>البحث بالاسم أو رقم الهاتف:</label>
             <div className="relative">
               <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
               <input
@@ -503,13 +507,17 @@ const ClientDetails = React.memo(() => {
                 placeholder="أدخل اسم العميل أو رقم الجوال (مثال: 0500000002)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl pr-12 pl-4 py-4 text-white text-sm font-bold outline-none focus:border-[#FF5C35] transition-all shadow-inner"
+                className={`w-full rounded-2xl pr-12 pl-4 py-4 text-sm font-bold outline-none focus:border-[#5C24EB] transition-all border shadow-inner ${
+                  isLight 
+                    ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400' 
+                    : 'bg-white/5 border-white/10 text-white placeholder:text-gray-500'
+                }`}
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 ${isLight ? 'text-gray-500 hover:text-gray-900' : 'text-gray-400 hover:text-white'}`}
                 >
                   <span className="material-symbols-outlined text-sm">close</span>
                 </button>
@@ -519,34 +527,38 @@ const ClientDetails = React.memo(() => {
             {/* Results Section */}
             {isSearching ? (
               <div className="flex justify-center items-center py-12">
-                <div className="w-8 h-8 border-4 border-[#FF5C35] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-4 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : searchQuery.trim().length > 0 ? (
               <div className="space-y-3 pt-4">
-                <h3 className="text-xs font-bold text-gray-400 uppercase">نتائج البحث ({searchClientsList.length}):</h3>
+                <h3 className={`text-xs font-bold uppercase ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>نتائج البحث ({searchClientsList.length}):</h3>
                 {searchClientsList.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {searchClientsList.map((c) => (
                       <div
                         key={c.id || c.uuid}
                         onClick={() => handleSelectClient(c.id || c.uuid)}
-                        className="p-5 bg-white/[0.03] hover:bg-[#FF5C35]/10 border border-white/5 hover:border-[#FF5C35]/40 rounded-2xl transition-all cursor-pointer space-y-3 group"
+                        className={`p-5 rounded-2xl transition-all cursor-pointer space-y-3 group border ${
+                          isLight
+                            ? 'bg-slate-50 hover:bg-[#5C24EB]/10 border-slate-200 hover:border-[#5C24EB]/40 shadow-sm'
+                            : 'bg-white/[0.03] hover:bg-[#5C24EB]/10 border-white/5 hover:border-[#5C24EB]/40'
+                        }`}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="w-10 h-10 rounded-xl bg-[#FF5C35]/15 text-[#FF5C35] font-black flex items-center justify-center text-lg">
+                          <div className="w-10 h-10 rounded-xl bg-[#5C24EB]/15 text-[#8B5CF6] font-black flex items-center justify-center text-lg">
                             {c.full_name ? c.full_name.charAt(0) : 'C'}
                           </div>
-                          <span className="text-[10px] font-bold text-[#FF5C35] bg-[#FF5C35]/10 px-2.5 py-0.5 rounded-full flex items-center gap-1 group-hover:bg-[#FF5C35] group-hover:text-white transition-all">
+                          <span className="text-[10px] font-bold text-[#8B5CF6] bg-[#5C24EB]/10 px-2.5 py-0.5 rounded-full flex items-center gap-1 group-hover:bg-[#5C24EB] group-hover:text-white transition-all">
                             عرض ملف العميل
                             <span className="material-symbols-outlined text-xs">arrow_forward</span>
                           </span>
                         </div>
                         <div>
-                          <h4 className="text-base font-bold text-white group-hover:text-[#FF5C35] transition-colors">{c.full_name}</h4>
-                          <p className="text-xs text-gray-400 font-mono mt-0.5">{c.phone}</p>
+                          <h4 className={`text-base font-bold group-hover:text-[#8B5CF6] transition-colors ${isLight ? 'text-gray-900' : 'text-white'}`}>{c.full_name}</h4>
+                          <p className={`text-xs font-mono mt-0.5 ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>{c.phone}</p>
                         </div>
                         {c.company_name && (
-                          <div className="text-[11px] text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg font-bold inline-block">
+                          <div className="text-[11px] text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-lg font-bold inline-block">
                             شركة: {c.company_name}
                           </div>
                         )}
@@ -558,8 +570,8 @@ const ClientDetails = React.memo(() => {
                 )}
               </div>
             ) : (
-              <div className="text-center py-12 text-gray-500 font-bold space-y-2">
-                <span className="material-symbols-outlined text-4xl text-gray-600 block">manage_search</span>
+              <div className={`text-center py-12 font-bold space-y-2 ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>
+                <span className={`material-symbols-outlined text-4xl block ${isLight ? 'text-gray-400' : 'text-gray-600'}`}>manage_search</span>
                 <p>اكتب اسم العميل أو رقم هاتفه أعلاه للبحث واستعراض الملف بالتفصيل.</p>
               </div>
             )}
@@ -581,18 +593,20 @@ const ClientDetails = React.memo(() => {
   const clientWarranties = profile.warranties || [];
 
   return (
-    <div className="flex bg-[#000000] min-h-screen font-body text-[#e5e2e1] relative pt-16 md:pt-0 selection:bg-[#FF5C35]/30">
+    <div className={`flex min-h-screen font-body relative pt-16 md:pt-0 selection:bg-[#5C24EB]/30 transition-colors duration-300 ${
+      isLight ? 'bg-[#F8FAFC] text-gray-900 admin-light-theme' : 'bg-[#090A0F] text-[#e5e2e1] admin-dark-theme'
+    }`}>
       <AdminSidebar />
 
       <main className="flex-1 overflow-y-auto p-6 lg:p-12 space-y-8" dir="rtl">
         {isFetching ? (
           <div className="flex justify-center items-center h-64">
-            <div className="w-10 h-10 border-4 border-[#FF5C35] border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-[#5C24EB] border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : error ? (
-          <div className="text-center py-12 bg-white/[0.02] rounded-2xl space-y-4">
-            <p className="text-red-400 font-bold">تعذر تحميل بيانات العميل المحدد.</p>
-            <button type="button" onClick={handleBackToSearch} className="px-6 py-2 bg-[#FF5C35] text-white font-bold rounded-xl">
+          <div className={`text-center py-12 rounded-2xl space-y-4 border ${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-white/[0.02] border-white/5'}`}>
+            <p className="text-red-500 font-bold">تعذر تحميل بيانات العميل المحدد.</p>
+            <button type="button" onClick={handleBackToSearch} className="px-6 py-2 bg-[#5C24EB] text-white font-bold rounded-xl cursor-pointer">
               العودة لشاشة البحث
             </button>
           </div>
@@ -604,15 +618,15 @@ const ClientDetails = React.memo(() => {
                 <button
                   type="button"
                   onClick={handleBackToSearch}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#FF5C35] hover:underline mb-2 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8B5CF6] hover:underline mb-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-sm">arrow_forward</span>
                   العودة للبحث عن عميل آخر
                 </button>
-                <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
+                <h1 className={`text-3xl md:text-4xl font-black tracking-tight ${isLight ? 'text-gray-900' : 'text-white'}`}>
                   {profile.full_name || 'ملف العميل'}
                 </h1>
-                <p className="text-gray-400 text-xs mt-1 font-medium font-mono">
+                <p className={`text-xs mt-1 font-medium font-mono ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>
                   معرف العميل: {clientId}
                 </p>
               </div>
@@ -622,7 +636,7 @@ const ClientDetails = React.memo(() => {
                   type="button"
                   onClick={handleResetPassword}
                   disabled={resetPasswordMutation.isPending}
-                  className="px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-sm">lock_reset</span>
                   إعادة ضبط كلمة المرور (00000)
@@ -631,27 +645,27 @@ const ClientDetails = React.memo(() => {
             </header>
 
             {/* Profile Overview Card */}
-            <section className="bg-white/[0.02] backdrop-blur-2xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/5 relative overflow-hidden">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/5">
+            <section className={`${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-white/[0.02] border-white/5 shadow-2xl'} backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border relative overflow-hidden`}>
+              <div className={`flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b ${isLight ? 'border-slate-100' : 'border-white/5'}`}>
                 <div className="flex items-center gap-6">
-                  <div className="w-20 h-20 rounded-2xl bg-[#FF5C35]/15 border border-[#FF5C35]/30 flex items-center justify-center text-3xl font-black text-[#FF5C35] shrink-0">
+                  <div className="w-20 h-20 rounded-2xl bg-[#5C24EB]/15 border border-[#5C24EB]/30 flex items-center justify-center text-3xl font-black text-[#8B5CF6] shrink-0">
                     {profile.full_name ? profile.full_name.charAt(0).toUpperCase() : '?'}
                   </div>
                   <div>
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <h2 className="text-2xl font-extrabold text-white">{profile.full_name || '—'}</h2>
+                      <h2 className={`text-2xl font-extrabold ${isLight ? 'text-gray-900' : 'text-white'}`}>{profile.full_name || '—'}</h2>
                       {profile.company && (
-                        <span className="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full text-xs font-bold flex items-center gap-1">
+                        <span className="px-3 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-full text-xs font-bold flex items-center gap-1">
                           <span className="material-symbols-outlined text-xs">business</span>
                           {typeof profile.company === 'object' ? (profile.company.name || profile.company.company_name) : profile.company}
                         </span>
                       )}
-                      <span className="px-3 py-1 bg-[#FF5C35]/20 text-[#FF5C35] rounded-full text-xs font-bold">
+                      <span className="px-3 py-1 bg-[#5C24EB]/20 text-[#8B5CF6] rounded-full text-xs font-bold">
                         {profile.role || 'client'}
                       </span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 font-bold">
-                      <span className="flex items-center gap-1 text-white font-mono">
+                    <div className={`flex flex-wrap items-center gap-4 text-xs font-bold ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
+                      <span className={`flex items-center gap-1 font-mono ${isLight ? 'text-gray-900' : 'text-white'}`}>
                         <span className="material-symbols-outlined text-sm text-gray-400">call</span>
                         {formatPhoneDisplay(profile.phone)}
                       </span>
@@ -672,15 +686,15 @@ const ClientDetails = React.memo(() => {
 
               {/* Loyalty Points Management */}
               <div className="pt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white/[0.02] p-5 rounded-2xl border border-white/5 space-y-1">
-                  <span className="text-xs font-bold text-gray-400 block">إجمالي عدد سيارات العميل:</span>
-                  <span className="text-xl font-black text-white">{vehiclesList.length || (vehicle !== 'لا يوجد سيارة مسجلة' ? 1 : 0)} سيارات</span>
+                <div className={`${isLight ? 'bg-slate-50 border-slate-200' : 'bg-white/[0.02] border-white/5'} p-5 rounded-2xl border space-y-1`}>
+                  <span className={`text-xs font-bold block ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>إجمالي عدد سيارات العميل:</span>
+                  <span className={`text-xl font-black ${isLight ? 'text-gray-900' : 'text-white'}`}>{vehiclesList.length || (vehicle !== 'لا يوجد سيارة مسجلة' ? 1 : 0)} سيارات</span>
                 </div>
 
-                <div className="bg-white/[0.02] p-5 rounded-2xl border border-white/5 col-span-1 md:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className={`${isLight ? 'bg-slate-50 border-slate-200' : 'bg-white/[0.02] border-white/5'} p-5 rounded-2xl border col-span-1 md:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4`}>
                   <div>
-                    <span className="text-xs font-bold text-gray-400 block">رصيد نقاط الولاء الحالية:</span>
-                    <span className="text-2xl font-black text-[#FF5C35] font-mono">{loyalty.total_points.toLocaleString()} pts</span>
+                    <span className={`text-xs font-bold block ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>رصيد نقاط الولاء الحالية:</span>
+                    <span className="text-2xl font-black text-[#8B5CF6] font-mono">{loyalty.total_points.toLocaleString()} pts</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <input
@@ -688,13 +702,17 @@ const ClientDetails = React.memo(() => {
                       placeholder="عدد النقاط..."
                       value={pointsInput}
                       onChange={(e) => setPointsInput(e.target.value)}
-                      className="w-32 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-[#FF5C35] font-mono"
+                      className={`w-32 rounded-xl px-3 py-2 text-xs outline-none focus:border-[#5C24EB] font-mono border ${
+                        isLight 
+                          ? 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400' 
+                          : 'bg-white/5 border-white/10 text-white placeholder:text-gray-500'
+                      }`}
                     />
                     <button
                       type="button"
                       onClick={() => handleUpdatePoints('add')}
                       disabled={awardPointsMutation.isPending}
-                      className="px-3.5 py-2 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1"
+                      className="px-3.5 py-2 bg-emerald-500/20 text-emerald-500 hover:bg-emerald-500/30 border border-emerald-500/30 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1"
                     >
                       <span className="material-symbols-outlined text-sm">add</span>
                       إضافة
@@ -703,7 +721,7 @@ const ClientDetails = React.memo(() => {
                       type="button"
                       onClick={() => handleUpdatePoints('deduct')}
                       disabled={awardPointsMutation.isPending}
-                      className="px-3.5 py-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1"
+                      className="px-3.5 py-2 bg-red-500/20 text-red-500 hover:bg-red-500/30 border border-red-500/30 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1"
                     >
                       <span className="material-symbols-outlined text-sm">remove</span>
                       خصم
@@ -715,24 +733,24 @@ const ClientDetails = React.memo(() => {
 
             {/* Registered Vehicles Cards */}
             {vehiclesList.length > 0 && (
-              <section className="bg-white/[0.02] backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-white/5 space-y-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#FF5C35]">directions_car</span>
+              <section className={`${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-white/[0.02] border-white/5'} backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border space-y-4`}>
+                <h3 className={`text-lg font-bold flex items-center gap-2 ${isLight ? 'text-gray-900' : 'text-white'}`}>
+                  <span className="material-symbols-outlined text-[#8B5CF6]">directions_car</span>
                   مركبات وسيارات العميل المسجلة ({vehiclesList.length}):
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {vehiclesList.map((v, i) => (
-                    <div key={v.id || i} className="p-4 bg-white/[0.03] border border-white/5 rounded-2xl text-xs space-y-1.5 font-bold">
-                      <div className="flex items-center justify-between text-sm text-white border-b border-white/5 pb-2">
+                    <div key={v.id || i} className={`p-4 rounded-2xl text-xs space-y-1.5 font-bold border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-white/[0.03] border-white/5'}`}>
+                      <div className={`flex items-center justify-between text-sm border-b pb-2 ${isLight ? 'text-gray-900 border-slate-200' : 'text-white border-white/5'}`}>
                         <span>{v.brand} {v.model}</span>
-                        <span className="text-[#FF5C35] font-mono">{v.year || ''}</span>
+                        <span className="text-[#8B5CF6] font-mono">{v.year || ''}</span>
                       </div>
-                      <div className="flex items-center justify-between text-gray-400">
-                        <span>اللون: <strong className="text-white">{v.color || 'غير محدد'}</strong></span>
-                        <span>اللوحة: <strong className="text-white font-mono">{v.plate || v.plate_number || '—'}</strong></span>
+                      <div className={`flex items-center justify-between ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
+                        <span>اللون: <strong className={isLight ? 'text-gray-900' : 'text-white'}>{v.color || 'غير محدد'}</strong></span>
+                        <span>اللوحة: <strong className={`font-mono ${isLight ? 'text-gray-900' : 'text-white'}`}>{v.plate || v.plate_number || '—'}</strong></span>
                       </div>
                       {v.chassis_number && (
-                        <div className="text-[10px] text-gray-500 font-mono pt-1">
+                        <div className={`text-[10px] font-mono pt-1 ${isLight ? 'text-gray-500' : 'text-gray-500'}`}>
                           الهيكل: {v.chassis_number}
                         </div>
                       )}
@@ -744,18 +762,18 @@ const ClientDetails = React.memo(() => {
 
             {/* Active Warranties Section */}
             {clientWarranties.length > 0 && (
-              <section className="bg-white/[0.02] backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-white/5 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-4">
+              <section className={`${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-white/[0.02] border-white/5'} backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border space-y-4`}>
+                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 ${isLight ? 'border-slate-100' : 'border-white/5'}`}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center font-bold">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center font-bold">
                       <span className="material-symbols-outlined text-2xl">verified</span>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white">شهادات الضمان المعتمدة للعميل ({clientWarranties.length})</h3>
-                      <p className="text-xs text-gray-400">جميع الضمانات الفعّالة لخدمات ومركبات العميل مع إمكانية المعاينة والطباعة</p>
+                      <h3 className={`text-lg font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>شهادات الضمان المعتمدة للعميل ({clientWarranties.length})</h3>
+                      <p className={`text-xs ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>جميع الضمانات الفعّالة لخدمات ومركبات العميل مع إمكانية المعاينة والطباعة</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-bold w-fit">
+                  <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-full text-xs font-bold w-fit">
                     مفعلة وسارية ✓
                   </span>
                 </div>
@@ -764,35 +782,39 @@ const ClientDetails = React.memo(() => {
                   {clientWarranties.map((w, i) => (
                     <div
                       key={w.id || w.uuid || i}
-                      className="p-5 bg-white/[0.03] hover:bg-emerald-500/5 border border-white/5 hover:border-emerald-500/30 rounded-2xl transition-all space-y-3 font-bold text-xs"
+                      className={`p-5 rounded-2xl transition-all space-y-3 font-bold text-xs border ${
+                        isLight
+                          ? 'bg-slate-50 hover:bg-emerald-50/50 border-slate-200 hover:border-emerald-300'
+                          : 'bg-white/[0.03] hover:bg-emerald-500/5 border-white/5 hover:border-emerald-500/30'
+                      }`}
                     >
-                      <div className="flex items-start justify-between gap-2 border-b border-white/5 pb-2.5">
+                      <div className={`flex items-start justify-between gap-2 border-b pb-2.5 ${isLight ? 'border-slate-200' : 'border-white/5'}`}>
                         <div>
-                          <h4 className="text-sm font-black text-white">{w.service_name || w.service}</h4>
-                          <span className="text-[11px] text-emerald-400 font-mono">
+                          <h4 className={`text-sm font-black ${isLight ? 'text-gray-900' : 'text-white'}`}>{w.service_name || w.service}</h4>
+                          <span className="text-[11px] text-emerald-500 font-mono">
                             ضمان {w.coverage_years || w.warranty_years || 5} {w.unit === 'months' ? 'شهور' : 'سنوات'}
                           </span>
                         </div>
                         {w.work_order_number && (
-                          <span className="text-[10px] bg-white/5 text-gray-300 font-mono px-2 py-0.5 rounded">
+                          <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${isLight ? 'bg-slate-200 text-slate-700' : 'bg-white/5 text-gray-300'}`}>
                             {w.work_order_number}
                           </span>
                         )}
                       </div>
 
-                      <div className="space-y-1.5 text-gray-400 text-[11px]">
+                      <div className={`space-y-1.5 text-[11px] ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
                         <div className="flex items-center justify-between">
                           <span>المركبة:</span>
-                          <span className="text-white font-semibold">{w.vehicle_name || [w.brand, w.model, w.year].filter(Boolean).join(' ') || 'سيارة العميل'}</span>
+                          <span className={`font-semibold ${isLight ? 'text-gray-900' : 'text-white'}`}>{w.vehicle_name || [w.brand, w.model, w.year].filter(Boolean).join(' ') || 'سيارة العميل'}</span>
                         </div>
                         <div className="flex items-center justify-between">
                           <span>اللوحة:</span>
-                          <span className="text-white font-mono">{w.vehicle_plate || w.plate_number || '—'}</span>
+                          <span className={`font-mono ${isLight ? 'text-gray-900' : 'text-white'}`}>{w.vehicle_plate || w.plate_number || '—'}</span>
                         </div>
                         {w.expiry_date && (
-                          <div className="flex items-center justify-between text-gray-500">
+                          <div className={`flex items-center justify-between ${isLight ? 'text-gray-500' : 'text-gray-500'}`}>
                             <span>تاريخ الانتهاء:</span>
-                            <span className="font-mono text-gray-300">{new Date(w.expiry_date).toLocaleDateString('ar-SA')}</span>
+                            <span className={`font-mono ${isLight ? 'text-gray-700' : 'text-gray-300'}`}>{new Date(w.expiry_date).toLocaleDateString('ar-SA')}</span>
                           </div>
                         )}
                       </div>
@@ -800,7 +822,7 @@ const ClientDetails = React.memo(() => {
                       <button
                         type="button"
                         onClick={() => handleOpenWarrantyFromService(w)}
-                        className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        className="w-full py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-sm">print</span>
                         عرض وطباعة شهادة الضمان
@@ -814,12 +836,12 @@ const ClientDetails = React.memo(() => {
             {/* Service History & Checklists */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Services & Checklists */}
-              <section className="bg-white/[0.02] backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-white/5 flex flex-col space-y-4">
+              <section className={`${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-white/[0.02] border-white/5'} backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border flex flex-col space-y-4`}>
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[#FF5C35] text-2xl">checklist</span>
+                  <span className="material-symbols-outlined text-[#8B5CF6] text-2xl">checklist</span>
                   <div>
-                    <h3 className="text-lg font-bold text-white">كافة الخدمات والـ Check List</h3>
-                    <p className="text-xs text-gray-400">اضغط على أي خدمة لاستعراض حالة الـ Check List والمراحل والفني والدفع</p>
+                    <h3 className={`text-lg font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>كافة الخدمات والـ Check List</h3>
+                    <p className={`text-xs ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>اضغط على أي خدمة لاستعراض حالة الـ Check List والمراحل والفني والدفع</p>
                   </div>
                 </div>
 
@@ -829,25 +851,29 @@ const ClientDetails = React.memo(() => {
                       <article
                         key={item.id || i}
                         onClick={() => setSelectedServiceModal(item)}
-                        className="p-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-[#FF5C35]/10 hover:border-[#FF5C35]/30 transition-all cursor-pointer space-y-2 group"
+                        className={`p-4 rounded-2xl transition-all cursor-pointer space-y-2 group border ${
+                          isLight
+                            ? 'bg-slate-50 border-slate-200 hover:bg-[#5C24EB]/10 hover:border-[#5C24EB]/30'
+                            : 'bg-white/[0.03] border-white/5 hover:bg-[#5C24EB]/10 hover:border-[#5C24EB]/30'
+                        }`}
                       >
                         <div className="flex justify-between items-start">
-                          <h4 className="font-bold text-sm text-white group-hover:text-[#FF5C35] transition-colors">{item.service}</h4>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                          <h4 className={`font-bold text-sm group-hover:text-[#8B5CF6] transition-colors ${isLight ? 'text-gray-900' : 'text-white'}`}>{item.service}</h4>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'completed' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-amber-500/20 text-amber-500'
                             }`}>
                             {item.status === 'completed' ? 'مكتمل ✅' : 'قيد العمل 🛠️'}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-400 font-bold flex items-center justify-between">
+                        <p className={`text-xs font-bold flex items-center justify-between ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
                           <span>{item.vehicle}</span>
-                          <span className="text-[#FF5C35] text-[11px] font-bold flex items-center gap-1">
+                          <span className="text-[#8B5CF6] text-[11px] font-bold flex items-center gap-1">
                             فحص التفاصيل والـ Checklist
                             <span className="material-symbols-outlined text-xs">visibility</span>
                           </span>
                         </p>
-                        <div className="flex justify-between items-center text-xs text-gray-500 border-t border-white/5 pt-2 font-mono">
+                        <div className={`flex justify-between items-center text-xs border-t pt-2 font-mono ${isLight ? 'text-gray-500 border-slate-200' : 'text-gray-500 border-white/5'}`}>
                           <span>{item.date || item.preferred_date}</span>
-                          <span className="text-white font-bold">{item.currency || 'SAR'} {(item.price || 0).toLocaleString()}</span>
+                          <span className={`font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>{item.currency || 'SAR'} {(item.price || 0).toLocaleString()}</span>
                         </div>
                       </article>
                     ))}
@@ -858,12 +884,12 @@ const ClientDetails = React.memo(() => {
               </section>
 
               {/* Loyalty Transactions Log */}
-              <section className="bg-white/[0.02] backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border border-white/5 flex flex-col space-y-4">
+              <section className={`${isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-white/[0.02] border-white/5'} backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border flex flex-col space-y-4`}>
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[#FF5C35] text-2xl">stars</span>
+                  <span className="material-symbols-outlined text-[#8B5CF6] text-2xl">stars</span>
                   <div>
-                    <h3 className="text-lg font-bold text-white">سجل نقاط الولاء التفصيلي</h3>
-                    <p className="text-xs text-gray-400">مسجل تحته التاريخ باليوم والساعة والدقيقة وشرح عملية الاكتساب أو التحويل</p>
+                    <h3 className={`text-lg font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}>سجل نقاط الولاء التفصيلي</h3>
+                    <p className={`text-xs ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>مسجل تحته التاريخ باليوم والساعة والدقيقة وشرح عملية الاكتساب أو التحويل</p>
                   </div>
                 </div>
 
@@ -886,26 +912,29 @@ const ClientDetails = React.memo(() => {
                               setSelectedServiceModal(matchingService);
                             }
                           }}
-                          className={`p-4 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-between text-xs font-bold transition-all ${matchingService ? 'hover:bg-[#FF5C35]/10 hover:border-[#FF5C35]/30 cursor-pointer group' : ''
-                            }`}
+                          className={`p-4 rounded-2xl flex items-center justify-between text-xs font-bold transition-all border ${
+                            isLight
+                              ? `bg-slate-50 border-slate-200 ${matchingService ? 'hover:bg-[#5C24EB]/10 hover:border-[#5C24EB]/30 cursor-pointer group' : ''}`
+                              : `bg-white/[0.03] border-white/5 ${matchingService ? 'hover:bg-[#5C24EB]/10 hover:border-[#5C24EB]/30 cursor-pointer group' : ''}`
+                          }`}
                         >
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <p className="text-white text-sm group-hover:text-[#FF5C35] transition-colors">{t.description || 'معاملة نقاط'}</p>
+                              <p className={`text-sm group-hover:text-[#8B5CF6] transition-colors ${isLight ? 'text-gray-900' : 'text-white'}`}>{t.description || 'معاملة نقاط'}</p>
                               {matchingService && (
-                                <span className="text-[10px] bg-[#FF5C35]/20 text-[#FF5C35] px-2 py-0.5 rounded font-bold flex items-center gap-0.5 shrink-0">
+                                <span className="text-[10px] bg-[#5C24EB]/20 text-[#8B5CF6] px-2 py-0.5 rounded font-bold flex items-center gap-0.5 shrink-0">
                                   عرض الخدمة
                                   <span className="material-symbols-outlined text-xs">open_in_new</span>
                                 </span>
                               )}
                             </div>
-                            <p className="text-gray-400 text-[11px] font-mono flex items-center gap-1">
+                            <p className={`text-[11px] font-mono flex items-center gap-1 ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>
                               <span className="material-symbols-outlined text-xs text-gray-500">schedule</span>
                               {t.date || '—'}
                             </p>
                           </div>
                           <div className="text-left shrink-0">
-                            <span className={`text-base font-black font-mono ${t.points > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            <span className={`text-base font-black font-mono ${t.points > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                               {t.points > 0 ? `+${t.points}` : t.points} pts
                             </span>
                           </div>

@@ -85,7 +85,7 @@ const PaintCorrection = React.memo(() => {
       />
       <header className="relative w-full" aria-label="Hero Section">
         <div className="text-center pt-24 pb-12 px-6">
-          <h1 className="text-4xl md:text-6xl font-display font-black tracking-widest uppercase leading-tight">
+          <h1 className="text-3xl md:text-5xl font-display font-black tracking-widest uppercase leading-tight">
             <span className="text-[#FF5C35]">{t('paint_correction:hero_highlight')}</span>{' '}
             <span className="text-white">{t('paint_correction:hero_rest')}</span>
           </h1>

@@ -8,7 +8,7 @@ import InvertoLogo from './InvertoLogo';
 
 /**
  * PortalLoginLayout - Matches the exact dark automotive enterprise design
- * Floating black card strictly on the physical right, Reflecto car on the left.
+ * Floating black card strictly on the physical right, Reflecto/Seeda car on the left.
  */
 const PortalLoginLayout = ({
   portalType = 'admin',
@@ -17,6 +17,8 @@ const PortalLoginLayout = ({
   storageKey = 'reflecto_remember_admin',
   forgotPasswordMessage = 'يرجى التواصل مع الإدارة المركزية أو الدعم الفني لمساعدتك في إعادة تعيين كلمة المرور.',
 }) => {
+  const isSeeda = portalType === 'admin';
+
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -59,7 +61,7 @@ const PortalLoginLayout = ({
     const trimmedPass = password.trim();
 
     if (!trimmedInput) {
-      toast.warning('يرجى إدخال البريد الإلكتروني أو رقم الهاتف');
+      toast.warning('يرجى إدخال رقم الهاتف أو الرقم الوظيفي');
       return;
     }
     if (!trimmedPass) {
@@ -78,9 +80,10 @@ const PortalLoginLayout = ({
     }
 
     let credential = trimmedInput;
-    if (!trimmedInput.includes('@')) {
-      const rawDigits = cleanPhoneNumber(trimmedInput);
-      credential = buildFullPhone(rawDigits) || trimmedInput;
+    const cleanDigits = cleanPhoneNumber(trimmedInput);
+    // Only format as phone if it looks like a phone number and has standard phone length
+    if (!trimmedInput.includes('@') && /^(05|5|\+966)/.test(trimmedInput.replace(/[\s-]/g, '')) && cleanDigits.length >= 9) {
+      credential = buildFullPhone(cleanDigits) || trimmedInput;
     }
 
     setIsLoading(true);
@@ -108,15 +111,19 @@ const PortalLoginLayout = ({
       className="min-h-screen w-full relative overflow-x-hidden overflow-y-auto bg-[#07080a] text-white flex items-center select-none"
       dir="ltr"
     >
-      {/* Background: Workshop Showcase Car (/assets/photo/loginBG.jpg) */}
-      <div
-        className="fixed inset-0 z-0 bg-cover bg-no-repeat pointer-events-none"
-        style={{
-          backgroundImage: "url('/assets/photo/loginBG.jpg')",
-          backgroundPosition: 'left center',
-        }}
-      >
-        {/* Subtle dark gradient overlay: leaves car crisp on the left, darkens right side for the card */}
+      {/* Background: Video (/assets/login-video.webm) with fallback poster */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/assets/photo/loginBG.jpg"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        >
+          <source src="/assets/login-video.webm" type="video/webm" />
+        </video>
+        {/* Subtle dark gradient overlay: leaves car/video crisp on the left, darkens right side for the card */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/45 to-black/90 lg:from-black/15 lg:via-black/35 lg:to-[#07080a]/95" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#07080a] via-transparent to-black/40" />
       </div>
@@ -137,21 +144,45 @@ const PortalLoginLayout = ({
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
         >
-          <defs>
-            <linearGradient id="mainCornerOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FF6A3D" />
-              <stop offset="100%" stopColor="#FF4500" />
-            </linearGradient>
-            <linearGradient id="mainCornerDark" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#2a2e36" />
-              <stop offset="100%" stopColor="#14161a" />
-            </linearGradient>
-          </defs>
+          {isSeeda ? (
+            <defs>
+              <linearGradient id="mainCornerSeedaPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#8B5CF6" />
+                <stop offset="100%" stopColor="#5C24EB" />
+              </linearGradient>
+              <linearGradient id="mainCornerSeedaDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#2E1065" />
+                <stop offset="100%" stopColor="#140827" />
+              </linearGradient>
+            </defs>
+          ) : (
+            <defs>
+              <linearGradient id="mainCornerOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FF6A3D" />
+                <stop offset="100%" stopColor="#FF4500" />
+              </linearGradient>
+              <linearGradient id="mainCornerDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#2a2e36" />
+                <stop offset="100%" stopColor="#14161a" />
+              </linearGradient>
+            </defs>
+          )}
 
-          {/* Thin dark accent band */}
-          <polygon points="260,260 310,260 440,140 440,90" fill="url(#mainCornerDark)" opacity="0.6" />
-          {/* Main glowing orange corner wedge */}
-          <polygon points="310,260 440,260 440,140" fill="url(#mainCornerOrange)" />
+          {isSeeda ? (
+            <>
+              {/* Thin dark accent band */}
+              <polygon points="260,260 310,260 440,140 440,90" fill="url(#mainCornerSeedaDark)" opacity="0.6" />
+              {/* Main glowing purple corner wedge */}
+              <polygon points="310,260 440,260 440,140" fill="url(#mainCornerSeedaPurple)" />
+            </>
+          ) : (
+            <>
+              {/* Thin dark accent band */}
+              <polygon points="260,260 310,260 440,140 440,90" fill="url(#mainCornerDark)" opacity="0.6" />
+              {/* Main glowing orange corner wedge */}
+              <polygon points="310,260 440,260 440,140" fill="url(#mainCornerOrange)" />
+            </>
+          )}
         </svg>
       </div>
 
@@ -162,10 +193,12 @@ const PortalLoginLayout = ({
           dir="rtl"
           className="w-full max-w-[430px] sm:max-w-[450px] bg-[#0c0d10]/95 backdrop-blur-2xl border border-white/10 rounded-[28px] sm:rounded-[32px] p-7 sm:p-9 shadow-[0_30px_90px_rgba(0,0,0,0.85)] relative overflow-hidden transition-all duration-300"
           style={{
-            boxShadow: '0 25px 70px -10px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.08)',
+            boxShadow: isSeeda
+              ? '0 25px 70px -10px rgba(0,0,0,0.95), 0 0 0 1px rgba(124,58,237,0.18)'
+              : '0 25px 70px -10px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.08)',
           }}
         >
-          {/* Card Top Header: Reflecto on Left, Inverto on Right (dir="ltr") */}
+          {/* Card Top Header: Reflecto on Left, Seeda/Inverto on Right (dir="ltr") */}
           <div className="flex items-center justify-center gap-5 sm:gap-6 pb-6 pt-1" dir="ltr">
             {/* Reflecto Logo */}
             <div className="flex items-center">
@@ -184,9 +217,21 @@ const PortalLoginLayout = ({
             {/* Vertical Divider */}
             <div className="h-6 w-[1px] bg-white/20" />
 
-            {/* Inverto Logo (Direct Image) */}
+            {/* Seeda or Inverto Logo */}
             <div className="flex items-center">
-              <InvertoLogo className="h-6 sm:h-7 w-auto" />
+              {isSeeda ? (
+                <img
+                  src="/assets/photo/seeda.png"
+                  alt="SEEDA"
+                  className="h-6 sm:h-7 w-auto object-contain"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/assets/photo/seeda-dark-text.png';
+                  }}
+                />
+              ) : (
+                <InvertoLogo className="h-6 sm:h-7 w-auto" />
+              )}
             </div>
           </div>
 
@@ -202,19 +247,23 @@ const PortalLoginLayout = ({
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email Field */}
-            <div className="relative flex items-center bg-[#131519] border border-[#23272e] rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-[#FF5722] focus-within:ring-1 focus-within:ring-[#FF5722]/50 shadow-inner">
+            {/* Credential Field (Phone or Employee Code or Email) */}
+            <div className={`relative flex items-center bg-[#131519] border border-[#23272e] rounded-xl px-4 py-3.5 transition-all duration-200 shadow-inner ${
+              isSeeda
+                ? 'focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]/50'
+                : 'focus-within:border-[#FF5722] focus-within:ring-1 focus-within:ring-[#FF5722]/50'
+            }`}>
               <input
                 type="text"
                 dir="rtl"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="البريد الإلكتروني"
+                placeholder="رقم الجوال أو الرقم الوظيفي"
                 className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-gray-500 font-medium text-right"
                 disabled={isLoading}
                 autoComplete="username"
               />
-              {/* Mail Icon (Right side in RTL) */}
+              {/* Mail / User Icon (Right side in RTL) */}
               <div className="text-gray-400 shrink-0 mr-3 flex items-center justify-center">
                 <svg
                   className="w-5 h-5 text-gray-400"
@@ -226,14 +275,18 @@ const PortalLoginLayout = ({
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
               </div>
             </div>
 
             {/* Password Field */}
-            <div className="relative flex items-center bg-[#131519] border border-[#23272e] rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-[#FF5722] focus-within:ring-1 focus-within:ring-[#FF5722]/50 shadow-inner">
+            <div className={`relative flex items-center bg-[#131519] border border-[#23272e] rounded-xl px-4 py-3.5 transition-all duration-200 shadow-inner ${
+              isSeeda
+                ? 'focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]/50'
+                : 'focus-within:border-[#FF5722] focus-within:ring-1 focus-within:ring-[#FF5722]/50'
+            }`}>
               {/* Toggle Password Visibility (Left side in RTL) */}
               <button
                 type="button"
@@ -293,7 +346,9 @@ const PortalLoginLayout = ({
                     className="sr-only peer"
                   />
                   <div className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all duration-150 ${
-                    rememberMe ? 'bg-[#FF5722] border-[#FF5722]' : 'bg-[#1a1d24] border-[#343a46]'
+                    isSeeda
+                      ? rememberMe ? 'bg-[#7C3AED] border-[#7C3AED]' : 'bg-[#1a1d24] border-[#343a46]'
+                      : rememberMe ? 'bg-[#FF5722] border-[#FF5722]' : 'bg-[#1a1d24] border-[#343a46]'
                   }`}>
                     {rememberMe && (
                       <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -312,7 +367,11 @@ const PortalLoginLayout = ({
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-3 bg-gradient-to-r from-[#FF5C35] via-[#FF5024] to-[#FF4500] hover:brightness-110 active:scale-[0.99] text-white font-bold py-3.5 sm:py-4 px-6 rounded-xl transition-all duration-200 shadow-[0_8px_25px_-5px_rgba(255,87,34,0.45)] disabled:opacity-50 flex items-center justify-center gap-2.5 cursor-pointer text-sm sm:text-base"
+              className={`w-full mt-3 hover:brightness-110 active:scale-[0.99] text-white font-bold py-3.5 sm:py-4 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2.5 cursor-pointer text-sm sm:text-base ${
+                isSeeda
+                  ? 'bg-gradient-to-r from-[#5C24EB] via-[#6D28D9] to-[#7C3AED] hover:from-[#6D28D9] hover:to-[#8B5CF6] shadow-[0_8px_25px_-5px_rgba(92,36,235,0.55)]'
+                  : 'bg-gradient-to-r from-[#FF5C35] via-[#FF5024] to-[#FF4500] shadow-[0_8px_25px_-5px_rgba(255,87,34,0.45)]'
+              }`}
             >
               {isLoading ? (
                 <>
@@ -330,12 +389,39 @@ const PortalLoginLayout = ({
             </button>
           </form>
 
+          {/* Forgot Password Button */}
+          <div className="pt-4 text-center">
+            <button
+              type="button"
+              onClick={() => setShowForgotModal(true)}
+              className={`text-xs sm:text-sm transition-colors cursor-pointer font-medium ${
+                isSeeda
+                  ? 'text-[#A78BFA] hover:text-[#C4B5FD]'
+                  : 'text-[#FF7A45] hover:text-[#FFA07A]'
+              }`}
+            >
+              نسيت كلمة المرور؟
+            </button>
+          </div>
+
           {/* Card Bottom Area: Powered by + Corner Diagonal Stripes */}
           <div className="pt-8 sm:pt-10 flex items-center justify-between relative">
-            {/* Powered by INVERTO (dir="ltr") */}
+            {/* Powered by SEEDA or INVERTO (dir="ltr") */}
             <div className="flex items-center gap-2 text-xs text-gray-500 font-medium z-10" dir="ltr">
               <span>Powered by</span>
-              <InvertoLogo className="h-3.5 sm:h-4 w-auto" />
+              {isSeeda ? (
+                <img
+                  src="/assets/photo/seeda.png"
+                  alt="SEEDA"
+                  className="h-3.5 sm:h-4 w-auto object-contain opacity-80"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/assets/photo/seeda-dark-text.png';
+                  }}
+                />
+              ) : (
+                <InvertoLogo className="h-3.5 sm:h-4 w-auto" />
+              )}
             </div>
 
             {/* Card Bottom-Right Diagonal Stripes Graphic */}
@@ -346,31 +432,65 @@ const PortalLoginLayout = ({
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <defs>
-                  <linearGradient id="cardOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FF6A3D" />
-                    <stop offset="100%" stopColor="#FF4500" />
-                  </linearGradient>
-                  <linearGradient id="cardDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#2c3038" />
-                    <stop offset="100%" stopColor="#15171b" />
-                  </linearGradient>
-                  <linearGradient id="cardSubtle" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#663121" />
-                    <stop offset="100%" stopColor="#221510" />
-                  </linearGradient>
-                </defs>
+                {isSeeda ? (
+                  <defs>
+                    <linearGradient id="cardSeedaPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#8B5CF6" />
+                      <stop offset="100%" stopColor="#5C24EB" />
+                    </linearGradient>
+                    <linearGradient id="cardSeedaDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#2E1065" />
+                      <stop offset="100%" stopColor="#170836" />
+                    </linearGradient>
+                    <linearGradient id="cardSeedaSubtle" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#4C1D95" />
+                      <stop offset="100%" stopColor="#1E0B4B" />
+                    </linearGradient>
+                  </defs>
+                ) : (
+                  <defs>
+                    <linearGradient id="cardOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#FF6A3D" />
+                      <stop offset="100%" stopColor="#FF4500" />
+                    </linearGradient>
+                    <linearGradient id="cardDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#2c3038" />
+                      <stop offset="100%" stopColor="#15171b" />
+                    </linearGradient>
+                    <linearGradient id="cardSubtle" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#663121" />
+                      <stop offset="100%" stopColor="#221510" />
+                    </linearGradient>
+                  </defs>
+                )}
 
-                {/* Outer subtle stripe */}
-                <polygon points="75,110 88,110 150,50 150,38" fill="url(#cardSubtle)" opacity="0.75" />
-                {/* Dark metallic stripe */}
-                <polygon points="90,110 108,110 150,70 150,52" fill="url(#cardDark)" />
-                {/* Sharp black spacer */}
-                <polygon points="108,110 112,110 150,74 150,70" fill="#0c0d10" />
-                {/* Orange stripe */}
-                <polygon points="112,110 128,110 150,90 150,74" fill="url(#cardOrange)" />
-                {/* Solid corner orange */}
-                <polygon points="130,110 150,110 150,92" fill="url(#cardOrange)" />
+                {isSeeda ? (
+                  <>
+                    {/* Outer subtle stripe */}
+                    <polygon points="75,110 88,110 150,50 150,38" fill="url(#cardSeedaSubtle)" opacity="0.75" />
+                    {/* Dark metallic stripe */}
+                    <polygon points="90,110 108,110 150,70 150,52" fill="url(#cardSeedaDark)" />
+                    {/* Sharp black spacer */}
+                    <polygon points="108,110 112,110 150,74 150,70" fill="#0c0d10" />
+                    {/* Purple stripe */}
+                    <polygon points="112,110 128,110 150,90 150,74" fill="url(#cardSeedaPurple)" />
+                    {/* Solid corner purple */}
+                    <polygon points="130,110 150,110 150,92" fill="url(#cardSeedaPurple)" />
+                  </>
+                ) : (
+                  <>
+                    {/* Outer subtle stripe */}
+                    <polygon points="75,110 88,110 150,50 150,38" fill="url(#cardSubtle)" opacity="0.75" />
+                    {/* Dark metallic stripe */}
+                    <polygon points="90,110 108,110 150,70 150,52" fill="url(#cardDark)" />
+                    {/* Sharp black spacer */}
+                    <polygon points="108,110 112,110 150,74 150,70" fill="#0c0d10" />
+                    {/* Orange stripe */}
+                    <polygon points="112,110 128,110 150,90 150,74" fill="url(#cardOrange)" />
+                    {/* Solid corner orange */}
+                    <polygon points="130,110 150,110 150,92" fill="url(#cardOrange)" />
+                  </>
+                )}
               </svg>
             </div>
           </div>
@@ -388,7 +508,11 @@ const PortalLoginLayout = ({
             onClick={(e) => e.stopPropagation()}
             dir="rtl"
           >
-            <div className="w-12 h-12 rounded-xl bg-[#FF5722]/10 border border-[#FF5722]/20 text-[#FF5722] flex items-center justify-center mb-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+              isSeeda
+                ? 'bg-[#5C24EB]/15 border border-[#7C3AED]/30 text-[#A78BFA]'
+                : 'bg-[#FF5722]/10 border border-[#FF5722]/20 text-[#FF5722]'
+            }`}>
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
@@ -404,7 +528,11 @@ const PortalLoginLayout = ({
             <button
               type="button"
               onClick={() => setShowForgotModal(false)}
-              className="w-full bg-[#FF5722] hover:bg-[#ff6e3f] text-white font-bold py-3 px-4 rounded-xl transition-all cursor-pointer text-sm"
+              className={`w-full text-white font-bold py-3 px-4 rounded-xl transition-all cursor-pointer text-sm ${
+                isSeeda
+                  ? 'bg-gradient-to-r from-[#5C24EB] to-[#7C3AED] hover:from-[#6D28D9] hover:to-[#8B5CF6] shadow-lg shadow-[#5C24EB]/30'
+                  : 'bg-[#FF5722] hover:bg-[#ff6e3f]'
+              }`}
             >
               حسناً، فهمت
             </button>

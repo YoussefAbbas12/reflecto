@@ -112,7 +112,7 @@ const ForgotPasswordOTPView = React.memo(() => {
           <Icon name="lock_reset" aria-hidden="true" />
         </div>
 
-        <h1 id="reset-otp-heading" className="text-4xl md:text-6xl font-display font-bold mb-4 tracking-tighter text-white">
+        <h1 id="reset-otp-heading" className="text-2xl md:text-4xl font-display font-bold mb-4 tracking-tighter text-white">
           VERIFY <span className="text-[#FF5C35]">IDENTITY</span>
         </h1>
         <p className="text-gray-400 mb-12 font-light">Enter the code sent to your phone to reset your password</p>
