@@ -313,6 +313,15 @@ header.s {
   stroke-width: 1.8;
 }
 
+/* Mobile Nav Tools Wrapper */
+.nav-tools {
+  display: none;
+}
+
+.mobile-lang-btn {
+  display: none;
+}
+
 /* Mobile Menu Burger */
 .burger {
   display: none;
@@ -346,6 +355,28 @@ header.s {
 }
 
 @media (max-width: 890px) {
+  .nav-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    direction: ltr !important;
+  }
+  .mobile-lang-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 13px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .mobile-lang-btn svg {
+    width: 15px;
+    height: 15px;
+  }
   .burger {
     display: block;
   }
@@ -380,10 +411,7 @@ header.s {
     font-size: 1.05rem;
   }
   .links .lang-btn {
-    align-self: flex-start;
-    margin-top: 16px;
-    height: 42px;
-    padding: 0 18px;
+    display: none;
   }
   .links .btn {
     justify-content: center;

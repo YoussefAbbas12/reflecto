@@ -367,7 +367,16 @@
       `<a class="btn" href="#login">${t.cfg.loginBtn || (currentLang === "ar" ? "تسجيل الدخول" : "Sign In")}</a>`;
     $("#lk").innerHTML = navLinksHTML;
 
-    // Language toggle event listener
+    // Language toggle event listeners (Desktop & Mobile)
+    const mobileLangBtn = $("#mobileLangBtn");
+    if (mobileLangBtn) {
+      mobileLangBtn.innerHTML = `${globeIcon}<span>${t.langLabel}</span>`;
+      mobileLangBtn.onclick = () => {
+        const nextLang = currentLang === "en" ? "ar" : "en";
+        setLanguage(nextLang);
+      };
+    }
+
     const langBtn = $("#langBtn");
     if (langBtn) {
       langBtn.onclick = () => {
