@@ -200,13 +200,13 @@ async function verifyOTP(req, res) {
         if (isStaff) {
             return res.status(403).json({
                 success: false,
-                error: { code: 'USE_DEDICATED_PORTAL', message: 'حسابك إداري. يرجى تسجيل الدخول من بوابة الإدارة: admin.reflecto.com.sa' }
+                error: { code: 'USE_DEDICATED_PORTAL', message: 'حسابك إداري. يرجى تسجيل الدخول من بوابة الإدارة أو موقع سيدا.' }
             });
         }
         if (isTech) {
             return res.status(403).json({
                 success: false,
-                error: { code: 'USE_DEDICATED_PORTAL', message: 'حسابك فني. يرجى تسجيل الدخول من بوابة الفنيين: technical.reflecto.com.sa' }
+                error: { code: 'USE_DEDICATED_PORTAL', message: 'حسابك فني. يرجى تسجيل الدخول من بوابة الفنيين أو موقع سيدا.' }
             });
         }
     }
@@ -362,55 +362,7 @@ async function login(req, res) {
             resolvedRole = user.role_slug || 'admin';
         }
 
-        const isStaff = resolvedRole === 'admin' || resolvedRole === 'super_admin' || Boolean(user.is_super_admin) || Boolean(user.role_id);
-        const isTech = resolvedRole === 'technician';
-        const { portal_type } = req.body; // 'admin' | 'technician' | 'client'
-        const originHeader = (req.headers.origin || req.headers.referer || '').toLowerCase();
-
-        if (portal_type === 'admin') {
-            const isClientOrigin = originHeader.includes('reflecto.com.sa') && !originHeader.includes('admin');
-            if (isClientOrigin) {
-                return res.status(403).json({
-                    success: false,
-                    error: { code: 'FORBIDDEN_DOMAIN', message: 'بوابة الإدارة معزولة بالكامل. يرجى تسجيل الدخول حصراً من: admin.reflecto.com.sa' }
-                });
-            }
-            if (!isStaff) {
-                return res.status(403).json({
-                    success: false,
-                    error: { code: 'FORBIDDEN_PORTAL', message: 'غير مصرح لك بالدخول إلى بوابة الإدارة.' }
-                });
-            }
-        } else if (portal_type === 'technician') {
-            const isClientOrigin = originHeader.includes('reflecto.com.sa') && !originHeader.includes('tech');
-            if (isClientOrigin) {
-                return res.status(403).json({
-                    success: false,
-                    error: { code: 'FORBIDDEN_DOMAIN', message: 'بوابة الفنيين معزولة بالكامل. يرجى تسجيل الدخول حصراً من: technical.reflecto.com.sa' }
-                });
-            }
-            if (!isTech) {
-                return res.status(403).json({
-                    success: false,
-                    error: { code: 'FORBIDDEN_PORTAL', message: 'هذه البوابة مخصصة للفنيين المعتمدين فقط.' }
-                });
-            }
-        } else {
-            // Default Client Portal
-            if (isStaff) {
-                return res.status(403).json({
-                    success: false,
-                    error: { code: 'USE_DEDICATED_PORTAL', message: 'حسابك إداري. يرجى تسجيل الدخول من بوابة الإدارة: admin.reflecto.com.sa' }
-                });
-            }
-            if (isTech) {
-                return res.status(403).json({
-                    success: false,
-                    error: { code: 'USE_DEDICATED_PORTAL', message: 'حسابك فني. يرجى تسجيل الدخول من بوابة الفنيين: technical.reflecto.com.sa' }
-                });
-            }
-        }
-
+        // Allow direct login without subdomain portal restrictions
         const { accessToken, refreshToken } = generateTokens(user.uuid, resolvedRole);
 
         res.json({
