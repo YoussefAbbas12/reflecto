@@ -45,7 +45,7 @@ const App = () => {
         isAboutSeedaPage;
 
       if (!isPublicAdminRoute) {
-        return <Navigate to="/admin/login" replace />;
+        return (typeof window !== "undefined" ? (window.location.href = "https://seeda.reflecto.com.sa/#login", null) : null);
       }
     } else {
       // If authenticated as non-staff (e.g. regular client), reject from admin portal
@@ -64,7 +64,7 @@ const App = () => {
     if (!user) {
       // If not authenticated, ONLY tech login is allowed
       if (pathname !== '/technical/login' && pathname !== '/tech/login' && pathname !== '/login' && pathname !== '/') {
-        return <Navigate to="/technical/login" replace />;
+        return (typeof window !== "undefined" ? (window.location.href = "https://seeda.reflecto.com.sa/#login", null) : null);
       }
     } else {
       if (!isTechUser(user)) {

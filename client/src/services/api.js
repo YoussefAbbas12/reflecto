@@ -163,9 +163,9 @@ const request = async (endpoint, options = {}) => {
         const path = window.location.pathname.toLowerCase();
         const hostname = window.location.hostname.toLowerCase();
         if (hostname.startsWith('admin.') || path.startsWith('/admin')) {
-          window.location.href = '/admin/login';
+          window.location.href = 'https://seeda.reflecto.com.sa/#login';
         } else if (hostname.startsWith('technical.') || hostname.startsWith('tech.') || path.startsWith('/technician') || path.startsWith('/tech')) {
-          window.location.href = '/technical/login';
+          window.location.href = 'https://seeda.reflecto.com.sa/#login';
         } else {
           window.location.href = '/login';
         }

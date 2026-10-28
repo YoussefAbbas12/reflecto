@@ -38,11 +38,65 @@ import {
 
 const AuthContext = createContext(null);
 
+// Synchronously capture and persist cross-domain handover tokens BEFORE initial render
+const initHandover = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    let handover = null;
+    if (window.location.hash) {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const raw = hashParams.get('auth_data');
+      if (raw) {
+        try { handover = JSON.parse(decodeURIComponent(raw)); } catch {}
+      } else if (hashParams.get('access_token')) {
+        try {
+          handover = {
+            access_token: hashParams.get('access_token'),
+            refresh_token: hashParams.get('refresh_token'),
+            user: hashParams.get('user') ? JSON.parse(decodeURIComponent(hashParams.get('user'))) : null
+          };
+        } catch {}
+      }
+    }
+    if (!handover && window.location.search) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const raw = searchParams.get('auth_data');
+      if (raw) {
+        try { handover = JSON.parse(decodeURIComponent(raw)); } catch {}
+      } else if (searchParams.get('access_token')) {
+        try {
+          handover = {
+            access_token: searchParams.get('access_token'),
+            refresh_token: searchParams.get('refresh_token'),
+            user: searchParams.get('user') ? JSON.parse(decodeURIComponent(searchParams.get('user'))) : null
+          };
+        } catch {}
+      }
+    }
+    if (handover && handover.access_token) {
+      setTokens({
+        access_token: handover.access_token,
+        refresh_token: handover.refresh_token,
+        user: handover.user
+      });
+      const cleanPath = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanPath);
+    }
+  } catch (e) {
+    console.error('Initial handover error:', e);
+  }
+};
+
+initHandover();
+
+const initialStoredUser = getStoredUser();
+const initialToken = getAccessToken();
+
 const initialState = /** @type {AuthState} */ ({
-  isAuthenticated: false,
-  user: null,
-  phone: sessionStorage.getItem('reflecto_otp_phone') || null,
-  isLoading: true,
+  isAuthenticated: Boolean(initialToken),
+  user: initialStoredUser || (initialToken ? { role: 'client' } : null),
+  phone: (typeof window !== 'undefined' ? sessionStorage.getItem('reflecto_otp_phone') : null) || null,
+  isLoading: Boolean(initialToken),
 });
 
 // ─── Reducer ─────────────────────────────────────────────────
@@ -85,6 +139,57 @@ export const AuthProvider = React.memo(({ children }) => {
 
   // Restore session from localStorage on mount and sync profile from server
   useEffect(() => {
+    // Cross-Domain Auth Handover from SEEDA Portal
+    try {
+      if (typeof window !== 'undefined') {
+        let handover = null;
+        if (window.location.hash) {
+          const hashStr = window.location.hash.substring(1);
+          const hashParams = new URLSearchParams(hashStr);
+          const rawData = hashParams.get('auth_data');
+          if (rawData) {
+            try { handover = JSON.parse(decodeURIComponent(rawData)); } catch {}
+          } else if (hashParams.get('access_token')) {
+            try {
+              handover = {
+                access_token: hashParams.get('access_token'),
+                refresh_token: hashParams.get('refresh_token'),
+                user: hashParams.get('user') ? JSON.parse(decodeURIComponent(hashParams.get('user'))) : null
+              };
+            } catch {}
+          }
+        }
+
+        if (!handover && window.location.search) {
+          const searchParams = new URLSearchParams(window.location.search);
+          const rawData = searchParams.get('auth_data');
+          if (rawData) {
+            try { handover = JSON.parse(decodeURIComponent(rawData)); } catch {}
+          } else if (searchParams.get('access_token')) {
+            try {
+              handover = {
+                access_token: searchParams.get('access_token'),
+                refresh_token: searchParams.get('refresh_token'),
+                user: searchParams.get('user') ? JSON.parse(decodeURIComponent(searchParams.get('user'))) : null
+              };
+            } catch {}
+          }
+        }
+
+        if (handover && handover.access_token) {
+          setTokens({
+            access_token: handover.access_token,
+            refresh_token: handover.refresh_token,
+            user: handover.user
+          });
+          const cleanPath = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanPath);
+        }
+      }
+    } catch (e) {
+      console.error('Error handling cross-domain auth handover:', e);
+    }
+
     const token = getAccessToken();
     let user = getStoredUser();
 

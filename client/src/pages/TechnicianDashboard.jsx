@@ -243,7 +243,7 @@ const TechnicianDashboard = React.memo(() => {
                 type="button"
                 onClick={async () => {
                   if (logout) await logout();
-                  window.location.href = '/login';
+                  window.location.href = 'https://seeda.reflecto.com.sa/#login';
                 }}
                 className="px-4 py-3 bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 text-red-400 hover:text-red-300 rounded-2xl font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
                 title={isArabic ? 'تسجيل الخروج' : 'Log Out'}

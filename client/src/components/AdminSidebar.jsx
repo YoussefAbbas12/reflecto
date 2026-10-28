@@ -501,7 +501,7 @@ const AdminSidebar = React.memo(() => {
             <button
               onClick={async () => {
                 await logout();
-                navigate('/admin/login', { replace: true });
+                window.location.href = 'https://seeda.reflecto.com.sa/#login';
               }}
               className={`flex-1 flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer font-bold ${
                 isLight

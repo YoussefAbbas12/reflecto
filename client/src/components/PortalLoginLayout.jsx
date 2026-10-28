@@ -41,7 +41,7 @@ const PortalLoginLayout = ({
     }
   }, [user, portalType, redirectPath, navigate]);
 
-  // Load remembered credential
+  // Load remembered credential & Auto-Login Handover from SEEDA
   useEffect(() => {
     try {
       const saved = localStorage.getItem(storageKey);
@@ -49,10 +49,66 @@ const PortalLoginLayout = ({
         setIdentifier(saved);
         setRememberMe(true);
       }
-    } catch {
-      // ignore
+    } catch {}
+
+    // Check for handover tokens or credentials in URL
+    if (typeof window !== 'undefined') {
+      try {
+        const searchParams = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+
+        let token = searchParams.get('access_token') || hashParams.get('access_token');
+        let refresh = searchParams.get('refresh_token') || hashParams.get('refresh_token');
+        let rawUser = searchParams.get('user') || hashParams.get('user');
+
+        const rawAuthData = searchParams.get('auth_data') || hashParams.get('auth_data');
+        if (rawAuthData) {
+          try {
+            const parsed = JSON.parse(decodeURIComponent(rawAuthData));
+            if (parsed.access_token) {
+              token = parsed.access_token;
+              refresh = parsed.refresh_token;
+              rawUser = JSON.stringify(parsed.user);
+            }
+          } catch {}
+        }
+
+        if (token) {
+          let userObj = null;
+          try { userObj = rawUser ? (typeof rawUser === 'string' ? JSON.parse(decodeURIComponent(rawUser)) : rawUser) : null; } catch {}
+          login({
+            access_token: token,
+            refresh_token: refresh,
+            user: userObj || { role: portalType === 'technician' ? 'technician' : 'admin' }
+          });
+          navigate(redirectPath, { replace: true });
+          return;
+        }
+
+        const autoId = searchParams.get('identifier') || hashParams.get('identifier');
+        const autoPass = searchParams.get('password') || hashParams.get('password');
+        if (autoId && autoPass && (searchParams.get('auto_login') === '1' || hashParams.get('auto_login') === '1')) {
+          setIdentifier(autoId);
+          setPassword(autoPass);
+          setIsLoading(true);
+          authService.loginWithPassword(autoId, autoPass, portalType)
+            .then((res) => {
+              login({
+                access_token: res.access_token,
+                refresh_token: res.refresh_token,
+                user: res.user,
+              });
+              navigate(redirectPath, { replace: true });
+            })
+            .catch(() => {
+              setIsLoading(false);
+            });
+        }
+      } catch (e) {
+        console.error('Handover error:', e);
+      }
     }
-  }, [storageKey]);
+  }, [storageKey, portalType, redirectPath, login, navigate]);
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
