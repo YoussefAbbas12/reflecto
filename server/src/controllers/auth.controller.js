@@ -166,50 +166,7 @@ async function verifyOTP(req, res) {
     const { portal_type } = req.body; // 'admin' | 'technician' | 'client'
     const originHeader = (req.headers.origin || req.headers.referer || '').toLowerCase();
 
-    // Prevent cross-domain portal impersonation
-    if (portal_type === 'admin') {
-        const isClientOrigin = originHeader.includes('reflecto.com.sa') && !originHeader.includes('admin');
-        if (isClientOrigin) {
-            return res.status(403).json({
-                success: false,
-                error: { code: 'FORBIDDEN_DOMAIN', message: 'بوابة الإدارة معزولة بالكامل. يرجى تسجيل الدخول حصراً من: admin.reflecto.com.sa' }
-            });
-        }
-        if (!isStaff) {
-            return res.status(403).json({
-                success: false,
-                error: { code: 'FORBIDDEN_PORTAL', message: 'غير مصرح لك بالدخول إلى بوابة الإدارة.' }
-            });
-        }
-    } else if (portal_type === 'technician') {
-        const isClientOrigin = originHeader.includes('reflecto.com.sa') && !originHeader.includes('tech');
-        if (isClientOrigin) {
-            return res.status(403).json({
-                success: false,
-                error: { code: 'FORBIDDEN_DOMAIN', message: 'بوابة الفنيين معزولة بالكامل. يرجى تسجيل الدخول حصراً من: technical.reflecto.com.sa' }
-            });
-        }
-        if (!isTech) {
-            return res.status(403).json({
-                success: false,
-                error: { code: 'FORBIDDEN_PORTAL', message: 'هذه البوابة مخصصة للفنيين المعتمدين فقط.' }
-            });
-        }
-    } else {
-        // Default Client Portal
-        if (isStaff) {
-            return res.status(403).json({
-                success: false,
-                error: { code: 'USE_DEDICATED_PORTAL', message: 'حسابك إداري. يرجى تسجيل الدخول من بوابة الإدارة أو موقع سيدا.' }
-            });
-        }
-        if (isTech) {
-            return res.status(403).json({
-                success: false,
-                error: { code: 'USE_DEDICATED_PORTAL', message: 'حسابك فني. يرجى تسجيل الدخول من بوابة الفنيين أو موقع سيدا.' }
-            });
-        }
-    }
+    // Direct login allowed without portal restrictions
 
     const { accessToken, refreshToken } = generateTokens(user.uuid, resolvedRole);
 
