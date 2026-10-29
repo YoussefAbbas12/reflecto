@@ -176,6 +176,7 @@ async function verifyOTP(req, res) {
         refresh_token: refreshToken,
         user: {
             id: user.uuid,
+                internal_id: user.id,
             phone: user.phone,
             full_name: user.full_name,
             email: user.email,

@@ -493,6 +493,7 @@ async function getMe(req, res) {
 
   res.json({
     id:          req.user.uuid,
+    internal_id: req.user.id,
     full_name:   req.user.full_name,
     phone:       req.user.phone,
     email:       req.user.email,

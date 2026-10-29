@@ -284,6 +284,28 @@ LOYALTY PROGRAM:
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `).catch(() => { });
 
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS technician_attendance (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        uuid VARCHAR(36) NOT NULL UNIQUE,
+        technician_id INT NOT NULL,
+        work_date DATE NOT NULL,
+        check_in_at DATETIME DEFAULT NULL,
+        check_out_at DATETIME DEFAULT NULL,
+        status VARCHAR(50) DEFAULT 'present',
+        late_minutes INT DEFAULT 0,
+        method VARCHAR(50) DEFAULT 'manual',
+        latitude DECIMAL(10, 8) DEFAULT NULL,
+        longitude DECIMAL(11, 8) DEFAULT NULL,
+        notes TEXT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY uk_tech_work_date (technician_id, work_date),
+        INDEX idx_att_tech (technician_id),
+        INDEX idx_att_date (work_date)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `).catch(() => { });
+
     // Seed Sample Companies if empty
     const [[{ companyCount }]] = await conn.query('SELECT COUNT(*) AS companyCount FROM companies');
     if (companyCount === 0) {

@@ -4,21 +4,19 @@ import { useAuth } from '../contexts/AuthContext';
 import { authService } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
 import { cleanPhoneNumber, buildFullPhone } from '../utils/phone';
-import InvertoLogo from './InvertoLogo';
 
 /**
- * PortalLoginLayout - Matches the exact dark automotive enterprise design
- * Floating black card strictly on the physical right, Reflecto/Seeda car on the left.
+ * PortalLoginLayout - Matches the exact SEEDA full-screen split login design
+ * Left 50% = Dark luxury automotive visual with purple branding
+ * Right 50% = Pure white container with centered modern form
  */
 const PortalLoginLayout = ({
   portalType = 'admin',
-  subtitle = 'سجل دخولك إلى النظام الإداري',
+  subtitle = 'Sign in to your SEEDA account to manage your business operations.',
   redirectPath = '/admin',
   storageKey = 'reflecto_remember_admin',
-  forgotPasswordMessage = 'يرجى التواصل مع الإدارة المركزية أو الدعم الفني لمساعدتك في إعادة تعيين كلمة المرور.',
+  forgotPasswordMessage = 'Please contact your system administrator or IT support team to assist in retrieving or resetting your portal credentials.',
 }) => {
-  const isSeeda = portalType === 'admin';
-
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +28,7 @@ const PortalLoginLayout = ({
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // If user is already authenticated with the required portal role, redirect immediately
+  // If user is already authenticated with required role, redirect immediately
   useEffect(() => {
     if (user) {
       if (portalType === 'technician' && (user.role === 'technician' || user.role === 'admin' || user.role === 'super_admin')) {
@@ -65,38 +63,29 @@ const PortalLoginLayout = ({
         if (rawAuthData) {
           try {
             const parsed = JSON.parse(decodeURIComponent(rawAuthData));
-            if (parsed.access_token) {
-              token = parsed.access_token;
-              refresh = parsed.refresh_token;
-              rawUser = JSON.stringify(parsed.user);
-            }
+            if (parsed.access_token) token = parsed.access_token;
+            if (parsed.refresh_token) refresh = parsed.refresh_token;
+            if (parsed.user) rawUser = JSON.stringify(parsed.user);
           } catch {}
         }
 
         if (token) {
-          let userObj = null;
-          try { userObj = rawUser ? (typeof rawUser === 'string' ? JSON.parse(decodeURIComponent(rawUser)) : rawUser) : null; } catch {}
-          login({
-            access_token: token,
-            refresh_token: refresh,
-            user: userObj || { role: portalType === 'technician' ? 'technician' : 'admin' }
-          });
-          navigate(redirectPath, { replace: true });
-          return;
-        }
+          let parsedUser = null;
+          if (rawUser) {
+            try {
+              parsedUser = typeof rawUser === 'string' ? JSON.parse(decodeURIComponent(rawUser)) : rawUser;
+            } catch {
+              parsedUser = rawUser;
+            }
+          }
 
-        const autoId = searchParams.get('identifier') || hashParams.get('identifier');
-        const autoPass = searchParams.get('password') || hashParams.get('password');
-        if (autoId && autoPass && (searchParams.get('auto_login') === '1' || hashParams.get('auto_login') === '1')) {
-          setIdentifier(autoId);
-          setPassword(autoPass);
           setIsLoading(true);
-          authService.loginWithPassword(autoId, autoPass, portalType)
-            .then((res) => {
+          authService.getMe()
+            .then(meData => {
               login({
-                access_token: res.access_token,
-                refresh_token: res.refresh_token,
-                user: res.user,
+                access_token: token,
+                refresh_token: refresh,
+                user: meData || parsedUser || { role: portalType }
               });
               navigate(redirectPath, { replace: true });
             })
@@ -117,11 +106,11 @@ const PortalLoginLayout = ({
     const trimmedPass = password.trim();
 
     if (!trimmedInput) {
-      toast.warning('يرجى إدخال رقم الهاتف أو الرقم الوظيفي');
+      toast.warning('Please enter your email or phone number');
       return;
     }
     if (!trimmedPass) {
-      toast.warning('يرجى إدخال كلمة المرور');
+      toast.warning('Please enter your password');
       return;
     }
 
@@ -131,13 +120,10 @@ const PortalLoginLayout = ({
       } else {
         localStorage.removeItem(storageKey);
       }
-    } catch {
-      // ignore
-    }
+    } catch {}
 
     let credential = trimmedInput;
     const cleanDigits = cleanPhoneNumber(trimmedInput);
-    // Only format as phone if it looks like a phone number and has standard phone length
     if (!trimmedInput.includes('@') && /^(05|5|\+966)/.test(trimmedInput.replace(/[\s-]/g, '')) && cleanDigits.length >= 9) {
       credential = buildFullPhone(cleanDigits) || trimmedInput;
     }
@@ -152,445 +138,204 @@ const PortalLoginLayout = ({
         user: res.user,
       });
 
-      const name = res.user?.full_name || (portalType === 'admin' ? 'المسؤول' : 'الفني');
-      toast.success(`مرحباً بك مجدداً، ${name}!`);
+      const name = res.user?.full_name || (portalType === 'admin' ? 'Administrator' : 'Technician');
+      toast.success(`Welcome back, ${name}!`);
       navigate(redirectPath, { replace: true });
     } catch (err) {
-      toast.error(err.message || 'بيانات الدخول غير صحيحة أو ليس لديك صلاحية الدخول لهذه البوابة');
+      toast.error(err.message || 'Invalid email or password. Please verify your credentials.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleSsoClick = () => {
+    toast.info('SSO is enabled for enterprise accounts. Please sign in with your credentials above or contact support.');
+  };
+
   return (
-    <main
-      className="min-h-screen w-full relative overflow-x-hidden overflow-y-auto bg-[#07080a] text-white flex items-center select-none"
-      dir="ltr"
-    >
-      {/* Background: Video (/assets/login-video.webm) with fallback poster */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="/assets/photo/loginBG.jpg"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        >
-          <source src="/assets/login-video.webm" type="video/webm" />
-        </video>
-        {/* Subtle dark gradient overlay: leaves car/video crisp on the left, darkens right side for the card */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/45 to-black/90 lg:from-black/15 lg:via-black/35 lg:to-[#07080a]/95" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07080a] via-transparent to-black/40" />
-      </div>
-
-      {/* Screen Bottom-Left Tagline */}
-      <div className="fixed bottom-6 left-8 z-10 hidden md:block pointer-events-none" dir="rtl">
-        <p className="text-gray-400/80 text-xs sm:text-sm font-medium tracking-wide">
-          حماية تعكس جودة التفاصيل
-        </p>
-      </div>
-
-      {/* Screen Bottom-Right Corner Glowing Accent Stripe */}
-      <div className="fixed bottom-0 right-0 z-10 pointer-events-none overflow-hidden w-[240px] sm:w-[360px] md:w-[440px] h-[180px] sm:h-[260px]">
-        <svg
-          className="w-full h-full"
-          viewBox="0 0 440 260"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="none"
-        >
-          {isSeeda ? (
-            <defs>
-              <linearGradient id="mainCornerSeedaPurple" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#5C24EB" />
-              </linearGradient>
-              <linearGradient id="mainCornerSeedaDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#2E1065" />
-                <stop offset="100%" stopColor="#140827" />
-              </linearGradient>
-            </defs>
-          ) : (
-            <defs>
-              <linearGradient id="mainCornerOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FF6A3D" />
-                <stop offset="100%" stopColor="#FF4500" />
-              </linearGradient>
-              <linearGradient id="mainCornerDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#2a2e36" />
-                <stop offset="100%" stopColor="#14161a" />
-              </linearGradient>
-            </defs>
-          )}
-
-          {isSeeda ? (
-            <>
-              {/* Thin dark accent band */}
-              <polygon points="260,260 310,260 440,140 440,90" fill="url(#mainCornerSeedaDark)" opacity="0.6" />
-              {/* Main glowing purple corner wedge */}
-              <polygon points="310,260 440,260 440,140" fill="url(#mainCornerSeedaPurple)" />
-            </>
-          ) : (
-            <>
-              {/* Thin dark accent band */}
-              <polygon points="260,260 310,260 440,140 440,90" fill="url(#mainCornerDark)" opacity="0.6" />
-              {/* Main glowing orange corner wedge */}
-              <polygon points="310,260 440,260 440,140" fill="url(#mainCornerOrange)" />
-            </>
-          )}
-        </svg>
-      </div>
-
-      {/* Main Container: Explicitly aligned towards the physical RIGHT on desktop */}
-      <div className="relative z-20 w-full min-h-screen py-10 px-4 sm:px-6 md:px-12 lg:pr-20 lg:pl-10 flex items-center justify-center lg:justify-end">
-        {/* Floating Dark Card (المربع الأسود على اليمين) */}
+    <main className="fixed inset-0 w-screen h-screen flex bg-white overflow-hidden select-none z-[9999] font-sans" dir="ltr">
+      {/* Left 50% Full-Bleed Vehicle Image & Branding */}
+      <div className="hidden lg:block w-1/2 h-full relative overflow-hidden bg-[#05050A] flex-shrink-0">
         <div
-          dir="rtl"
-          className="w-full max-w-[430px] sm:max-w-[450px] bg-[#0c0d10]/95 backdrop-blur-2xl border border-white/10 rounded-[28px] sm:rounded-[32px] p-7 sm:p-9 shadow-[0_30px_90px_rgba(0,0,0,0.85)] relative overflow-hidden transition-all duration-300"
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
           style={{
-            boxShadow: isSeeda
-              ? '0 25px 70px -10px rgba(0,0,0,0.95), 0 0 0 1px rgba(124,58,237,0.18)'
-              : '0 25px 70px -10px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.08)',
+            backgroundImage: "url('/assets/photo/login-left-panel.jpg'), url('/assets/photo/loginBG.jpg')"
           }}
-        >
-          {/* Card Top Header: Reflecto on Left, Seeda/Inverto on Right (dir="ltr") */}
-          <div className="flex items-center justify-center gap-5 sm:gap-6 pb-6 pt-1" dir="ltr">
-            {/* Reflecto Logo */}
-            <div className="flex items-center">
-              <img
-                src="/assets/photo/main-logo.png"
-                alt="REFLECTO PAINT PROTECTION FILM"
-                className="h-8 sm:h-9 w-auto object-contain max-w-[150px]"
-                onError={(e) => {
-                  if (!e.target.src.includes('logo-dark.png')) {
-                    e.target.src = '/assets/photo/logo-dark.png';
-                  }
-                }}
-              />
-            </div>
+        />
+      </div>
 
-            {/* Vertical Divider */}
-            <div className="h-6 w-[1px] bg-white/20" />
-
-            {/* Seeda or Inverto Logo */}
-            <div className="flex items-center">
-              {isSeeda ? (
-                <img
-                  src="/assets/photo/seeda.png"
-                  alt="SEEDA"
-                  className="h-6 sm:h-7 w-auto object-contain"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = '/assets/photo/seeda-dark-text.png';
-                  }}
-                />
-              ) : (
-                <InvertoLogo className="h-6 sm:h-7 w-auto" />
-              )}
-            </div>
-          </div>
-
-          {/* Welcome Heading & Subtitle */}
-          <div className="text-center mb-7">
-            <h1 className="text-3xl sm:text-[34px] font-black text-white tracking-tight mb-2 font-sans">
-              مرحباً بك
+      {/* Right 50% Pure White Form Pane */}
+      <div className="w-full lg:w-1/2 h-full flex items-center justify-center bg-white p-6 sm:p-10 md:p-14 overflow-y-auto">
+        <div className="w-full max-w-[410px]">
+          {/* Header */}
+          <div className="mb-6">
+            <h1 className="text-[28px] font-bold text-gray-900 tracking-tight mb-2">
+              Welcome Back
             </h1>
-            <p className="text-xs sm:text-sm text-gray-400 font-normal">
+            <p className="text-[13.5px] leading-relaxed text-gray-500">
               {subtitle}
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Credential Field (Phone or Employee Code or Email) */}
-            <div className={`relative flex items-center bg-[#131519] border border-[#23272e] rounded-xl px-4 py-3.5 transition-all duration-200 shadow-inner ${
-              isSeeda
-                ? 'focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]/50'
-                : 'focus-within:border-[#FF5722] focus-within:ring-1 focus-within:ring-[#FF5722]/50'
-            }`}>
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate autoComplete="off">
+            {/* Email / Identifier */}
+            <div className="relative flex items-center w-full h-12 border-[1.5px] border-gray-200 rounded-xl bg-white px-3.5 gap-2.5 transition focus-within:border-indigo-600 focus-within:ring-2 focus-within:ring-indigo-100">
+              <span className="text-gray-400 flex items-center justify-center shrink-0">
+                <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <rect x="3" y="5" width="18" height="14" rx="2.5" />
+                  <polyline points="3 7 12 13 21 7" />
+                </svg>
+              </span>
               <input
+                id="portalLoginIdentifier"
                 type="text"
-                dir="rtl"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="رقم الجوال أو الرقم الوظيفي"
-                className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-gray-500 font-medium text-right"
-                disabled={isLoading}
+                placeholder="Email address"
+                className="flex-1 h-full bg-transparent border-none outline-none text-sm text-gray-900 placeholder:text-gray-400 font-sans"
                 autoComplete="username"
+                disabled={isLoading}
+                required
               />
-              {/* Mail / User Icon (Right side in RTL) */}
-              <div className="text-gray-400 shrink-0 mr-3 flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-              </div>
             </div>
 
-            {/* Password Field */}
-            <div className={`relative flex items-center bg-[#131519] border border-[#23272e] rounded-xl px-4 py-3.5 transition-all duration-200 shadow-inner ${
-              isSeeda
-                ? 'focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]/50'
-                : 'focus-within:border-[#FF5722] focus-within:ring-1 focus-within:ring-[#FF5722]/50'
-            }`}>
-              {/* Toggle Password Visibility (Left side in RTL) */}
+            {/* Password */}
+            <div className="relative flex items-center w-full h-12 border-[1.5px] border-gray-200 rounded-xl bg-white px-3.5 gap-2.5 transition focus-within:border-indigo-600 focus-within:ring-2 focus-within:ring-indigo-100">
+              <span className="text-gray-400 flex items-center justify-center shrink-0">
+                <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <rect x="5" y="11" width="14" height="10" rx="2.5" />
+                  <circle cx="12" cy="16" r="1.2" />
+                  <path d="M8 11V7a4 4 0 018 0v4" />
+                </svg>
+              </span>
+              <input
+                id="portalLoginPassword"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="flex-1 h-full bg-transparent border-none outline-none text-sm text-gray-900 placeholder:text-gray-400 font-sans"
+                autoComplete="current-password"
+                disabled={isLoading}
+                required
+              />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-gray-400 hover:text-white transition-colors ml-2 shrink-0 cursor-pointer p-0.5 focus:outline-none"
-                aria-label={showPassword ? 'إخفاء كلمة المرور' : 'عرض كلمة المرور'}
+                className="text-gray-400 hover:text-gray-600 transition p-1 cursor-pointer focus:outline-none"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.75">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                  <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.75">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
                   </svg>
                 )}
               </button>
-
-              <input
-                type={showPassword ? 'text' : 'password'}
-                dir="rtl"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="كلمة المرور"
-                className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-gray-500 font-medium text-right"
-                disabled={isLoading}
-                autoComplete="current-password"
-              />
-
-              {/* Lock Icon (Right side in RTL) */}
-              <div className="text-gray-400 shrink-0 mr-3 flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-              </div>
             </div>
 
-            {/* Remember Me Checkbox (Right aligned in RTL) */}
-            <div className="flex items-center justify-start pt-1">
-              <label className="inline-flex items-center gap-2.5 cursor-pointer select-none group">
-                <div className="relative flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all duration-150 ${
-                    isSeeda
-                      ? rememberMe ? 'bg-[#7C3AED] border-[#7C3AED]' : 'bg-[#1a1d24] border-[#343a46]'
-                      : rememberMe ? 'bg-[#FF5722] border-[#FF5722]' : 'bg-[#1a1d24] border-[#343a46]'
-                  }`}>
-                    {rememberMe && (
-                      <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="2.5 6 5 8.5 9.5 3.5" />
-                      </svg>
-                    )}
-                  </div>
-                </div>
-                <span className="text-xs sm:text-sm text-gray-300 group-hover:text-white transition-colors">
-                  تذكرني
-                </span>
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between text-[13px] pt-1">
+              <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 text-indigo-600 accent-indigo-600 cursor-pointer"
+                />
+                <span className="text-gray-600">Remember me</span>
               </label>
+
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(true)}
+                className="text-indigo-600 hover:text-indigo-800 font-medium transition cursor-pointer"
+              >
+                Forgot password?
+              </button>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full mt-3 hover:brightness-110 active:scale-[0.99] text-white font-bold py-3.5 sm:py-4 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2.5 cursor-pointer text-sm sm:text-base ${
-                isSeeda
-                  ? 'bg-gradient-to-r from-[#5C24EB] via-[#6D28D9] to-[#7C3AED] hover:from-[#6D28D9] hover:to-[#8B5CF6] shadow-[0_8px_25px_-5px_rgba(92,36,235,0.55)]'
-                  : 'bg-gradient-to-r from-[#FF5C35] via-[#FF5024] to-[#FF4500] shadow-[0_8px_25px_-5px_rgba(255,87,34,0.45)]'
-              }`}
+              className="w-full h-12 rounded-xl bg-gradient-to-r from-[#5842ED] via-[#6851F7] to-[#7C3AED] hover:from-[#4E38DF] hover:to-[#6D28D9] text-white text-[14.5px] font-semibold flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(104,81,247,0.35)] transition cursor-pointer disabled:opacity-75"
             >
               {isLoading ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>جاري تسجيل الدخول...</span>
+                  <span className="w-4.5 h-4.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Signing in...</span>
                 </>
               ) : (
-                <>
-                  <span>تسجيل الدخول</span>
-                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </>
+                <span>Sign In &nbsp;&rarr;</span>
               )}
             </button>
           </form>
 
-          {/* Forgot Password Button */}
-          <div className="pt-4 text-center">
-            <button
-              type="button"
-              onClick={() => setShowForgotModal(true)}
-              className={`text-xs sm:text-sm transition-colors cursor-pointer font-medium ${
-                isSeeda
-                  ? 'text-[#A78BFA] hover:text-[#C4B5FD]'
-                  : 'text-[#FF7A45] hover:text-[#FFA07A]'
-              }`}
-            >
-              نسيت كلمة المرور؟
-            </button>
+          {/* Divider */}
+          <div className="flex items-center my-5 text-gray-400 text-xs">
+            <div className="flex-1 border-b border-gray-100" />
+            <span className="px-3.5 text-gray-400">or</span>
+            <div className="flex-1 border-b border-gray-100" />
           </div>
 
-          {/* Card Bottom Area: Powered by + Corner Diagonal Stripes */}
-          <div className="pt-8 sm:pt-10 flex items-center justify-between relative">
-            {/* Powered by SEEDA or INVERTO (dir="ltr") */}
-            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium z-10" dir="ltr">
-              <span>Powered by</span>
-              {isSeeda ? (
-                <img
-                  src="/assets/photo/seeda.png"
-                  alt="SEEDA"
-                  className="h-3.5 sm:h-4 w-auto object-contain opacity-80"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = '/assets/photo/seeda-dark-text.png';
-                  }}
-                />
-              ) : (
-                <InvertoLogo className="h-3.5 sm:h-4 w-auto" />
-              )}
-            </div>
-
-            {/* Card Bottom-Right Diagonal Stripes Graphic */}
-            <div className="absolute -bottom-7 -right-7 sm:-bottom-9 sm:-right-9 w-[130px] sm:w-[150px] h-[95px] sm:h-[110px] pointer-events-none overflow-hidden rounded-br-[28px] sm:rounded-br-[32px]">
-              <svg
-                className="w-full h-full select-none"
-                viewBox="0 0 150 110"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {isSeeda ? (
-                  <defs>
-                    <linearGradient id="cardSeedaPurple" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#8B5CF6" />
-                      <stop offset="100%" stopColor="#5C24EB" />
-                    </linearGradient>
-                    <linearGradient id="cardSeedaDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#2E1065" />
-                      <stop offset="100%" stopColor="#170836" />
-                    </linearGradient>
-                    <linearGradient id="cardSeedaSubtle" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#4C1D95" />
-                      <stop offset="100%" stopColor="#1E0B4B" />
-                    </linearGradient>
-                  </defs>
-                ) : (
-                  <defs>
-                    <linearGradient id="cardOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#FF6A3D" />
-                      <stop offset="100%" stopColor="#FF4500" />
-                    </linearGradient>
-                    <linearGradient id="cardDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#2c3038" />
-                      <stop offset="100%" stopColor="#15171b" />
-                    </linearGradient>
-                    <linearGradient id="cardSubtle" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#663121" />
-                      <stop offset="100%" stopColor="#221510" />
-                    </linearGradient>
-                  </defs>
-                )}
-
-                {isSeeda ? (
-                  <>
-                    {/* Outer subtle stripe */}
-                    <polygon points="75,110 88,110 150,50 150,38" fill="url(#cardSeedaSubtle)" opacity="0.75" />
-                    {/* Dark metallic stripe */}
-                    <polygon points="90,110 108,110 150,70 150,52" fill="url(#cardSeedaDark)" />
-                    {/* Sharp black spacer */}
-                    <polygon points="108,110 112,110 150,74 150,70" fill="#0c0d10" />
-                    {/* Purple stripe */}
-                    <polygon points="112,110 128,110 150,90 150,74" fill="url(#cardSeedaPurple)" />
-                    {/* Solid corner purple */}
-                    <polygon points="130,110 150,110 150,92" fill="url(#cardSeedaPurple)" />
-                  </>
-                ) : (
-                  <>
-                    {/* Outer subtle stripe */}
-                    <polygon points="75,110 88,110 150,50 150,38" fill="url(#cardSubtle)" opacity="0.75" />
-                    {/* Dark metallic stripe */}
-                    <polygon points="90,110 108,110 150,70 150,52" fill="url(#cardDark)" />
-                    {/* Sharp black spacer */}
-                    <polygon points="108,110 112,110 150,74 150,70" fill="#0c0d10" />
-                    {/* Orange stripe */}
-                    <polygon points="112,110 128,110 150,90 150,74" fill="url(#cardOrange)" />
-                    {/* Solid corner orange */}
-                    <polygon points="130,110 150,110 150,92" fill="url(#cardOrange)" />
-                  </>
-                )}
+          {/* SSO Button */}
+          <button
+            type="button"
+            onClick={handleSsoClick}
+            className="w-full h-12 border-[1.5px] border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 text-[13.5px] font-medium flex items-center justify-center gap-2.5 transition cursor-pointer"
+          >
+            <span className="text-indigo-600 flex items-center justify-center">
+              <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="4" y="4" width="16" height="16" rx="4" />
+                <circle cx="12" cy="12" r="3" />
               </svg>
-            </div>
-          </div>
+            </span>
+            <span>Continue with SSO</span>
+          </button>
+
+          {/* Footer Prompt */}
+          <p className="text-center text-[13px] text-gray-500 mt-8 mb-0">
+            Don't have an account?{' '}
+            <a href="https://seeda.reflecto.com.sa/#contact" className="text-indigo-600 hover:text-indigo-800 font-semibold transition ml-1">
+              Contact us
+            </a>
+          </p>
         </div>
       </div>
 
       {/* Forgot Password Modal */}
       {showForgotModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn"
           onClick={() => setShowForgotModal(false)}
         >
           <div
-            className="bg-[#121418] border border-white/10 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative text-right"
+            className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl text-center"
             onClick={(e) => e.stopPropagation()}
-            dir="rtl"
+            dir="ltr"
           >
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
-              isSeeda
-                ? 'bg-[#5C24EB]/15 border border-[#7C3AED]/30 text-[#A78BFA]'
-                : 'bg-[#FF5722]/10 border border-[#FF5722]/20 text-[#FF5722]'
-            }`}>
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 mx-auto flex items-center justify-center mb-4">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">استعادة كلمة المرور</h3>
-            <p className="text-sm text-gray-300 mb-6 leading-relaxed">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Password Recovery</h3>
+            <p className="text-xs text-gray-500 leading-relaxed mb-6">
               {forgotPasswordMessage}
             </p>
-            <div className="bg-white/[0.03] border border-white/5 rounded-xl p-3.5 mb-6 text-xs text-gray-400 space-y-1.5">
-              <div>📞 الدعم الفني: <span className="font-mono text-white" dir="ltr">+966 55 872 2444</span></div>
-              <div>✉️ البريد: <span className="font-mono text-white">support@reflecto.com.sa</span></div>
-            </div>
             <button
               type="button"
               onClick={() => setShowForgotModal(false)}
-              className={`w-full text-white font-bold py-3 px-4 rounded-xl transition-all cursor-pointer text-sm ${
-                isSeeda
-                  ? 'bg-gradient-to-r from-[#5C24EB] to-[#7C3AED] hover:from-[#6D28D9] hover:to-[#8B5CF6] shadow-lg shadow-[#5C24EB]/30'
-                  : 'bg-[#FF5722] hover:bg-[#ff6e3f]'
-              }`}
+              className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition"
             >
-              حسناً، فهمت
+              Close
             </button>
           </div>
         </div>

@@ -205,6 +205,7 @@ export const AuthProvider = React.memo(({ children }) => {
           if (meData) {
             const updatedUser = {
               id: meData.id || user.id,
+              internal_id: meData.internal_id || user.internal_id || user.id,
               phone: meData.phone || user.phone,
               full_name: meData.full_name || user.full_name,
               email: meData.email || user.email,

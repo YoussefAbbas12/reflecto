@@ -1883,3 +1883,440 @@ body.login-active footer {
   display: none !important;
 }
 
+
+
+
+
+
+/* ==========================================================
+   Full-Screen Split-Screen Login Layout (Definitive Pixel-Perfect)
+   ========================================================== */
+
+body.login-active {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background-color: #FFFFFF !important;
+}
+
+body.login-active #hd,
+body.login-active footer {
+  display: none !important;
+}
+
+.seeda-login-screen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  display: flex !important;
+  flex-direction: row !important;
+  background-color: #FFFFFF !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 99999 !important;
+  font-family: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  box-sizing: border-box !important;
+}
+
+/* Left 50%: High-Definition Car Artwork */
+.seeda-split-visual {
+  width: 50% !important;
+  height: 100vh !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background-color: #06060c !important;
+  flex-shrink: 0 !important;
+}
+
+.seeda-visual-bg {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-image: url('../assets/photo/login-left-panel-hd.jpg'), url('../assets/photo/login-left-panel.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  image-rendering: -webkit-optimize-contrast !important;
+}
+
+/* Right 50%: Pure White Form Container */
+.seeda-split-form {
+  width: 50% !important;
+  height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #FFFFFF !important;
+  padding: 40px 60px !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+}
+
+.seeda-form-box {
+  width: 100% !important;
+  max-width: 400px !important;
+  margin: auto !important;
+  box-sizing: border-box !important;
+}
+
+.seeda-header-block {
+  margin-bottom: 28px !important;
+  text-align: left !important;
+}
+
+.seeda-main-title {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  margin: 0 0 8px 0 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  font-family: inherit !important;
+}
+
+.seeda-sub-title {
+  font-size: 13.5px !important;
+  line-height: 1.5 !important;
+  color: #6B7280 !important;
+  margin: 0 !important;
+  font-family: inherit !important;
+}
+
+.seeda-toast-alert {
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  margin-bottom: 18px !important;
+  display: none !important;
+  line-height: 1.4 !important;
+}
+
+.seeda-toast-alert.error {
+  display: block !important;
+  background: #FEF2F2 !important;
+  color: #DC2626 !important;
+  border: 1px solid #FECACA !important;
+}
+
+.seeda-toast-alert.success {
+  display: block !important;
+  background: #F0FDF4 !important;
+  color: #16A34A !important;
+  border: 1px solid #BBF7D0 !important;
+}
+
+.seeda-toast-alert.info {
+  display: block !important;
+  background: #EFF6FF !important;
+  color: #2563EB !important;
+  border: 1px solid #BFDBFE !important;
+}
+
+/* Force Form to single column vertical stack (Overriding global form grid) */
+form.seeda-login-form,
+.seeda-login-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Field Container */
+.seeda-field-container {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  border: 1.5px solid #E5E7EB !important;
+  border-radius: 12px !important;
+  background: #FFFFFF !important;
+  margin: 0 0 16px 0 !important;
+  padding: 0 14px !important;
+  gap: 10px !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.seeda-field-container:focus-within {
+  border-color: #6366F1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+}
+
+.seeda-input-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #9CA3AF !important;
+  flex-shrink: 0 !important;
+}
+
+.seeda-input-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.seeda-field-container input {
+  flex: 1 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  color: #111827 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: inherit !important;
+}
+
+.seeda-field-container input::placeholder {
+  color: #9CA3AF !important;
+  font-size: 14px !important;
+  opacity: 1 !important;
+}
+
+.seeda-eye-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  color: #9CA3AF !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: color 0.15s ease !important;
+}
+
+.seeda-eye-btn:hover {
+  color: #4B5563 !important;
+}
+
+.seeda-eye-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Remember & Forgot Row */
+.seeda-action-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin: 2px 0 20px 0 !important;
+  font-size: 13px !important;
+  box-sizing: border-box !important;
+}
+
+.seeda-checkbox-wrapper {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+.seeda-checkbox-wrapper input[type="checkbox"] {
+  accent-color: #6366F1 !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.seeda-checkbox-text {
+  color: #4B5563 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+.seeda-forgot-password-link {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: #6366F1 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  font-family: inherit !important;
+  transition: color 0.15s ease !important;
+}
+
+.seeda-forgot-password-link:hover {
+  color: #4F46E5 !important;
+  text-decoration: underline !important;
+}
+
+/* Sign In CTA Button */
+.seeda-signin-btn {
+  width: 100% !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  background: linear-gradient(90deg, #5842ED 0%, #6851F7 45%, #7C3AED 100%) !important;
+  color: #FFFFFF !important;
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-shadow: 0 4px 14px rgba(104, 81, 247, 0.35) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+  font-family: inherit !important;
+  margin: 0 0 20px 0 !important;
+}
+
+.seeda-signin-btn:hover {
+  box-shadow: 0 6px 20px rgba(104, 81, 247, 0.45) !important;
+  transform: translateY(-1px) !important;
+}
+
+.seeda-signin-btn:active {
+  transform: scale(0.99) !important;
+}
+
+.seeda-signin-btn:disabled {
+  opacity: 0.75 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.seeda-btn-spinner {
+  width: 18px !important;
+  height: 18px !important;
+  border: 2.5px solid rgba(255, 255, 255, 0.3) !important;
+  border-top-color: #FFFFFF !important;
+  border-radius: 50% !important;
+  animation: seedaSpin 0.75s linear infinite !important;
+}
+
+@keyframes seedaSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Divider */
+.seeda-divider-line {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin: 0 0 20px 0 !important;
+  text-align: center !important;
+  color: #9CA3AF !important;
+  font-size: 12px !important;
+}
+
+.seeda-divider-line::before,
+.seeda-divider-line::after {
+  content: '' !important;
+  flex: 1 !important;
+  border-bottom: 1px solid #F1F5F9 !important;
+}
+
+.seeda-divider-line span {
+  padding: 0 14px !important;
+  color: #9CA3AF !important;
+  font-size: 12px !important;
+}
+
+/* SSO Button */
+.seeda-sso-action-btn {
+  width: 100% !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  border: 1.5px solid #E5E7EB !important;
+  border-radius: 12px !important;
+  background: #FFFFFF !important;
+  color: #374151 !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease !important;
+  font-family: inherit !important;
+  margin: 0 0 28px 0 !important;
+}
+
+.seeda-sso-action-btn:hover {
+  background-color: #F9FAFB !important;
+  border-color: #D1D5DB !important;
+  color: #111827 !important;
+}
+
+.seeda-sso-badge {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #6366F1 !important;
+}
+
+.seeda-sso-badge svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Footer Prompt */
+.seeda-footer-prompt {
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: #6B7280 !important;
+  font-family: inherit !important;
+}
+
+.seeda-support-link {
+  color: #6366F1 !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  margin-left: 4px !important;
+  transition: color 0.15s ease !important;
+}
+
+.seeda-support-link:hover {
+  text-decoration: underline !important;
+  color: #4F46E5 !important;
+}
+
+/* Responsive Collapse on Tablets and Phones */
+@media (max-width: 860px) {
+  .seeda-login-screen {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    position: relative !important;
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+
+  .seeda-split-visual {
+    width: 100% !important;
+    height: 220px !important;
+    min-height: 220px !important;
+  }
+
+  .seeda-split-form {
+    width: 100% !important;
+    height: auto !important;
+    padding: 32px 20px 48px !important;
+  }
+}

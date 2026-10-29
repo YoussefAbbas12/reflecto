@@ -94,179 +94,126 @@
   // Exact Original Portal Login HTML (Identical to PortalLoginLayout)
   const loginHTML = (t) => {
     return `
-      <main class="portal-login-screen" dir="ltr">
-        <!-- Background Cinema Video -->
-        <div class="portal-bg-video-wrap">
-          <video class="portal-bg-video" autoplay loop muted playsinline poster="assets/photo/loginBG.jpg">
-            <source src="assets/login-video.webm" type="video/webm">
-          </video>
-          <div class="portal-overlay-grad-x"></div>
-          <div class="portal-overlay-grad-y"></div>
+      <main class="seeda-login-screen" dir="ltr">
+        <!-- Left 50% Full-Bleed Vehicle Image & Branding -->
+        <div class="seeda-split-visual">
+          <div class="seeda-visual-bg"></div>
         </div>
 
-        <!-- Screen Bottom-Left Tagline -->
-        <div class="portal-tagline-left" dir="rtl">
-          <p>حماية تعكس جودة التفاصيل</p>
-        </div>
-
-        <!-- Screen Bottom-Right Corner Wedge (SEEDA Purple) -->
-        <div class="portal-corner-wedge">
-          <svg viewBox="0 0 440 260" fill="none" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="mainCornerSeedaPurple" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#8B5CF6"/>
-                <stop offset="100%" stop-color="#5C24EB"/>
-              </linearGradient>
-              <linearGradient id="mainCornerSeedaDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#2E1065"/>
-                <stop offset="100%" stop-color="#140827"/>
-              </linearGradient>
-            </defs>
-            <polygon points="260,260 310,260 440,140 440,90" fill="url(#mainCornerSeedaDark)" opacity="0.6"/>
-            <polygon points="310,260 440,260 440,140" fill="url(#mainCornerSeedaPurple)"/>
-          </svg>
-        </div>
-
-        <!-- Main Container: Aligned towards the physical RIGHT on desktop -->
-        <div class="portal-login-container">
-          <div class="portal-card" dir="rtl">
-            <!-- Card Top Header: Reflecto on Left, Seeda on Right (dir="ltr") -->
-            <div class="portal-card-logos" dir="ltr">
-              <img src="assets/photo/main-logo.png" alt="REFLECTO" class="portal-logo-reflecto" onerror="this.src='assets/photo/logo-dark.png'">
-              <div class="portal-logo-divider"></div>
-              <img src="assets/photo/seeda.png" alt="SEEDA" class="portal-logo-seeda" onerror="this.src='assets/photo/seeda-dark-text.png'">
+        <!-- Right 50% Pure White Form Pane -->
+        <div class="seeda-split-form">
+          <div class="seeda-form-box">
+            <!-- Header -->
+            <div class="seeda-header-block">
+              <h1 class="seeda-main-title">Welcome Back</h1>
+              <p class="seeda-sub-title">Sign in to your SEEDA account to manage your business operations.</p>
             </div>
 
-            <!-- Welcome Heading & Subtitle -->
-            <div class="portal-card-header">
-              <h1>مرحباً بك</h1>
-              <p>سجل دخولك إلى النظام الإداري</p>
-            </div>
-
-            <!-- Card Toast Alert -->
-            <div id="loginToast" class="portal-toast" role="alert"></div>
+            <!-- Toast alert -->
+            <div id="loginToast" class="seeda-toast-alert" role="alert"></div>
 
             <!-- Form -->
-            <form id="seedaLoginForm" class="portal-form" novalidate autocomplete="off">
-              <!-- Identifier Field (Phone or Employee Code or Email) -->
-              <div class="portal-input-box">
+            <form id="seedaLoginForm" class="seeda-login-form" novalidate autocomplete="off">
+              <!-- Email / Identifier -->
+              <div class="seeda-field-container">
+                <span class="seeda-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="5" width="18" height="14" rx="2.5"/>
+                    <polyline points="3 7 12 13 21 7"/>
+                  </svg>
+                </span>
                 <input
                   id="loginIdentifier"
                   name="identifier"
                   type="text"
-                  dir="rtl"
-                  placeholder="رقم الجوال أو الرقم الوظيفي"
-                  autocomplete="off"
+                  placeholder="Email address"
+                  autocomplete="username"
                   required
                 />
-                <div class="portal-field-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                  </svg>
-                </div>
               </div>
 
-              <!-- Password Field -->
-              <div class="portal-input-box">
-                <button type="button" class="portal-pwd-toggle" id="loginPwdToggle" aria-label="إظهار كلمة المرور">
-                  <svg class="portal-eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              <!-- Password -->
+              <div class="seeda-field-container">
+                <span class="seeda-input-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="5" y="11" width="14" height="10" rx="2.5"/>
+                    <circle cx="12" cy="16" r="1.2"/>
+                    <path d="M8 11V7a4 4 0 018 0v4"/>
                   </svg>
-                  <svg class="portal-eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:none">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
-                  </svg>
-                </button>
+                </span>
                 <input
                   id="loginPassword"
                   name="password"
                   type="password"
-                  dir="rtl"
-                  placeholder="كلمة المرور"
-                  autocomplete="new-password"
+                  placeholder="Password"
+                  autocomplete="current-password"
                   required
                 />
-                <div class="portal-field-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                <button type="button" class="seeda-eye-btn" id="loginPwdToggle" aria-label="Toggle password visibility">
+                  <svg class="pwd-eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
                   </svg>
-                </div>
+                  <svg class="pwd-eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none">
+                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
               </div>
 
-              <!-- Remember Me Checkbox -->
-              <div class="portal-remember-row">
-                <label class="portal-remember-label">
-                  <div class="portal-custom-checkbox checked" id="loginCheckVisual">
-                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="2.5 6 5 8.5 9.5 3.5"/>
-                    </svg>
-                  </div>
-                  <input type="checkbox" id="loginRememberMe" checked style="display:none">
-                  <span>تذكرني</span>
+              <!-- Remember Me & Forgot Password Row -->
+              <div class="seeda-action-row">
+                <label class="seeda-checkbox-wrapper" for="loginRememberMe">
+                  <input type="checkbox" id="loginRememberMe" checked />
+                  <span class="seeda-checkbox-text">Remember me</span>
                 </label>
+
+                <button type="button" class="seeda-forgot-password-link" id="loginForgotBtn">
+                  Forgot password?
+                </button>
               </div>
 
-              <!-- Submit Button -->
-              <button type="submit" class="portal-submit-btn" id="loginSubmitBtn">
-                <span class="portal-btn-spinner" style="display:none"></span>
-                <span class="portal-btn-label">تسجيل الدخول</span>
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                </svg>
+              <!-- Sign In Button -->
+              <button type="submit" class="seeda-signin-btn" id="loginSubmitBtn">
+                <span class="seeda-btn-spinner" style="display:none"></span>
+                <span class="seeda-btn-label">Sign In &nbsp;&rarr;</span>
               </button>
             </form>
 
-            <!-- Forgot Password Button -->
-            <div class="portal-forgot-box">
-              <button type="button" class="portal-forgot-link" id="loginForgotBtn">
-                نسيت كلمة المرور؟
-              </button>
+            <!-- Divider -->
+            <div class="seeda-divider-line">
+              <span>or</span>
             </div>
 
-            <!-- Card Bottom: Powered by + Diagonal Stripes -->
-            <div class="portal-card-bottom">
-              <div class="portal-powered-by" dir="ltr">
-                <span>Powered by</span>
-                <img src="assets/photo/seeda.png" alt="SEEDA" onerror="this.src='assets/photo/seeda-dark-text.png'">
-              </div>
-              <div class="portal-card-stripes">
-                <svg viewBox="0 0 150 110" fill="none">
-                  <defs>
-                    <linearGradient id="cardSeedaPurple" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#8B5CF6"/>
-                      <stop offset="100%" stop-color="#5C24EB"/>
-                    </linearGradient>
-                    <linearGradient id="cardSeedaDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#2E1065"/>
-                      <stop offset="100%" stop-color="#170836"/>
-                    </linearGradient>
-                    <linearGradient id="cardSeedaSubtle" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#4C1D95"/>
-                      <stop offset="100%" stop-color="#1E0B4B"/>
-                    </linearGradient>
-                  </defs>
-                  <polygon points="75,110 88,110 150,50 150,38" fill="url(#cardSeedaSubtle)" opacity="0.75"/>
-                  <polygon points="90,110 108,110 150,70 150,52" fill="url(#cardSeedaDark)"/>
-                  <polygon points="108,110 112,110 150,74 150,70" fill="#0c0d10"/>
-                  <polygon points="112,110 128,110 150,90 150,74" fill="url(#cardSeedaPurple)"/>
-                  <polygon points="130,110 150,110 150,92" fill="url(#cardSeedaPurple)"/>
+            <!-- SSO Button -->
+            <button type="button" class="seeda-sso-action-btn" id="loginSsoBtn">
+              <span class="seeda-sso-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="4" width="16" height="16" rx="4"/>
+                  <circle cx="12" cy="12" r="3"/>
                 </svg>
-              </div>
-            </div>
+              </span>
+              <span>Continue with SSO</span>
+            </button>
+
+            <!-- Bottom Contact Link -->
+            <p class="seeda-footer-prompt">
+              Don't have an account? <a href="#contact" class="seeda-support-link">Contact us</a>
+            </p>
           </div>
         </div>
 
-        <!-- Forgot Password Modal -->
+        <!-- Forgot Modal -->
         <div id="forgotModal" class="portal-modal-backdrop" style="display:none">
-          <div class="portal-modal-box" dir="rtl">
+          <div class="portal-modal-box">
             <div class="portal-modal-icon">
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
               </svg>
             </div>
-            <h3>استعادة كلمة المرور</h3>
-            <p>يرجى التواصل مع مسؤول النظام العام أو قسم الدعم الفني لمساعدتك في استعادة وتعيين كلمة مرور الحساب الإداري أو الفني.</p>
-            <button type="button" class="portal-modal-close-btn" id="closeForgotModal">إغلاق</button>
+            <h3>Password Recovery</h3>
+            <p>Please contact your system administrator or IT support team to assist in retrieving or resetting your portal credentials.</p>
+            <button type="button" class="portal-modal-close-btn" id="closeForgotModal">Close</button>
           </div>
         </div>
       </main>
@@ -275,6 +222,7 @@
 
   // Page definitions
   const PAGES = {
+
     home: (t) =>
       heroHTML(t) +
       `<section class="vals"><div class="wrap"><h2>${t.home.whySeedaHeading}</h2><div class="g4">${t.vals
@@ -543,9 +491,9 @@
     const identifierInput = $("#loginIdentifier");
     const passwordInput = $("#loginPassword");
     const rememberCheckbox = $("#loginRememberMe");
-    const checkVisual = $("#loginCheckVisual");
     const pwdToggle = $("#loginPwdToggle");
     const forgotBtn = $("#loginForgotBtn");
+    const ssoBtn = $("#loginSsoBtn");
     const forgotModal = $("#forgotModal");
     const closeForgot = $("#closeForgotModal");
     const submitBtn = $("#loginSubmitBtn");
@@ -557,39 +505,26 @@
       if (saved && identifierInput) {
         identifierInput.value = saved;
         if (rememberCheckbox) rememberCheckbox.checked = true;
-        if (checkVisual) checkVisual.classList.add("checked");
       }
     } catch (e) {}
-
-    // Checkbox toggle visual
-    if (rememberCheckbox && checkVisual) {
-      const toggleCheck = () => {
-        rememberCheckbox.checked = !rememberCheckbox.checked;
-        checkVisual.classList.toggle("checked", rememberCheckbox.checked);
-      };
-      checkVisual.parentElement.onclick = (e) => {
-        e.preventDefault();
-        toggleCheck();
-      };
-    }
 
     // Toggle Password Visibility
     if (pwdToggle && passwordInput) {
       pwdToggle.onclick = () => {
         const isPassword = passwordInput.getAttribute("type") === "password";
         passwordInput.setAttribute("type", isPassword ? "text" : "password");
-        const eyeOpen = $(".portal-eye-open", pwdToggle);
-        const eyeClosed = $(".portal-eye-closed", pwdToggle);
+        const eyeOpen = $(".pwd-eye-open", pwdToggle);
+        const eyeClosed = $(".pwd-eye-closed", pwdToggle);
         if (eyeOpen && eyeClosed) {
-          eyeOpen.style.display = isPassword ? "block" : "none";
-          eyeClosed.style.display = isPassword ? "none" : "block";
+          eyeOpen.style.display = isPassword ? "none" : "block";
+          eyeClosed.style.display = isPassword ? "block" : "none";
         }
       };
     }
 
     // Forgot Password Modal
     if (forgotBtn && forgotModal) {
-      forgotBtn.onclick = () => { forgotModal.style.display = "flex"; };
+      forgotBtn.onclick = (e) => { e.preventDefault(); forgotModal.style.display = "flex"; };
     }
     if (closeForgot && forgotModal) {
       closeForgot.onclick = () => { forgotModal.style.display = "none"; };
@@ -600,14 +535,26 @@
       };
     }
 
+    // SSO Button
+    if (ssoBtn) {
+      ssoBtn.onclick = () => {
+        showToast(
+          currentLang === "ar"
+            ? "تسجيل الدخول الموحد (SSO) متاح لحسابات الشركات المعتمدة. يرجى تسجيل الدخول ببياناتك أعلاه."
+            : "SSO is enabled for enterprise accounts. Please sign in with your credentials above or contact support.",
+          "info"
+        );
+      };
+    }
+
     const showToast = (msg, type = "error") => {
       if (!toast) return;
-      toast.className = "portal-toast " + type;
+      toast.className = "seeda-toast " + type;
       toast.textContent = msg;
     };
 
     const hideToast = () => {
-      if (toast) toast.className = "portal-toast";
+      if (toast) toast.className = "seeda-toast";
     };
 
     // Form Submit
@@ -620,12 +567,12 @@
       const remember = !!(rememberCheckbox && rememberCheckbox.checked);
 
       if (!identifier) {
-        showToast("يرجى إدخال رقم الهاتف أو الرقم الوظيفي", "error");
+        showToast(currentLang === "ar" ? "يرجى إدخال البريد الإلكتروني أو رقم الهاتف" : "Please enter your email or phone number", "error");
         if (identifierInput) identifierInput.focus();
         return;
       }
       if (!password) {
-        showToast("يرجى إدخال كلمة المرور", "error");
+        showToast(currentLang === "ar" ? "يرجى إدخال كلمة المرور" : "Please enter your password", "error");
         if (passwordInput) passwordInput.focus();
         return;
       }
@@ -644,10 +591,10 @@
 
       // Enter loading state
       submitBtn.disabled = true;
-      const spinner = $(".portal-btn-spinner", submitBtn);
-      const label = $(".portal-btn-label", submitBtn);
+      const spinner = $(".seeda-btn-spinner", submitBtn);
+      const label = $(".seeda-btn-label", submitBtn);
       if (spinner) spinner.style.display = "inline-block";
-      if (label) label.textContent = "جاري تسجيل الدخول...";
+      if (label) label.textContent = currentLang === "ar" ? "جاري تسجيل الدخول..." : "Signing in...";
 
       try {
         let apiUrl = "https://back.reflecto.com.sa/api/v1";
@@ -703,28 +650,26 @@
           const errMsg = result.data?.error?.message || "";
 
           if (errCode === "FORBIDDEN_DOMAIN" || errMsg.includes("معزولة") || errMsg.includes("حصراً")) {
-            // Old server with domain restrictions — try admin first
             result = await doRequest("admin");
             if (!result.ok) {
               result = await doRequest("technician");
             }
-          } else if (errMsg.includes("فني")) {
+          } else if (errMsg.includes("فني") || errMsg.includes("technician")) {
             result = await doRequest("technician");
-          } else if (errMsg.includes("إداري")) {
+          } else if (errMsg.includes("إداري") || errMsg.includes("admin")) {
             result = await doRequest("admin");
           } else if (errCode === "FORBIDDEN_PORTAL" || errCode === "USE_DEDICATED_PORTAL") {
-            // Flip the portal type
             result = await doRequest("technician");
             if (!result.ok) result = await doRequest("admin");
           }
         }
 
         if (!result.ok || !result.data?.success) {
-          const errText = result.data?.error?.message || "بيانات الدخول غير صحيحة، يرجى التأكد من رقم الجوال وكلمة المرور";
+          const errText = result.data?.error?.message || (currentLang === "ar" ? "بيانات الدخول غير صحيحة، يرجى التأكد من البريد/الجوال وكلمة المرور" : "Invalid email or password. Please check your credentials.");
           showToast(errText, "error");
           submitBtn.disabled = false;
           if (spinner) spinner.style.display = "none";
-          if (label) label.textContent = "تسجيل الدخول";
+          if (label) label.textContent = (currentLang === "ar" ? "تسجيل الدخول ←" : "Sign In →");
           return;
         }
 
@@ -732,14 +677,17 @@
         const user = result.data.user || {};
         const role = (user.role || "").toLowerCase();
         const isTech = role === "technician";
-        const name = user.full_name || (isTech ? "الفني" : "المسؤول");
+        const name = user.full_name || (isTech ? (currentLang === "ar" ? "الفني" : "Technician") : (currentLang === "ar" ? "المسؤول" : "Administrator"));
 
-        showToast(`مرحباً بك مجدداً، ${name}!`, "success");
+        showToast(currentLang === "ar" ? `مرحباً بك مجدداً، ${name}!` : `Welcome back, ${name}!`, "success");
 
-        // Target Portals: Always direct to official portals
+        // Target Portals:
         // admin => https://admin.reflecto.com.sa/
         // technician => https://technical.reflecto.com.sa/
         let targetPortal = isTech ? "https://technical.reflecto.com.sa" : "https://admin.reflecto.com.sa";
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+          targetPortal = isTech ? "http://localhost:5173/?portal=technical" : "http://localhost:5173/?portal=admin";
+        }
 
         // Handover session payload
         const handover = {
@@ -755,7 +703,8 @@
         const encodedPass = encodeURIComponent(password);
 
         // Redirect directly to official live portal with token and auto-login credentials
-        const redirectUrl = `${targetPortal}/?auto_login=1&identifier=${encodedIdentifier}&password=${encodedPass}&access_token=${encodedToken}&refresh_token=${encodedRefreshToken}&user=${encodedUser}&auth_data=${encoded}#auth_data=${encoded}`;
+        const sep = targetPortal.includes("?") ? "&" : "?";
+        const redirectUrl = `${targetPortal}${sep}auto_login=1&identifier=${encodedIdentifier}&password=${encodedPass}&access_token=${encodedToken}&refresh_token=${encodedRefreshToken}&user=${encodedUser}&auth_data=${encoded}#auth_data=${encoded}`;
 
         setTimeout(() => {
           window.location.href = redirectUrl;
@@ -763,10 +712,10 @@
 
       } catch (err) {
         console.error("Login Error:", err);
-        showToast("تعذر الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت", "error");
+        showToast(currentLang === "ar" ? "تعذر الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت" : "Failed to connect to the server. Please check your internet connection.", "error");
         submitBtn.disabled = false;
         if (spinner) spinner.style.display = "none";
-        if (label) label.textContent = "تسجيل الدخول";
+        if (label) label.textContent = (currentLang === "ar" ? "تسجيل الدخول ←" : "Sign In →");
       }
     };
   }

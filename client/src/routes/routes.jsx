@@ -151,28 +151,17 @@ const AppRoutes = () => {
     );
   }
 
-  // If on Technical portal (technical.reflecto.com.sa / tech.reflecto.com.sa), render ONLY technician routes
+    // If on Technical portal (technical.reflecto.com.sa / tech.reflecto.com.sa), render ONLY technician workspace
   if (portal === 'technical') {
     return (
       <Suspense fallback={<PageFallback />}>
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
-          <Route path="/login" element={<AnimatedRoute><SeedaPortal initialLoginOpen={true} /></AnimatedRoute>} />
-          <Route path="/technical/login" element={<AnimatedRoute><SeedaPortal initialLoginOpen={true} /></AnimatedRoute>} />
-          <Route path="/tech/login" element={<AnimatedRoute><SeedaPortal initialLoginOpen={true} /></AnimatedRoute>} />
-          <Route path="/about-seeda" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
-          <Route path="/seeda" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
-          <Route path="/solutions" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
-          <Route path="/industries" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
-          <Route path="/contact" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
-          <Route path="/technician" element={
-            <AnimatedRoute>
-              <ProtectedRoute requiredRole={['technician', 'admin']}>
-                <TechnicianDashboard />
-              </ProtectedRoute>
-            </AnimatedRoute>
-          } />
-          <Route path="*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
+          <Route path="/" element={<AnimatedRoute><TechnicianDashboard /></AnimatedRoute>} />
+          <Route path="/technician" element={<AnimatedRoute><TechnicianDashboard /></AnimatedRoute>} />
+          <Route path="/tasks" element={<AnimatedRoute><TechnicianDashboard /></AnimatedRoute>} />
+          <Route path="/attendance" element={<AnimatedRoute><TechnicianDashboard /></AnimatedRoute>} />
+          <Route path="/commissions" element={<AnimatedRoute><TechnicianDashboard /></AnimatedRoute>} />
+          <Route path="*" element={<AnimatedRoute><TechnicianDashboard /></AnimatedRoute>} />
         </Routes>
       </Suspense>
     );

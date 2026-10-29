@@ -374,7 +374,214 @@ async function getTechnicianCommissionsByAdmin(req, res) {
   }
 }
 
+
+/**
+ * Claim an unassigned or available work order
+ */
+async function claimWorkOrder(req, res) {
+  try {
+    const { id } = req.params;
+    const techId = req.user.id;
+    const techName = req.user.full_name || 'الفني';
+
+    const [[wo]] = await pool.query(
+      'SELECT * FROM work_orders WHERE (uuid = ? OR id = ?)',
+      [id, id]
+    );
+
+    if (!wo) {
+      return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Work Order not found' } });
+    }
+
+    if (wo.technician_id && wo.technician_id !== techId) {
+      return res.status(400).json({ success: false, error: { code: 'ALREADY_ASSIGNED', message: 'المهمة مستلمة بالفعل من قبل فني آخر' } });
+    }
+
+    const updates = ['technician_id = ?', 'technician_name = ?'];
+    const params = [techId, techName];
+
+    if (wo.status === 'pending') {
+      updates.push("status = 'in_progress'");
+      updates.push('started_at = NOW()');
+    }
+
+    params.push(wo.id);
+    await pool.query(`UPDATE work_orders SET ${updates.join(', ')} WHERE id = ?`, params);
+
+    res.json({
+      success: true,
+      message: 'تم استلام المهمة بنجاح',
+      data: { id: wo.id, technician_id: techId, technician_name: techName }
+    });
+  } catch (err) {
+    console.error('Claim work order error:', err);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+  }
+}
+
+/**
+ * Get today attendance status for technician
+ */
+async function getTodayAttendance(req, res) {
+  try {
+    const techId = req.user.id;
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    const [[record]] = await pool.query(
+      `SELECT * FROM technician_attendance WHERE technician_id = ? AND work_date = ?`,
+      [techId, todayStr]
+    );
+
+    res.json({
+      success: true,
+      data: {
+        today: todayStr,
+        record: record || null,
+        schedule: {
+          start: '09:00:00',
+          end: '18:00:00'
+        },
+        methods: ['manual', 'geofence']
+      }
+    });
+  } catch (err) {
+    console.error('Get today attendance error:', err);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+  }
+}
+
+/**
+ * Get monthly attendance history and summary
+ */
+async function getAttendanceMonth(req, res) {
+  try {
+    const techId = req.user.id;
+    const { month } = req.query; // format 'YYYY-MM'
+    const targetMonth = month && /^\d{4}-\d{2}$/.test(month) ? month : new Date().toISOString().slice(0, 7);
+
+    const fromDate = `${targetMonth}-01`;
+    const toDate = `${targetMonth}-31`;
+
+    const [records] = await pool.query(
+      `SELECT * FROM technician_attendance 
+       WHERE technician_id = ? AND work_date >= ? AND work_date <= ?
+       ORDER BY work_date DESC`,
+      [techId, fromDate, toDate]
+    );
+
+    const presentCount = records.filter(r => r.status === 'present').length;
+    const lateCount = records.filter(r => r.status === 'late').length;
+    const totalLateMinutes = records.reduce((acc, r) => acc + (r.late_minutes || 0), 0);
+
+    let workedMinutes = 0;
+    records.forEach(r => {
+      if (r.check_in_at && r.check_out_at) {
+        const diffMs = new Date(r.check_out_at).getTime() - new Date(r.check_in_at).getTime();
+        if (diffMs > 0) workedMinutes += Math.round(diffMs / (1000 * 60));
+      } else if (r.check_in_at) {
+        workedMinutes += 480; // Default 8 hours if not checked out yet
+      }
+    });
+
+    res.json({
+      success: true,
+      data: {
+        month: targetMonth,
+        records,
+        summary: {
+          present: presentCount,
+          late: lateCount,
+          absent: 0,
+          missing: records.filter(r => r.check_in_at && !r.check_out_at).length,
+          workedMinutes,
+          lateMinutes: totalLateMinutes
+        }
+      }
+    });
+  } catch (err) {
+    console.error('Get monthly attendance error:', err);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+  }
+}
+
+/**
+ * Punch attendance (Check-in or Check-out)
+ */
+async function punchAttendance(req, res) {
+  try {
+    const techId = req.user.id;
+    const { action, method = 'manual', latitude, longitude, notes } = req.body;
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+
+    const [[existing]] = await pool.query(
+      `SELECT * FROM technician_attendance WHERE technician_id = ? AND work_date = ?`,
+      [techId, todayStr]
+    );
+
+    if (action === 'in') {
+      if (existing && existing.check_in_at) {
+        return res.status(400).json({ success: false, error: { code: 'ALREADY_CHECKED_IN', message: 'تم تسجيل الحضور اليوم بالفعل' } });
+      }
+
+      // Check if late (after 09:30 AM)
+      const saudiHour = (now.getUTCHours() + 3) % 24;
+      const saudiMin = now.getUTCMinutes();
+      let lateMinutes = 0;
+      let status = 'present';
+      if (saudiHour > 9 || (saudiHour === 9 && saudiMin > 15)) {
+        lateMinutes = ((saudiHour - 9) * 60) + saudiMin;
+        status = 'late';
+      }
+
+      if (existing) {
+        await pool.query(
+          `UPDATE technician_attendance 
+           SET check_in_at = NOW(), status = ?, late_minutes = ?, method = ?, latitude = ?, longitude = ?, notes = ?
+           WHERE id = ?`,
+          [status, lateMinutes, method, latitude || null, longitude || null, notes || null, existing.id]
+        );
+      } else {
+        await pool.query(
+          `INSERT INTO technician_attendance 
+           (uuid, technician_id, work_date, check_in_at, status, late_minutes, method, latitude, longitude, notes)
+           VALUES (UUID(), ?, ?, NOW(), ?, ?, ?, ?, ?, ?)`,
+          [techId, todayStr, status, lateMinutes, method, latitude || null, longitude || null, notes || null]
+        );
+      }
+
+      return res.json({ success: true, message: 'تم تسجيل الحضور بنجاح' });
+    } else if (action === 'out') {
+      if (!existing || !existing.check_in_at) {
+        return res.status(400).json({ success: false, error: { code: 'NOT_CHECKED_IN', message: 'يجب تسجيل الحضور أولاً قبل تسجيل الانصراف' } });
+      }
+
+      if (existing.check_out_at) {
+        return res.status(400).json({ success: false, error: { code: 'ALREADY_CHECKED_OUT', message: 'تم تسجيل الانصراف اليوم بالفعل' } });
+      }
+
+      await pool.query(
+        `UPDATE technician_attendance 
+         SET check_out_at = NOW()
+         WHERE id = ?`,
+        [existing.id]
+      );
+
+      return res.json({ success: true, message: 'تم تسجيل الانصراف بنجاح' });
+    }
+
+    res.status(400).json({ success: false, error: { code: 'INVALID_ACTION', message: 'نوع الإجراء غير صالح (in أو out)' } });
+  } catch (err) {
+    console.error('Punch attendance error:', err);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+  }
+}
+
 module.exports = {
+  claimWorkOrder,
+  getTodayAttendance,
+  getAttendanceMonth,
+  punchAttendance,
   getAssignedOrders,
   updateServiceProgress,
   getCompletedHistory,

@@ -59,20 +59,18 @@ const App = () => {
     }
   }
 
-  // 2. TECHNICAL PORTAL (technical.reflecto.com.sa / tech.reflecto.com.sa)
+    // 2. TECHNICAL PORTAL (technical.reflecto.com.sa / tech.reflecto.com.sa)
   if (portal === 'technical') {
     if (!user) {
-      // Unauthenticated visitors can view the SEEDA portal and login directly
-      if (pathname === '/technician') {
-        return <Navigate to="/login" replace />;
-      }
-    } else {
-      if (!isTechUser(user)) {
-        return <Navigate to="/login" replace />;
-      }
-      // If already logged in as technician and visiting login, direct to technician hub
-      if (pathname === '/technical/login' || pathname === '/tech/login' || pathname === '/login') {
-        return <Navigate to="/technician" replace />;
+      const hasAuthInUrl = typeof window !== 'undefined' && (
+        window.location.hash.includes('auth_data') || 
+        window.location.search.includes('auth_data') ||
+        window.location.hash.includes('access_token') ||
+        window.location.search.includes('access_token')
+      );
+      const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      if (!hasAuthInUrl && !isLocal) {
+        return (typeof window !== "undefined" ? (window.location.href = "https://seeda.reflecto.com.sa/#login", null) : null);
       }
     }
   }
@@ -129,7 +127,7 @@ const App = () => {
         !isAboutSeedaPage && <Navbar />
       )}
 
-      <main className={`flex-grow ${isAnyStaffLoginPage || isClientLoginPage || isAboutSeedaPage ? 'pt-0' : 'pt-20'} ${isAdminPortal && !isAnyStaffLoginPage && !isAboutSeedaPage ? 'lg:pl-72' : ''}`}>
+      <main className={`flex-grow ${isAnyStaffLoginPage || isClientLoginPage || isAboutSeedaPage || isTechPortal ? 'pt-0' : 'pt-20'} ${isAdminPortal && !isAnyStaffLoginPage && !isAboutSeedaPage ? 'lg:pl-72' : ''}`}>
         <AppRoutes />
       </main>
 

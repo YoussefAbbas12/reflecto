@@ -1,694 +1,1360 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { 
+  Bell, 
+  ClipboardCheck, 
+  ArrowLeft, 
+  ArrowRight, 
+  CheckCheck, 
+  Wrench, 
+  AlarmClock, 
+  PackagePlus, 
+  LogIn, 
+  LogOut,
+  Wallet, 
+  User, 
+  Car, 
+  Clock, 
+  MapPin, 
+  Phone, 
+  CheckCircle2, 
+  Circle, 
+  Loader2, 
+  Search, 
+  Calendar,
+  X,
+  ShieldCheck,
+  ChevronRight,
+  ChevronLeft,
+  Globe,
+  CalendarDays,
+  LayoutGrid,
+  History,
+  FileText,
+  HelpCircle,
+  Info,
+  ChevronDown
+} from 'lucide-react';
 import { technicianService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { useLanguage } from '../hooks/useLanguage';
-import FadeIn from '../components/components/FadeIn';
-import EmployeeCodeBadge from '../components/EmployeeCodeBadge';
+import { Logo, VehicleArt, VehicleThumb } from '../components/seeda/Brand';
+import { Card, Badge, TASK_TONE, ATT_TONE, COMM_TONE, EmptyState, Avatar } from '../components/seeda/UI';
+import { TechBottomNav, TechSideNav } from '../components/seeda/TechNav';
 
-const ALL_SERVICES_KEYS = [
-  { key: 'heat_insulation', titleAr: 'عازل حراري', titleEn: 'Heat Insulation', icon: 'solar_power' },
-  { key: 'polishing', titleAr: 'تلميع ساطع', titleEn: 'Polishing & Paint Restoration', icon: 'auto_fix_high' },
-  { key: 'nano_ceramic', titleAr: 'نانو سيراميك', titleEn: 'Nano Ceramic', icon: 'shield' },
-  { key: 'ppf', titleAr: 'حماية PPF', titleEn: 'Paint Protection Film (PPF)', icon: 'directions_car' },
-  { key: 'removal_services', titleAr: 'خدمات إزالة', titleEn: 'Removal Services', icon: 'delete_sweep' },
+const SERVICE_KEYS = [
+  { key: 'heat_insulation', titleAr: 'عازل حراري', titleEn: 'Heat Insulation' },
+  { key: 'polishing', titleAr: 'تلميع ساطع', titleEn: 'Polishing & Restoration' },
+  { key: 'nano_ceramic', titleAr: 'نانو سيراميك', titleEn: 'Nano Ceramic' },
+  { key: 'ppf', titleAr: 'حماية PPF', titleEn: 'PPF Film' },
+  { key: 'removal_services', titleAr: 'خدمات إزالة', titleEn: 'Removal Services' },
 ];
 
-const TechnicianDashboard = React.memo(() => {
+export default function TechnicianDashboard() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { language, toggleLanguage } = useLanguage();
   const isArabic = language === 'ar';
+  const Arrow = isArabic ? ArrowLeft : ArrowRight;
+  const Chevron = isArabic ? ChevronLeft : ChevronRight;
 
-  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'history' | 'commissions'
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  // Active Tab: 'home' | 'tasks' | 'schedule' | 'more' | 'attendance' | 'commissions' | 'history' | 'notifications'
+  const [activeTab, setActiveTab] = useState('home');
+  const [taskFilter, setTaskFilter] = useState('mine'); // 'mine' | 'available' | 'in_progress' | 'completed'
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [attendanceBusy, setAttendanceBusy] = useState(false);
+  const [selectedScheduleDay, setSelectedScheduleDay] = useState(0); // 0 = today, 1..6
 
-  // Fetch active work orders assigned to technician
+  // 1. Fetch Assigned / Active Orders
   const { data: activeData, isLoading: isLoadingActive } = useQuery({
     queryKey: ['technicianActiveOrders'],
     queryFn: () => technicianService.getAssignedOrders(),
     refetchInterval: 15000,
   });
 
-  // Fetch history work orders
+  // 2. Fetch Completed History Orders
   const { data: historyData, isLoading: isLoadingHistory } = useQuery({
     queryKey: ['technicianHistoryOrders'],
     queryFn: () => technicianService.getHistory(),
   });
 
-  // Fetch commissions
+  // 3. Fetch Commissions
   const { data: commissionsData, isLoading: isLoadingCommissions } = useQuery({
     queryKey: ['technicianCommissions'],
     queryFn: () => technicianService.getCommissions(),
     staleTime: 30000,
   });
 
+  // 4. Fetch Attendance Today
+  const { data: attendanceData, isLoading: isLoadingAttendance } = useQuery({
+    queryKey: ['technicianAttendanceToday'],
+    queryFn: () => technicianService.getTodayAttendance(),
+  });
+
+  // 5. Fetch Attendance Month
+  const { data: attendanceMonthData } = useQuery({
+    queryKey: ['technicianAttendanceMonth'],
+    queryFn: () => technicianService.getAttendanceMonth(),
+  });
+
   const activeOrders = useMemo(() => activeData?.data || [], [activeData]);
   const historyOrders = useMemo(() => historyData?.data || [], [historyData]);
   const commissionsInfo = useMemo(() => commissionsData?.data || { commissions: [], total_earned: 0, services_count: 0 }, [commissionsData]);
   const commissionsList = useMemo(() => commissionsInfo.commissions || [], [commissionsInfo]);
+  const todayAtt = useMemo(() => attendanceData?.data?.record || null, [attendanceData]);
+  const monthSummary = useMemo(() => attendanceMonthData?.data?.summary || { present: 0, late: 0, workedMinutes: 0 }, [attendanceMonthData]);
+  const monthRecords = useMemo(() => attendanceMonthData?.data?.records || [], [attendanceMonthData]);
 
-  // Keep selectedOrder in sync with latest query data
+  // Keep selectedTask in sync with latest query updates
   useEffect(() => {
-    if (selectedOrder) {
-      const allOrders = [...activeOrders, ...historyOrders];
-      const updated = allOrders.find(o => o.id === selectedOrder.id || o.uuid === selectedOrder.uuid || String(o.id) === String(selectedOrder.id));
-      if (updated) {
-        setSelectedOrder(prev => prev ? { ...prev, ...updated } : null);
+    if (selectedTask) {
+      const all = [...activeOrders, ...historyOrders];
+      const found = all.find(o => String(o.id) === String(selectedTask.id) || String(o.uuid) === String(selectedTask.uuid));
+      if (found) {
+        setSelectedTask(prev => ({ ...prev, ...found }));
       }
     }
   }, [activeOrders, historyOrders]);
 
-  // Mutation to update service progress / status
-  const updateMutation = useMutation({
-    mutationFn: ({ orderId, payload }) => technicianService.updateServiceProgress(orderId, payload),
-    onSuccess: (res, variables) => {
-      toast.success(res.message || (isArabic ? 'تم تحديث حالة الخدمة بنجاح' : 'Service status updated successfully'));
+  const techId = user?.internal_id || user?.id;
+  const isMine = useCallback((o) => {
+    if (!o || !techId) return false;
+    return String(o.technician_id) === String(techId) || String(o.technician_id) === String(user?.id) || (user?.full_name && o.technician_name === user.full_name);
+  }, [techId, user?.full_name]);
+
+  const isAvailable = useCallback((o) => {
+    return !o.technician_id && !o.technician_name && o.status !== 'completed';
+  }, []);
+
+  // Filtered Tasks
+  const displayedTasks = useMemo(() => {
+    let list = [];
+    if (taskFilter === 'mine') {
+      list = activeOrders.filter(o => isMine(o));
+    } else if (taskFilter === 'available') {
+      list = activeOrders.filter(o => isAvailable(o));
+    } else if (taskFilter === 'in_progress') {
+      list = activeOrders.filter(o => isMine(o) && o.status === 'in_progress');
+    } else if (taskFilter === 'completed') {
+      list = historyOrders;
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(o => 
+        (o.client_name && o.client_name.toLowerCase().includes(q)) ||
+        (o.vehicle_plate && o.vehicle_plate.toLowerCase().includes(q)) ||
+        (o.vehicle_model && o.vehicle_model.toLowerCase().includes(q)) ||
+        (o.work_order_number && o.work_order_number.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }, [activeOrders, historyOrders, taskFilter, searchQuery, isMine, isAvailable]);
+
+  // Stats Counters
+  const counts = useMemo(() => {
+    const mineActive = activeOrders.filter(o => isMine(o));
+    const available = activeOrders.filter(o => isAvailable(o)).length;
+    const completedToday = historyOrders.filter(o => {
+      if (!o.completed_at) return false;
+      const today = new Date().toISOString().slice(0, 10);
+      return String(o.completed_at).slice(0, 10) === today;
+    }).length;
+    const inProgress = mineActive.filter(o => o.status === 'in_progress').length;
+    return {
+      today: mineActive.length,
+      available,
+      completedToday,
+      inProgress,
+    };
+  }, [activeOrders, historyOrders, isMine, isAvailable]);
+
+  // Schedule Days (next 7 days)
+  const scheduleDays = useMemo(() => {
+    const arr = [];
+    const now = new Date();
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
+      arr.push({
+        index: i,
+        date: d,
+        dateStr: d.toISOString().slice(0, 10),
+        weekdayShort: d.toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', { weekday: 'short' }),
+        dayNum: d.getDate(),
+        fullDateStr: d.toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long' }),
+      });
+    }
+    return arr;
+  }, [isArabic]);
+
+  // Schedule Tasks for selected day
+  const scheduleTasks = useMemo(() => {
+    const selDate = scheduleDays[selectedScheduleDay]?.dateStr;
+    const all = [...activeOrders, ...historyOrders];
+    return all.filter(o => {
+      const d = o.order_date || o.created_at;
+      return d && String(d).slice(0, 10) === selDate;
+    });
+  }, [activeOrders, historyOrders, scheduleDays, selectedScheduleDay]);
+
+  // ─── Mutations ──────────────────────────────────────────────
+  const claimMutation = useMutation({
+    mutationFn: (orderId) => technicianService.claimOrder(orderId),
+    onSuccess: (res) => {
+      toast.success(res.message || (isArabic ? 'تم استلام المهمة بنجاح' : 'Task claimed successfully'));
       queryClient.invalidateQueries({ queryKey: ['technicianActiveOrders'] });
-      queryClient.invalidateQueries({ queryKey: ['technicianHistoryOrders'] });
-      if (selectedOrder) {
-        const isSame = selectedOrder.id === variables.orderId ||
-                       selectedOrder.uuid === variables.orderId ||
-                       String(selectedOrder.id) === String(variables.orderId) ||
-                       String(selectedOrder.uuid) === String(variables.orderId);
-        if (isSame) {
-          setSelectedOrder(prev => prev ? {
-            ...prev,
-            service_progress: res.data.service_progress,
-            status: res.data.status,
-          } : null);
-        }
-      }
     },
     onError: (err) => {
-      toast.error(err.message || (isArabic ? 'فشل تحديث حالة الخدمة' : 'Failed to update service'));
+      toast.error(err.message || (isArabic ? 'فشل استلام المهمة' : 'Failed to claim task'));
     }
   });
 
-  const handleToggleServiceItem = useCallback((order, serviceKey, currentStatus) => {
-    const newStatus = !currentStatus;
-    updateMutation.mutate({
-      orderId: order.uuid || order.id,
+  const progressMutation = useMutation({
+    mutationFn: ({ orderId, payload }) => technicianService.updateServiceProgress(orderId, payload),
+    onSuccess: (res, vars) => {
+      toast.success(isArabic ? 'تم تحديث حالة الخدمة' : 'Service status updated');
+      queryClient.invalidateQueries({ queryKey: ['technicianActiveOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['technicianHistoryOrders'] });
+      if (selectedTask && (String(selectedTask.id) === String(vars.orderId) || String(selectedTask.uuid) === String(vars.orderId))) {
+        setSelectedTask(prev => prev ? {
+          ...prev,
+          service_progress: res.data?.service_progress,
+          status: res.data?.status || prev.status
+        } : null);
+      }
+    },
+    onError: (err) => {
+      toast.error(err.message || (isArabic ? 'فشل تحديث الخدمة' : 'Failed to update progress'));
+    }
+  });
+
+  const handleToggleService = (task, serviceKey, currentStatus) => {
+    progressMutation.mutate({
+      orderId: task.id || task.uuid,
       payload: {
         service_key: serviceKey,
-        completed: newStatus
+        completed: !currentStatus
       }
     });
-  }, [updateMutation]);
+  };
 
-  const handleSetOverallStatus = useCallback((order, newStatus) => {
-    if (window.confirm(isArabic ? `هل أنت متأكد من بدء العمل على الطلب #${order.work_order_number || order.id}؟` : `Start work on order #${order.work_order_number || order.id}?`)) {
-      updateMutation.mutate({
-        orderId: order.uuid || order.id,
-        payload: {
-          overall_status: newStatus
-        }
+  const handlePunch = async (action, useGeo = false) => {
+    setAttendanceBusy(true);
+    let lat = null;
+    let lng = null;
+
+    if (useGeo && navigator.geolocation) {
+      try {
+        const pos = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
+        });
+        lat = pos.coords.latitude;
+        lng = pos.coords.longitude;
+      } catch (e) {
+        toast.warning(isArabic ? 'تعذر جلب الموقع الجغرافي، سيتم التسجيل يدوياً' : 'Could not fetch geolocation');
+      }
+    }
+
+    try {
+      const res = await technicianService.punchAttendance({
+        action,
+        method: useGeo && lat ? 'geofence' : 'manual',
+        latitude: lat,
+        longitude: lng
       });
+      toast.success(res.message || (action === 'in' ? (isArabic ? 'تم تسجيل الحضور بنجاح' : 'Checked in') : (isArabic ? 'تم تسجيل الانصراف بنجاح' : 'Checked out')));
+      queryClient.invalidateQueries({ queryKey: ['technicianAttendanceToday'] });
+      queryClient.invalidateQueries({ queryKey: ['technicianAttendanceMonth'] });
+    } catch (err) {
+      toast.error(err.message || (isArabic ? 'فشل تسجيل الحضور' : 'Failed to punch attendance'));
+    } finally {
+      setAttendanceBusy(false);
     }
-  }, [updateMutation, isArabic]);
+  };
 
-  const handleCompleteMyTasks = useCallback((order) => {
-    if (!window.confirm(isArabic ? `هل أنت متأكد من إكمال كافة المهام الموكلة إليك للطلب #${order.work_order_number || order.id} ونقل الطلب لسجل الأعمال المكتملة؟` : `Complete all your assigned tasks for #${order.work_order_number || order.id}?`)) {
-      return;
-    }
-    const serviceTechs = order.service_technicians || {};
-    const progressObj = { ...(order.service_progress || {}) };
-    const now = new Date().toISOString();
+  const getPrimaryServiceName = (o) => {
+    if (o.heat_insulation?.length) return isArabic ? 'عازل حراري' : 'Heat Insulation';
+    if (o.ppf?.length) return isArabic ? 'حماية PPF' : 'PPF Protection';
+    if (o.nano_ceramic?.length) return isArabic ? 'نانو سيراميك' : 'Nano Ceramic';
+    if (o.polishing?.length) return isArabic ? 'تلميع ساطع' : 'Polishing';
+    if (o.removal_services?.length) return isArabic ? 'خدمات إزالة' : 'Removal Services';
+    return isArabic ? 'خدمة عناية بالسيارة' : 'Car Care Service';
+  };
 
-    const isTechMatch = (targetId, u) => {
-      if (!targetId || !u) return false;
-      const target = String(targetId).trim().toLowerCase();
-      const idStr = u.id ? String(u.id).trim().toLowerCase() : '';
-      const uuidStr = u.uuid ? String(u.uuid).trim().toLowerCase() : '';
-      const nameStr = u.full_name ? String(u.full_name).trim().toLowerCase() : '';
-      return target === idStr || target === uuidStr || target === nameStr;
-    };
+  const formatTime = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleTimeString(isArabic ? 'ar-SA' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+    } catch { return ''; }
+  };
 
-    ALL_SERVICES_KEYS.forEach(({ key }) => {
-      const rawVal = order[key];
-      let items = [];
-      if (Array.isArray(rawVal)) items = rawVal;
-      else if (typeof rawVal === 'string' && rawVal.trim().length > 0) {
-        try { const parsed = JSON.parse(rawVal); items = Array.isArray(parsed) ? parsed : [rawVal]; } catch { items = [rawVal]; }
-      } else if (rawVal && typeof rawVal === 'object') items = Object.values(rawVal);
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+    } catch { return ''; }
+  };
 
-      if (items.length === 0) return;
-
-      const assignedTechId = serviceTechs[key];
-      const isAssignedToMe = assignedTechId
-        ? isTechMatch(assignedTechId, user)
-        : (isTechMatch(order.technician_id, user) || isTechMatch(order.technician_name, user) || (!order.technician_id && !order.technician_name));
-
-      if (isAssignedToMe) {
-        progressObj[key] = {
-          ...(progressObj[key] || {}),
-          completed: true,
-          started_at: progressObj[key]?.started_at || now,
-          completed_at: now
-        };
-      }
-    });
-
-    updateMutation.mutate({
-      orderId: order.uuid || order.id,
-      payload: { service_progress: progressObj }
-    });
-  }, [user, updateMutation, isArabic]);
-
-  const displayedOrders = activeTab === 'active' ? activeOrders : historyOrders;
+  const hour = new Date().getHours();
+  const greeting = hour < 12 
+    ? (isArabic ? 'صباح الخير' : 'Good Morning') 
+    : (isArabic ? 'مساء الخير' : 'Good Evening');
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#e5e2e1] font-body pb-20 pt-20 px-4 sm:px-8" dir={isArabic ? 'rtl' : 'ltr'}>
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Header Banner */}
-        <FadeIn>
-          <header className="bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#5C24EB]/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
-            
-            <div className="space-y-3 relative z-10">
-              <div className="flex items-center gap-3">
-                <img src="/assets/photo/seeda.png" alt="Seeda Logo" className="h-9 w-auto object-contain" />
-                <span className="px-3 py-1 bg-[#5C24EB]/20 border border-[#5C24EB]/40 text-[#8B5CF6] rounded-full text-xs font-bold tracking-wider uppercase flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#5C24EB] animate-pulse"></span>
-                  {isArabic ? 'لوحة تحكم الفني المختص' : 'Technician Hub'}
-                </span>
-                
-                {/* Language Switcher */}
-                <button
-                  type="button"
-                  onClick={toggleLanguage}
-                  className="px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-[11px] font-bold text-gray-300 hover:text-white transition-all cursor-pointer"
-                >
-                  {isArabic ? 'English' : 'العربية'}
-                </button>
-              </div>
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-white tracking-tight flex items-center gap-2 flex-wrap">
-                  {isArabic ? 'أهلاً بك،' : 'Welcome,'} <span className="text-[#8B5CF6]">{user?.full_name || (isArabic ? 'الفني المختص' : 'Technician')}</span>
-                </h1>
-                <EmployeeCodeBadge isLight={false} variant="hero" />
-                <span className="text-xl">🛠️</span>
-              </div>
-              <p className="text-xs sm:text-sm text-gray-400 font-bold max-w-xl">
-                {isArabic 
-                  ? 'إدارة وسجل المهام الموكلة إليك، فحص أجزاء السيارات، ومتابعة تنفيذ الخدمات خطوة بخطوة.' 
-                  : 'Manage assigned tasks, vehicle checklists, and track service progress.'}
-              </p>
-            </div>
+    <div className="seeda-portal min-h-screen bg-[#F7F7FA] text-ink font-sans pb-20 lg:pb-0 lg:flex select-none">
+      {/* Desktop Sidebar (TechSideNav) */}
+      <TechSideNav
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        user={user}
+        onLogout={logout}
+        onToggleLang={toggleLanguage}
+        isArabic={isArabic}
+      />
 
-            <div className="flex items-center gap-3 relative z-10 w-full md:w-auto flex-wrap">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile Header (TechTopBar) */}
+        {activeTab !== 'more' && (
+          <header className="lg:hidden sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-white/95 px-4 backdrop-blur safe-top">
+            <Logo height={28} />
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setActiveTab('active')}
-                className={`flex-1 md:flex-initial px-6 py-3 rounded-2xl font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                  activeTab === 'active'
-                    ? 'bg-[#5C24EB] text-white shadow-[0_8px_25px_rgba(92,36,235,0.35)]'
-                    : 'bg-white/[0.05] text-gray-400 hover:text-white hover:bg-white/10'
-                }`}
+                onClick={() => setActiveTab('notifications')}
+                className="relative grid h-10 w-10 place-items-center rounded-full text-ink-soft hover:bg-surface-sunken transition"
+                aria-label="Notifications"
               >
-                <span className="material-symbols-outlined text-sm">engineering</span>
-                {isArabic ? `المهام النشطة (${activeOrders.length})` : `Active Tasks (${activeOrders.length})`}
+                <Bell className="h-[21px] w-[21px]" />
+                {counts.available > 0 && (
+                  <span className="absolute end-2 top-2 h-2.5 w-2.5 rounded-full bg-bad-600 ring-2 ring-white" />
+                )}
               </button>
-
               <button
                 type="button"
-                onClick={() => setActiveTab('history')}
-                className={`flex-1 md:flex-initial px-6 py-3 rounded-2xl font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                  activeTab === 'history'
-                    ? 'bg-[#5C24EB] text-white shadow-[0_8px_25px_rgba(92,36,235,0.35)]'
-                    : 'bg-white/[0.05] text-gray-400 hover:text-white hover:bg-white/10'
-                }`}
+                onClick={() => setActiveTab('more')}
+                className="transition hover:opacity-80"
               >
-                <span className="material-symbols-outlined text-sm">history</span>
-                {isArabic ? `السجل المكتمل (${historyOrders.length})` : `Completed (${historyOrders.length})`}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('commissions')}
-                className={`flex-1 md:flex-initial px-6 py-3 rounded-2xl font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                  activeTab === 'commissions'
-                    ? 'bg-emerald-500 text-white shadow-[0_8px_25px_rgba(16,185,129,0.35)]'
-                    : 'bg-white/[0.05] text-gray-400 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <span className="material-symbols-outlined text-sm">payments</span>
-                {isArabic ? `العمولات (${commissionsList.length})` : `Commissions (${commissionsList.length})`}
-              </button>
-
-              <button
-                type="button"
-                onClick={async () => {
-                  if (logout) await logout();
-                  window.location.href = 'https://seeda.reflecto.com.sa/#login';
-                }}
-                className="px-4 py-3 bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 text-red-400 hover:text-red-300 rounded-2xl font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
-                title={isArabic ? 'تسجيل الخروج' : 'Log Out'}
-              >
-                <span className="material-symbols-outlined text-sm">logout</span>
-                {isArabic ? 'تسجيل الخروج' : 'Log Out'}
+                <Avatar name={user?.full_name} size={36} />
               </button>
             </div>
           </header>
-        </FadeIn>
+        )}
 
-        {/* Content Area */}
-        <div className="max-w-4xl mx-auto space-y-4">
+        {/* Dynamic Screens */}
+        <main className="flex-1 p-4 max-w-4xl mx-auto w-full">
+          {/* ═════════════════════════════════════════════════════════════
+              1. HOME (الرئيسية)
+             ═════════════════════════════════════════════════════════════ */}
+          {activeTab === 'home' && (
+            <div className="space-y-4">
+              {/* Header Title & Date */}
+              <section className="mt-1">
+                <p className="text-sm text-ink-muted">
+                  {greeting} · {new Date().toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
+                </p>
+                <h1 className="mt-0.5 text-[22px] font-bold text-ink">
+                  {user?.full_name || (isArabic ? 'فني سيدا' : 'Technician')}
+                </h1>
+                <p className="text-sm text-ink-muted flex items-center gap-1.5 mt-0.5">
+                  <span className="font-semibold text-brand-700">{user?.employee_code || 'RT-001'}</span>
+                  <span>·</span>
+                  <span>{user?.branch_name || (isArabic ? 'فرع جدة' : 'Jeddah Branch')}</span>
+                </p>
+              </section>
 
-          {/* ── Commissions Tab ── */}
-          {activeTab === 'commissions' && (
-            <div className="space-y-6">
-              {isLoadingCommissions ? (
-                <div className="p-12 text-center bg-white/[0.02] border border-white/5 rounded-2xl">
-                  <div className="w-8 h-8 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                  <p className="text-xs text-gray-400 font-bold">{isArabic ? 'جاري تحميل بيانات العمولات...' : 'Loading commissions data...'}</p>
+              {/* Today's Tasks Banner */}
+              <button
+                type="button"
+                onClick={() => { setActiveTab('tasks'); setTaskFilter('mine'); }}
+                className="card w-full flex items-center gap-4 p-4 text-start transition hover:shadow-lift"
+              >
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700">
+                  <ClipboardCheck className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-ink">{isArabic ? 'مهام اليوم' : "Today's Tasks"}</p>
+                  <p className="text-xs text-ink-muted">{isArabic ? 'المهام المسندة إليك والمجدولة لليوم' : 'Assigned tasks scheduled today'}</p>
                 </div>
-              ) : (
-                <>
-                  {/* Summary Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5 space-y-2">
-                      <span className="material-symbols-outlined text-emerald-400 text-2xl">payments</span>
-                      <div className="text-2xl font-black text-emerald-400 font-mono">
-                        {Number(commissionsInfo.total_earned || 0).toLocaleString()} <span className="text-sm font-bold">{isArabic ? 'ر.س' : 'SAR'}</span>
-                      </div>
-                      <p className="text-xs font-bold text-gray-400">{isArabic ? 'إجمالي العمولات المكتسبة' : 'Total Earned Commissions'}</p>
-                    </div>
-                    <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 space-y-2">
-                      <span className="material-symbols-outlined text-[#8B5CF6] text-2xl">task_alt</span>
-                      <div className="text-2xl font-black text-white font-mono">{commissionsInfo.services_count || 0}</div>
-                      <p className="text-xs font-bold text-gray-400">{isArabic ? 'إجمالي الخدمات المكتملة بعمولة' : 'Services with Commission'}</p>
-                    </div>
-                    <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 space-y-2">
-                      <span className="material-symbols-outlined text-amber-400 text-2xl">trending_up</span>
-                      <div className="text-2xl font-black text-amber-400 font-mono">
-                        {commissionsInfo.services_count > 0 ? Number(commissionsInfo.total_earned / commissionsInfo.services_count).toFixed(0) : 0} <span className="text-sm font-bold">{isArabic ? 'ر.س' : 'SAR'}</span>
-                      </div>
-                      <p className="text-xs font-bold text-gray-400">{isArabic ? 'متوسط العمولة للخدمة' : 'Avg Commission / Service'}</p>
-                    </div>
-                  </div>
+                <div className="flex flex-col items-center text-brand-700">
+                  <span className="num text-3xl font-bold leading-none">{counts.today}</span>
+                  <Arrow className="mt-1 h-4 w-4" />
+                </div>
+              </button>
 
-                  {/* Commission List */}
-                  {commissionsList.length === 0 ? (
-                    <div className="p-12 text-center bg-white/[0.02] border border-white/5 rounded-3xl space-y-3">
-                      <span className="material-symbols-outlined text-4xl text-gray-600">payments</span>
-                      <p className="text-sm text-gray-400 font-bold">{isArabic ? 'لا توجد عمولات مسجلة حتى الآن.' : 'No commissions recorded yet.'}</p>
-                      <p className="text-xs text-gray-500">{isArabic ? 'ستظهر العمولات هنا بعد تأكيد خدماتك من الإدارة.' : 'Commissions will appear once verified by administration.'}</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2 px-2">
-                        <span className="material-symbols-outlined text-emerald-400 text-base">receipt_long</span>
-                        {isArabic ? 'سجل العمولات التفصيلي' : 'Commission Details Log'}
-                      </h3>
-                      {commissionsList.map((c) => (
-                        <div
-                          key={c.id || c.uuid}
-                          className="bg-white/[0.02] border border-white/10 hover:border-emerald-500/30 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all"
-                        >
-                          <div className="space-y-1.5">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md font-bold uppercase">
-                                {c.vehicle_plate || '—'}
-                              </span>
-                              {c.branch_name && (
-                                <span className="text-[10px] font-bold text-gray-500 bg-white/5 px-2 py-0.5 rounded">
-                                  {c.branch_name}
-                                </span>
-                              )}
+              {/* Claim New Task CTA Banner */}
+              <button
+                type="button"
+                onClick={() => { setActiveTab('tasks'); setTaskFilter('available'); }}
+                className="w-full flex items-center gap-4 rounded-2xl bg-gradient-to-l from-brand-700 to-brand-600 p-4 text-white shadow-cta transition active:scale-[.99] rtl:bg-gradient-to-r text-start"
+              >
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/15">
+                  <PackagePlus className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[17px] font-bold">{isArabic ? 'استلام مهمة جديدة' : 'Claim New Task'}</p>
+                  <p className="text-xs text-white/75">
+                    {counts.available > 0 
+                      ? (isArabic ? `يوجد ${counts.available} مهمة متاحة للاستلام` : `${counts.available} tasks available to claim`) 
+                      : (isArabic ? 'لا توجد مهام بانتظار الاستلام حالياً' : 'No available tasks currently')}
+                  </p>
+                </div>
+                <Arrow className="h-5 w-5 opacity-80 shrink-0" />
+              </button>
+
+              {/* 3 Quick Counters */}
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('history'); }}
+                  className="card flex flex-col items-center px-2 py-3.5 text-center transition hover:shadow-lift"
+                >
+                  <span className="grid h-9 w-9 place-items-center rounded-xl bg-ok-50 text-ok-600">
+                    <CheckCheck className="h-[18px] w-[18px]" />
+                  </span>
+                  <span className="num mt-2 text-xl font-bold text-ink">{counts.completedToday}</span>
+                  <span className="text-[11px] font-medium text-ink-muted">{isArabic ? 'منجز اليوم' : 'Done Today'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('tasks'); setTaskFilter('in_progress'); }}
+                  className="card flex flex-col items-center px-2 py-3.5 text-center transition hover:shadow-lift"
+                >
+                  <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700">
+                    <Wrench className="h-[18px] w-[18px]" />
+                  </span>
+                  <span className="num mt-2 text-xl font-bold text-brand-700">{counts.inProgress}</span>
+                  <span className="text-[11px] font-medium text-ink-muted">{isArabic ? 'قيد التنفيذ' : 'In Progress'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('tasks'); setTaskFilter('mine'); }}
+                  className="card flex flex-col items-center px-2 py-3.5 text-center transition hover:shadow-lift"
+                >
+                  <span className="grid h-9 w-9 place-items-center rounded-xl bg-surface-sunken text-ink-muted">
+                    <AlarmClock className="h-[18px] w-[18px]" />
+                  </span>
+                  <span className="num mt-2 text-xl font-bold text-ink">{counts.today}</span>
+                  <span className="text-[11px] font-medium text-ink-muted">{isArabic ? 'مهامي' : 'My Tasks'}</span>
+                </button>
+              </div>
+
+              {/* Attendance Card */}
+              <button
+                type="button"
+                onClick={() => setActiveTab('attendance')}
+                className="card w-full flex items-center gap-3 p-3.5 text-start transition hover:shadow-lift"
+              >
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-navy-50 text-navy-700">
+                  <LogIn className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold">{isArabic ? 'سجل الحضور اليومي' : 'Attendance Log'}</p>
+                  <p className="text-xs text-ink-muted">
+                    {todayAtt?.check_in_at 
+                      ? (isArabic ? `تم تسجيل الدخول: ${formatTime(todayAtt.check_in_at)}` : `Checked in: ${formatTime(todayAtt.check_in_at)}`)
+                      : (isArabic ? 'الوردية: 09:00 ص – 06:00 م' : 'Shift: 09:00 AM – 06:00 PM')}
+                  </p>
+                </div>
+                <Badge tone={todayAtt ? (todayAtt.status === 'late' ? 'warn' : 'ok') : 'neutral'}>
+                  {todayAtt ? (todayAtt.status === 'late' ? (isArabic ? 'متأخر' : 'Late') : (isArabic ? 'حاضر' : 'Present')) : (isArabic ? 'لم يسجل' : 'Not In')}
+                </Badge>
+              </button>
+
+              {/* Commission Card */}
+              <button
+                type="button"
+                onClick={() => setActiveTab('commissions')}
+                className="card w-full block p-4 text-start transition hover:shadow-lift"
+              >
+                <div className="mb-3 flex items-center gap-2">
+                  <Wallet className="h-4 w-4 text-brand-700" />
+                  <p className="text-sm font-semibold">{isArabic ? 'عمولاتي ومستحقاتي' : 'My Commission'}</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="num text-sm font-bold">{commissionsInfo.total_earned?.toLocaleString()} {isArabic ? 'ر.س' : 'SAR'}</p>
+                    <p className="text-[11px] text-ink-muted">{isArabic ? 'مستحق' : 'Earned'}</p>
+                  </div>
+                  <div>
+                    <p className="num text-sm font-bold text-warn-700">{commissionsInfo.services_count || 0}</p>
+                    <p className="text-[11px] text-ink-muted">{isArabic ? 'خدمات' : 'Services'}</p>
+                  </div>
+                  <div>
+                    <p className="num text-sm font-bold text-ok-700">{commissionsInfo.total_earned?.toLocaleString()} {isArabic ? 'ر.س' : 'SAR'}</p>
+                    <p className="text-[11px] text-ink-muted">{isArabic ? 'معتمد' : 'Confirmed'}</p>
+                  </div>
+                </div>
+              </button>
+
+              {/* Upcoming Appointments Preview */}
+              <section className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-sm font-bold text-ink">{isArabic ? 'أقرب المواعيد والمهام' : 'Upcoming Tasks'}</h2>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('tasks'); setTaskFilter('mine'); }}
+                    className="text-xs text-brand-700 font-semibold hover:underline"
+                  >
+                    {isArabic ? 'عرض الكل' : 'View all'}
+                  </button>
+                </div>
+
+                {activeOrders.length === 0 ? (
+                  <EmptyState title={isArabic ? 'لا توجد مهام نشطة حالياً' : 'No active tasks'} />
+                ) : (
+                  <div className="card divide-y divide-line-soft overflow-hidden">
+                    {activeOrders.slice(0, 4).map((task) => (
+                      <div
+                        key={task.id || task.uuid}
+                        onClick={() => setSelectedTask(task)}
+                        className="flex items-center gap-3 px-4 py-3 cursor-pointer transition hover:bg-surface-subtle"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-semibold text-ink">{getPrimaryServiceName(task)}</p>
+                          <p className="truncate text-xs text-ink-muted">
+                            {task.vehicle_model || 'سيارة'} · <span className="font-semibold text-ink-soft">{task.vehicle_plate || '—'}</span> · {task.branch_name || 'جدة'}
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 flex-col items-end gap-1">
+                          <span className="num flex items-center gap-1 text-xs font-medium text-ink-soft">
+                            <Clock className="h-3 w-3" />
+                            {formatTime(task.created_at)}
+                          </span>
+                          <Badge tone={task.status === 'in_progress' ? 'brand' : (task.technician_id ? 'navy' : 'info')}>
+                            {task.status === 'in_progress' ? (isArabic ? 'قيد العمل' : 'In Progress') : (task.technician_id ? (isArabic ? 'مسند' : 'Assigned') : (isArabic ? 'متاح' : 'Available'))}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+            </div>
+          )}
+
+          {/* ═════════════════════════════════════════════════════════════
+              2. TASKS (المهام)
+             ═════════════════════════════════════════════════════════════ */}
+          {activeTab === 'tasks' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-xl font-bold text-ink">{isArabic ? 'المهام وأوامر العمل' : 'Tasks'}</h1>
+                  <p className="text-xs text-ink-muted">{isArabic ? 'إدارة وتنفيذ ومتابعة أوامر العمل' : 'Manage and execute tasks'}</p>
+                </div>
+              </div>
+
+              {/* Filter Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                {[
+                  { id: 'mine', label: isArabic ? 'مهامي' : 'My Tasks', count: counts.today },
+                  { id: 'available', label: isArabic ? 'متاح للاستلام' : 'Available', count: counts.available },
+                  { id: 'in_progress', label: isArabic ? 'قيد التنفيذ' : 'In Progress', count: counts.inProgress },
+                  { id: 'completed', label: isArabic ? 'المكتملة' : 'Completed', count: historyOrders.length },
+                ].map((f) => {
+                  const active = taskFilter === f.id;
+                  return (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setTaskFilter(f.id)}
+                      className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition whitespace-nowrap ${
+                        active
+                          ? 'bg-brand-700 text-white shadow-sm'
+                          : 'bg-white text-ink-soft border border-line hover:bg-surface-sunken'
+                      }`}
+                    >
+                      <span>{f.label}</span>
+                      <span className={`px-1.5 py-0.2 rounded-full text-2xs ${active ? 'bg-white/20 text-white' : 'bg-surface-sunken text-ink-muted'}`}>
+                        {f.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute start-3.5 top-3 h-4 w-4 text-ink-muted" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={isArabic ? 'ابحث باللوحة أو اسم العميل أو الموديل...' : 'Search plate, client, car...'}
+                  className="input ps-10 h-10 text-xs"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute end-3 top-3 text-ink-muted hover:text-ink"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+
+              {/* Tasks List */}
+              {displayedTasks.length === 0 ? (
+                <EmptyState
+                  title={isArabic ? 'لا توجد مهام مطابقة' : 'No tasks found'}
+                  hint={isArabic ? 'اختر قسماً آخر أو قم بإفراغ خانة البحث' : 'Try switching filter or clear search'}
+                />
+              ) : (
+                <div className="space-y-3">
+                  {displayedTasks.map((task) => {
+                    const taskUnassigned = isAvailable(task);
+                    return (
+                      <article key={task.id || task.uuid} className="card overflow-hidden transition hover:shadow-lift">
+                        <div className="flex gap-3 p-3.5">
+                          <div className="min-w-0 flex-1">
+                            <div className="mb-1 flex flex-wrap items-center gap-1.5">
+                              <Badge tone={task.status === 'completed' ? 'ok' : (task.status === 'in_progress' ? 'brand' : (taskUnassigned ? 'info' : 'navy'))} dot>
+                                {task.status === 'completed' 
+                                  ? (isArabic ? 'مكتمل' : 'Completed') 
+                                  : (task.status === 'in_progress' ? (isArabic ? 'قيد التنفيذ' : 'In Progress') : (taskUnassigned ? (isArabic ? 'متاح للاستلام' : 'Available') : (isArabic ? 'مسند' : 'Assigned')))}
+                              </Badge>
+                              <span className="text-2xs font-mono text-ink-muted">#{task.work_order_number || task.id}</span>
                             </div>
-                            <p className="text-sm font-bold text-white">{c.service_name || (isArabic ? 'خدمة صيانة' : 'Service')}</p>
-                            {c.vehicle_info && (
-                              <p className="text-xs text-gray-400">
-                                <span className="material-symbols-outlined text-[10px] align-middle ml-1 mr-1">directions_car</span>
-                                {c.vehicle_info}
-                              </p>
-                            )}
-                            <p className="text-[10px] font-mono text-gray-500">
-                              {c.created_at ? new Date(c.created_at).toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}
-                            </p>
+
+                            <h3 
+                              onClick={() => setSelectedTask(task)}
+                              className="cursor-pointer truncate text-[15px] font-bold text-ink hover:text-brand-700"
+                            >
+                              {getPrimaryServiceName(task)}
+                            </h3>
+
+                            <ul className="mt-1.5 space-y-1 text-[13px] text-ink-muted">
+                              <li className="flex items-center gap-1.5">
+                                <User className="h-3.5 w-3.5 shrink-0" />
+                                <span className="truncate">{task.client_name || (isArabic ? 'عميل ريفليكتو' : 'Client')}</span>
+                              </li>
+                              <li className="flex items-center gap-1.5">
+                                <Car className="h-3.5 w-3.5 shrink-0" />
+                                <span className="truncate">{task.vehicle_model || 'سيارة'} {task.vehicle_year || ''} · {task.vehicle_plate || '—'}</span>
+                              </li>
+                              <li className="flex items-center gap-1.5">
+                                <Clock className="h-3.5 w-3.5 shrink-0" />
+                                <span className="num">{formatTime(task.created_at)}</span>
+                                <span className="text-ink-faint">·</span>
+                                <span>{formatDate(task.created_at)}</span>
+                              </li>
+                              <li className="flex items-center gap-1.5">
+                                <MapPin className="h-3.5 w-3.5 shrink-0" />
+                                <span className="truncate">{task.branch_name || (isArabic ? 'فرع جدة' : 'Branch')}</span>
+                              </li>
+                            </ul>
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-xl font-black text-emerald-400 font-mono">
-                              +{Number(c.amount).toLocaleString()}
-                            </span>
-                            <span className="text-xs font-bold text-emerald-400/70">{isArabic ? 'ر.س' : 'SAR'}</span>
+
+                          <div 
+                            onClick={() => setSelectedTask(task)}
+                            className="w-[104px] sm:w-[120px] shrink-0 self-start cursor-pointer"
+                          >
+                            <VehicleThumb color={task.vehicle_color} className="aspect-[4/3] w-full rounded-xl" />
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </>
+
+                        {/* Action bottom bar */}
+                        <div className="flex items-center justify-between border-t border-line-soft px-3.5 py-2.5 bg-surface-subtle">
+                          {taskUnassigned ? (
+                            <button
+                              type="button"
+                              disabled={claimMutation.isPending}
+                              onClick={() => claimMutation.mutate(task.id || task.uuid)}
+                              className="px-4 py-2 rounded-xl bg-brand-700 text-white text-xs font-bold hover:bg-brand-800 transition flex items-center gap-1.5 shadow-cta"
+                            >
+                              {claimMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <PackagePlus className="h-4 w-4" />}
+                              <span>{isArabic ? 'استلام المهمة' : 'Claim Task'}</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedTask(task)}
+                              className="px-3.5 py-2 rounded-xl bg-white border border-line text-brand-700 text-xs font-semibold hover:bg-brand-50 transition flex items-center gap-1.5"
+                            >
+                              <Wrench className="h-4 w-4" />
+                              <span>{isArabic ? 'فتح المهمة والتنفيذ' : 'Open & Execute'}</span>
+                            </button>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => setSelectedTask(task)}
+                            className="text-xs font-semibold text-ink-muted hover:text-ink flex items-center gap-1"
+                          >
+                            <span>{isArabic ? 'التفاصيل' : 'Details'}</span>
+                            <Arrow className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
               )}
             </div>
           )}
 
-          {/* ── Active / History Tabs ── */}
-          {activeTab !== 'commissions' && (
+          {/* ═════════════════════════════════════════════════════════════
+              3. SCHEDULE (المواعيد)
+             ═════════════════════════════════════════════════════════════ */}
+          {activeTab === 'schedule' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between px-2 mb-2">
-                <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#8B5CF6] text-base">list_alt</span>
-                  {activeTab === 'active' 
-                    ? (isArabic ? 'أوامر العمل القائمة' : 'Active Work Orders')
-                    : (isArabic ? 'الخدمات المكتملة سابقاً' : 'Completed Work Orders')}
-                </h2>
-                <span className="text-xs font-mono text-gray-500">Total: {displayedOrders.length}</span>
+              <div>
+                <h1 className="text-xl font-bold text-ink">{isArabic ? 'جدول المواعيد' : 'Schedule'}</h1>
+                <p className="text-xs text-ink-muted">{isArabic ? 'المواعيد وأوامر العمل المجدولة للأيام القادمة' : 'Scheduled tasks for upcoming days'}</p>
               </div>
 
-          {(activeTab === 'active' ? isLoadingActive : isLoadingHistory) ? (
-            <div className="p-12 text-center bg-white/[0.02] border border-white/5 rounded-2xl">
-              <div className="w-8 h-8 border-3 border-[#5C24EB] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-              <p className="text-xs text-gray-400 font-bold">{isArabic ? 'جاري تحميل بيانات الأوامر والسيارات...' : 'Loading work orders...'}</p>
-            </div>
-          ) : displayedOrders.length === 0 ? (
-            <div className="p-12 text-center bg-white/[0.02] border border-white/5 rounded-3xl space-y-3">
-              <span className="material-symbols-outlined text-4xl text-gray-600">task_alt</span>
-              <p className="text-sm text-gray-400 font-bold">
-                {activeTab === 'active' 
-                  ? (isArabic ? 'لا توجد سيارات موكلة إليك حالياً.' : 'No vehicles currently assigned to you.')
-                  : (isArabic ? 'لا توجد خدمات مكتملة بالسجل.' : 'No completed services found.')}
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {displayedOrders.map((order) => {
-                const isSelected = selectedOrder?.id === order.id || selectedOrder?.uuid === order.uuid;
-                const progressObj = order.service_progress || {};
-                
-                // Calculate progress percentage
-                let totalItems = 0;
-                let doneItems = 0;
-                ALL_SERVICES_KEYS.forEach(({ key }) => {
-                  const rawVal = order[key];
-                  let items = [];
-                  if (Array.isArray(rawVal)) items = rawVal;
-                  else if (typeof rawVal === 'string' && rawVal.trim().length > 0) {
-                    try { const parsed = JSON.parse(rawVal); items = Array.isArray(parsed) ? parsed : [rawVal]; } catch { items = [rawVal]; }
-                  } else if (rawVal && typeof rawVal === 'object') items = Object.values(rawVal);
-
-                  if (items.length > 0) {
-                    totalItems += 1;
-                    if (progressObj[key]?.completed) doneItems += 1;
-                  }
-                });
-                const pct = order.status === 'completed'
-                  ? 100
-                  : (totalItems > 0 ? Math.round((doneItems / totalItems) * 90) : 0);
-
-                return (
-                  <article
-                    key={order.id}
-                    className={`rounded-3xl border transition-all duration-300 overflow-hidden ${
-                      isSelected
-                        ? 'bg-white/[0.04] border-[#5C24EB] shadow-[0_10px_35px_rgba(92,36,235,0.25)] ring-1 ring-[#5C24EB]'
-                        : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04] hover:border-white/20'
-                    }`}
-                  >
-                    {/* Expandable Header Banner */}
-                    <div
-                      onClick={() => setSelectedOrder(isSelected ? null : order)}
-                      className="p-6 cursor-pointer select-none space-y-4"
+              {/* 7-Days Horizontal Slider */}
+              <div className="scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 pb-2">
+                {scheduleDays.map((item) => {
+                  const active = selectedScheduleDay === item.index;
+                  return (
+                    <button
+                      key={item.index}
+                      type="button"
+                      onClick={() => setSelectedScheduleDay(item.index)}
+                      className={`flex w-14 shrink-0 flex-col items-center rounded-2xl py-2.5 transition ${
+                        active 
+                          ? 'bg-brand-700 text-white shadow-cta' 
+                          : 'bg-white text-ink ring-1 ring-line hover:bg-surface-subtle'
+                      }`}
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-mono text-[#8B5CF6] bg-[#5C24EB]/15 px-2.5 py-1 rounded-md font-bold uppercase tracking-wider">
-                              WO-{order.work_order_number || order.id}
-                            </span>
-                            <span className="text-gray-500">•</span>
-                            <span className="text-xs text-gray-400 font-bold">{order.order_date?.slice(0, 10)}</span>
-                          </div>
-                          <h3 className="text-xl font-black text-white flex items-center gap-2">
-                            <span>{order.vehicle_type || (isArabic ? 'سيارة' : 'Vehicle')}</span>
-                            <span className="text-gray-400 font-normal text-sm">{order.vehicle_model} {order.vehicle_year}</span>
-                          </h3>
-                        </div>
+                      <span className={`text-[11px] ${active ? 'text-white/80' : 'text-ink-muted'}`}>
+                        {item.weekdayShort}
+                      </span>
+                      <span className="num text-lg font-bold">{item.dayNum}</span>
+                    </button>
+                  );
+                })}
+              </div>
 
-                        <div className="flex items-center gap-3">
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            order.status === 'completed'
-                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                              : (pct >= 90
-                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                              : 'bg-amber-500/20 text-amber-400 border border-amber-500/30')
-                          }`}>
-                            {order.status === 'completed'
-                              ? (isArabic ? 'مكتمل ✅' : 'Completed ✅')
-                              : (pct >= 90 
-                                ? (isArabic ? 'مكتمل الفنيين (90%) ⏳' : 'Tech Completed (90%) ⏳') 
-                                : (order.status === 'in_progress' ? (isArabic ? 'قيد التنفيذ 🛠️' : 'In Progress 🛠️') : (isArabic ? 'جديد ⏳' : 'New ⏳')))
-                            }
-                          </span>
-                          <span className={`material-symbols-outlined text-gray-400 text-2xl transition-transform duration-300 ${isSelected ? 'rotate-180 text-[#8B5CF6]' : ''}`}>
-                            keyboard_arrow_down
-                          </span>
-                        </div>
+              {/* Selected Day Heading */}
+              <p className="text-sm font-semibold text-ink-soft">
+                {scheduleDays[selectedScheduleDay]?.fullDateStr}
+              </p>
+
+              {/* Tasks for that Day */}
+              {scheduleTasks.length === 0 ? (
+                <EmptyState 
+                  title={isArabic ? 'لا توجد مواعيد مجدولة في هذا اليوم' : 'No scheduled tasks today'} 
+                  hint={isArabic ? 'يمكنك استلام مهام جديدة من قسم المهام' : 'Check available tasks in the Tasks tab'}
+                />
+              ) : (
+                <div className="card divide-y divide-line-soft overflow-hidden">
+                  {scheduleTasks.map((task) => (
+                    <div
+                      key={task.id || task.uuid}
+                      onClick={() => setSelectedTask(task)}
+                      className="flex items-center gap-3 px-4 py-3 cursor-pointer transition hover:bg-surface-subtle"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-ink">{getPrimaryServiceName(task)}</p>
+                        <p className="truncate text-xs text-ink-muted">
+                          {task.vehicle_model || 'سيارة'} · {task.vehicle_plate || '—'} · {task.client_name || 'العميل'}
+                        </p>
                       </div>
-
-                      <div className="grid grid-cols-2 gap-4 py-3 border-y border-white/5 text-xs">
-                        <div>
-                          <span className="text-gray-500 block mb-0.5">{isArabic ? 'رقم اللوحة' : 'Plate Number'}</span>
-                          <span className="font-bold text-amber-400 font-mono truncate block">{order.vehicle_plate || '—'}</span>
-                        </div>
-                        <div>
-                          <span className="text-gray-500 block mb-0.5">{isArabic ? 'الفرع' : 'Branch'}</span>
-                          <span className="font-bold text-gray-300 truncate block">{order.branch_name || (isArabic ? 'فرع جدة' : 'Jeddah Branch')}</span>
-                        </div>
-                      </div>
-
-                      {/* Progress bar */}
-                      <div className="space-y-1.5">
-                        <div className="flex justify-between text-[11px] font-bold text-gray-400">
-                          <span>{isArabic ? 'إنجاز المهام' : 'Tasks Progress'}</span>
-                          <span className="text-[#8B5CF6] font-mono">{pct}%</span>
-                        </div>
-                        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-[#5C24EB] to-[#8B5CF6] transition-all duration-500"
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <span className="num flex items-center gap-1 text-xs font-medium text-ink-soft">
+                          <Clock className="h-3 w-3" />
+                          {formatTime(task.created_at)}
+                        </span>
+                        <Badge tone={task.status === 'completed' ? 'ok' : 'brand'}>
+                          {task.status === 'completed' ? (isArabic ? 'مكتمل' : 'Done') : (isArabic ? 'مجدول' : 'Scheduled')}
+                        </Badge>
                       </div>
                     </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
-                    {/* EXPANDED DETAILS BODY */}
-                    {isSelected && (
-                      <div className="p-6 pt-0 border-t border-white/10 space-y-6 animate-fadeIn">
-                        
-                        {/* Vehicle Details Grid */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-white/[0.03] border border-white/5 rounded-2xl text-xs mt-4">
-                          <div>
-                            <span className="text-gray-500 block mb-1">{isArabic ? 'لون السيارة' : 'Color'}</span>
-                            <span className="font-bold text-white">{order.vehicle_color || '—'}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500 block mb-1">{isArabic ? 'رقم اللوحة' : 'Plate'}</span>
-                            <span className="font-bold text-amber-400 font-mono">{order.vehicle_plate || '—'}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500 block mb-1">{isArabic ? 'رقم الهيكل' : 'Chassis #'}</span>
-                            <span className="font-bold text-gray-300 font-mono text-[10px] truncate block">{order.chassis_number || '—'}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500 block mb-1">{isArabic ? 'العداد (KM)' : 'Mileage (KM)'}</span>
-                            <span className="font-bold text-white font-mono">{order.mileage_km || '—'}</span>
-                          </div>
+          {/* ═════════════════════════════════════════════════════════════
+              4. MORE (المزيد)
+             ═════════════════════════════════════════════════════════════ */}
+          {activeTab === 'more' && (
+            <div className="-mx-4 -mt-4 space-y-4">
+              {/* Header Gradient Banner matching seeda */}
+              <section className="safe-top relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-700 to-navy-700 px-5 pb-8 pt-5 text-white lg:rounded-b-3xl">
+                <div className="pointer-events-none absolute -end-16 -top-20 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
+                <div className="flex justify-end">
+                  <Logo variant="white" height={26} />
+                </div>
+                <div className="mt-6 flex items-center gap-4">
+                  <Avatar name={user?.full_name} size={64} className="ring-4 ring-white/25 text-xl bg-white text-brand-700" />
+                  <div className="min-w-0">
+                    <p className="truncate text-lg font-bold">{user?.full_name || (isArabic ? 'فني سيدا' : 'Technician')}</p>
+                    <p className="text-sm text-white/75">
+                      {isArabic ? 'فني عناية بالسيارات' : 'Automotive Care Tech'} · <span className="num">{user?.employee_code || 'RT-001'}</span>
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Rows List */}
+              <div className="space-y-4 px-4 py-2">
+                <div className="card divide-y divide-line-soft overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('notifications')}
+                    className="w-full flex items-center gap-3.5 px-4 py-4 transition hover:bg-surface-subtle text-start"
+                  >
+                    <Bell className="h-5 w-5 text-ink-soft" strokeWidth={1.8} />
+                    <span className="flex-1 text-[15px] font-medium text-ink">{isArabic ? 'الإشعارات' : 'Notifications'}</span>
+                    <Chevron className="h-4 w-4 text-ink-faint" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={toggleLanguage}
+                    className="w-full flex items-center gap-3.5 px-4 py-4 transition hover:bg-surface-subtle text-start"
+                  >
+                    <Globe className="h-5 w-5 text-ink-soft" strokeWidth={1.8} />
+                    <span className="flex-1 text-[15px] font-medium text-ink">{isArabic ? 'اللغة' : 'Language'}</span>
+                    <span className="rounded-full bg-surface-sunken px-2.5 py-0.5 text-xs text-ink-soft font-semibold">{isArabic ? 'English' : 'العربية'}</span>
+                    <Chevron className="h-4 w-4 text-ink-faint" />
+                  </button>
+                </div>
+
+                <div>
+                  <p className="mb-2 px-1 text-xs font-semibold text-ink-muted">{isArabic ? 'سجلي ومستنداتي' : 'My Records'}</p>
+                  <div className="card divide-y divide-line-soft overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('attendance')}
+                      className="w-full flex items-center gap-3.5 px-4 py-4 transition hover:bg-surface-subtle text-start"
+                    >
+                      <Clock className="h-5 w-5 text-ink-soft" strokeWidth={1.8} />
+                      <span className="flex-1 text-[15px] font-medium text-ink">{isArabic ? 'سجل الحضور والانصراف' : 'Attendance Log'}</span>
+                      <Chevron className="h-4 w-4 text-ink-faint" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('history')}
+                      className="w-full flex items-center gap-3.5 px-4 py-4 transition hover:bg-surface-subtle text-start"
+                    >
+                      <History className="h-5 w-5 text-ink-soft" strokeWidth={1.8} />
+                      <span className="flex-1 text-[15px] font-medium text-ink">{isArabic ? 'سجل العمليات السابقة' : 'Task History'}</span>
+                      <Chevron className="h-4 w-4 text-ink-faint" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('commissions')}
+                      className="w-full flex items-center gap-3.5 px-4 py-4 transition hover:bg-surface-subtle text-start"
+                    >
+                      <Wallet className="h-5 w-5 text-ink-soft" strokeWidth={1.8} />
+                      <span className="flex-1 text-[15px] font-medium text-ink">{isArabic ? 'العمولات والمستحقات المالية' : 'Commissions & Earnings'}</span>
+                      <Chevron className="h-4 w-4 text-ink-faint" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('schedule')}
+                      className="w-full flex items-center gap-3.5 px-4 py-4 transition hover:bg-surface-subtle text-start"
+                    >
+                      <CalendarDays className="h-5 w-5 text-ink-soft" strokeWidth={1.8} />
+                      <span className="flex-1 text-[15px] font-medium text-ink">{isArabic ? 'جدول المواعيد والورديات' : 'Schedule'}</span>
+                      <Chevron className="h-4 w-4 text-ink-faint" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* About & Info */}
+                <div className="card divide-y divide-line-soft overflow-hidden">
+                  <details className="group">
+                    <summary className="flex cursor-pointer list-none items-center gap-3.5 px-4 py-4 text-start">
+                      <HelpCircle className="h-5 w-5 text-ink-soft" strokeWidth={1.8} />
+                      <span className="flex-1 text-[15px] font-medium">{isArabic ? 'المساعدة والدعم' : 'Help & Support'}</span>
+                      <ChevronDown className="h-4 w-4 text-ink-faint transition group-open:rotate-180" />
+                    </summary>
+                    <p className="px-4 pb-4 text-xs text-ink-muted leading-relaxed">
+                      {isArabic 
+                        ? 'تطبيق فنيي سيدا يتيح لك استلام المهام ومتابعة حالة تنفيذ كل سيارة، وتسجيل الحضور، والاطلاع على رصيد العمولات المعتمدة بشكل لحظي.' 
+                        : 'SEEDA technician portal allows tracking vehicle care tasks, attendance, and instant commission balances.'}
+                    </p>
+                  </details>
+                  <details className="group">
+                    <summary className="flex cursor-pointer list-none items-center gap-3.5 px-4 py-4 text-start">
+                      <Info className="h-5 w-5 text-ink-soft" strokeWidth={1.8} />
+                      <span className="flex-1 text-[15px] font-medium">{isArabic ? 'عن نظام سيدا' : 'About SEEDA'}</span>
+                      <ChevronDown className="h-4 w-4 text-ink-faint transition group-open:rotate-180" />
+                    </summary>
+                    <div className="px-4 pb-4">
+                      <Logo height={24} />
+                      <p className="mt-2 text-xs text-ink-muted leading-relaxed">
+                        {isArabic ? 'منصة تشغيل وإدارة عمليات متكاملة لمراكز العناية بالسيارات.' : 'Complete automotive care operations system.'}
+                      </p>
+                      <p className="num mt-1 text-2xs text-ink-faint">v1.2.0</p>
+                    </div>
+                  </details>
+                </div>
+
+                {/* Logout Button */}
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="w-full h-12 inline-flex items-center justify-center gap-2 rounded-xl font-semibold border border-line bg-white text-brand-700 hover:border-brand-300 hover:text-brand-800 transition"
+                >
+                  <LogOut className="h-5 w-5 rtl:-scale-x-100" />
+                  <span>{isArabic ? 'تسجيل الخروج' : 'Sign Out'}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ═════════════════════════════════════════════════════════════
+              5. ATTENDANCE (الحضور والانصراف)
+             ═════════════════════════════════════════════════════════════ */}
+          {activeTab === 'attendance' && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setActiveTab('more')} className="lg:hidden text-ink-muted hover:text-ink">
+                  <Arrow className="h-5 w-5 rotate-180" />
+                </button>
+                <div>
+                  <h1 className="text-xl font-bold text-ink">{isArabic ? 'تسجيل وسجل الحضور' : 'Attendance'}</h1>
+                  <p className="text-xs text-ink-muted">{isArabic ? 'متابعة الدوام اليومي والورديات' : 'Daily punch and shift records'}</p>
+                </div>
+              </div>
+
+              {/* Punch Card */}
+              <Card className="p-4">
+                <div className="mb-3 flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-bold">
+                      {new Date().toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                    </p>
+                    <p className="num text-xs text-ink-muted">
+                      {isArabic ? 'الوردية: 09:00 ص – 06:00 م' : 'Shift: 09:00 AM – 06:00 PM'}
+                    </p>
+                  </div>
+                  <Badge tone={todayAtt ? (todayAtt.status === 'late' ? 'warn' : 'ok') : 'neutral'}>
+                    {todayAtt ? (todayAtt.status === 'late' ? (isArabic ? 'متأخر' : 'Late') : (isArabic ? 'حاضر' : 'Present')) : (isArabic ? 'لم يسجل' : 'Not Checked In')}
+                  </Badge>
+                </div>
+
+                {todayAtt?.check_in_at && (
+                  <div className="mb-4 grid grid-cols-3 gap-2 rounded-xl bg-surface-subtle p-3 text-center">
+                    <div>
+                      <p className="text-[11px] text-ink-muted">{isArabic ? 'دخول' : 'In'}</p>
+                      <p className="num text-sm font-bold text-ink">{formatTime(todayAtt.check_in_at)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-ink-muted">{isArabic ? 'خروج' : 'Out'}</p>
+                      <p className="num text-sm font-bold text-ink">{todayAtt.check_out_at ? formatTime(todayAtt.check_out_at) : '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-ink-muted">{isArabic ? 'التأخير' : 'Late'}</p>
+                      <p className={`num text-sm font-bold ${todayAtt.late_minutes > 0 ? 'text-warn-700' : 'text-ok-700'}`}>
+                        {todayAtt.late_minutes > 0 ? `${todayAtt.late_minutes} ${isArabic ? 'دقيقة' : 'min'}` : (isArabic ? 'في الموعد' : 'On time')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  {!todayAtt?.check_in_at ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        disabled={attendanceBusy}
+                        onClick={() => handlePunch('in', false)}
+                        className="h-12 w-full rounded-xl bg-brand-700 text-white font-bold text-sm hover:bg-brand-800 transition flex items-center justify-center gap-2 shadow-cta"
+                      >
+                        {attendanceBusy ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}
+                        <span>{isArabic ? 'تسجيل الحضور' : 'Check In'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        disabled={attendanceBusy}
+                        onClick={() => handlePunch('in', true)}
+                        className="h-12 w-full rounded-xl bg-brand-50 text-brand-700 font-bold text-sm hover:bg-brand-100 transition flex items-center justify-center gap-2"
+                      >
+                        <MapPin className="h-5 w-5" />
+                        <span>{isArabic ? 'تحديد الموقع الجغرافي' : 'With GPS'}</span>
+                      </button>
+                    </div>
+                  ) : !todayAtt?.check_out_at ? (
+                    <button
+                      type="button"
+                      disabled={attendanceBusy}
+                      onClick={() => handlePunch('out', false)}
+                      className="h-12 w-full rounded-xl bg-bad-600 text-white font-bold text-sm hover:bg-bad-700 transition flex items-center justify-center gap-2 shadow-sm"
+                    >
+                      {attendanceBusy ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}
+                      <span>{isArabic ? 'تسجيل الانصراف' : 'Check Out'}</span>
+                    </button>
+                  ) : (
+                    <div className="rounded-xl bg-ok-50 p-3 text-center text-xs font-bold text-ok-700">
+                      ✓ {isArabic ? 'تم اكتمال حضور وانصراف اليوم بنجاح' : 'Today attendance recorded successfully'}
+                    </div>
+                  )}
+                </div>
+              </Card>
+
+              {/* Monthly Summary */}
+              <section className="space-y-2">
+                <h2 className="text-sm font-bold text-ink">{isArabic ? 'ملخص الشهر' : 'Monthly Summary'}</h2>
+                <div className="grid grid-cols-3 gap-2">
+                  <Card className="p-3 text-center">
+                    <p className="num text-xl font-bold text-ok-700">{monthSummary.present || 0}</p>
+                    <p className="text-[11px] text-ink-muted">{isArabic ? 'أيام الحضور' : 'Present'}</p>
+                  </Card>
+                  <Card className="p-3 text-center">
+                    <p className="num text-xl font-bold text-warn-700">{monthSummary.late || 0}</p>
+                    <p className="text-[11px] text-ink-muted">{isArabic ? 'أيام التأخير' : 'Late'}</p>
+                  </Card>
+                  <Card className="p-3 text-center">
+                    <p className="num text-xl font-bold text-brand-700">
+                      {Math.round((monthSummary.workedMinutes || 0) / 60)} {isArabic ? 'س' : 'hrs'}
+                    </p>
+                    <p className="text-[11px] text-ink-muted">{isArabic ? 'ساعات العمل' : 'Hours'}</p>
+                  </Card>
+                </div>
+              </section>
+
+              {/* Log List */}
+              <section className="space-y-2">
+                <h2 className="text-sm font-bold text-ink">{isArabic ? 'سجل الأيام السابقة' : 'Past Records'}</h2>
+                {monthRecords.length === 0 ? (
+                  <EmptyState title={isArabic ? 'لا توجد سجلات سابقة لهذا الشهر' : 'No attendance logs'} />
+                ) : (
+                  <div className="card divide-y divide-line-soft overflow-hidden">
+                    {monthRecords.map((r) => (
+                      <div key={r.id || r.work_date} className="flex items-center justify-between p-3.5 text-xs">
+                        <div>
+                          <p className="font-bold text-ink">{formatDate(r.work_date)}</p>
+                          <p className="text-ink-muted text-2xs mt-0.5">
+                            {r.check_in_at ? `${isArabic ? 'دخول:' : 'In:'} ${formatTime(r.check_in_at)}` : ''} 
+                            {r.check_out_at ? ` · ${isArabic ? 'خروج:' : 'Out:'} ${formatTime(r.check_out_at)}` : ''}
+                          </p>
                         </div>
-
-                        {/* Inspection Notes */}
-                        {order.inspection_notes && (
-                          <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl space-y-1">
-                            <div className="flex items-center gap-2 text-amber-400 text-xs font-bold">
-                              <span className="material-symbols-outlined text-sm">warning</span>
-                              <span>{isArabic ? 'ملاحظات الفحص والخدوش السابقة:' : 'Pre-existing inspection notes & scratches:'}</span>
-                            </div>
-                            <p className="text-xs text-amber-200/90 leading-relaxed font-semibold">
-                              {order.inspection_notes}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Requested Services Interactive Checkboxes */}
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-base font-bold text-white flex items-center gap-2">
-                              <span className="material-symbols-outlined text-[#8B5CF6]">checklist</span>
-                              {isArabic ? 'قائمة الخدمات والمهام المطلوبة للسيارة' : 'Requested Services Checklist'}
-                            </h3>
-                            <span className="text-xs text-gray-400 font-bold">{isArabic ? 'انقر للإكمال' : 'Click to complete'}</span>
-                          </div>
-
-                          <div className="space-y-3">
-                            {ALL_SERVICES_KEYS.map(({ key, titleAr, titleEn, icon }) => {
-                              const rawVal = order[key];
-                              let items = [];
-                              if (Array.isArray(rawVal)) {
-                                items = rawVal;
-                              } else if (typeof rawVal === 'string' && rawVal.trim().length > 0) {
-                                try {
-                                  const parsed = JSON.parse(rawVal);
-                                  items = Array.isArray(parsed) ? parsed : [rawVal];
-                                } catch {
-                                  items = [rawVal];
-                                }
-                              } else if (rawVal && typeof rawVal === 'object') {
-                                items = Object.values(rawVal);
-                              }
-
-                              const progressItem = (order.service_progress || {})[key] || {};
-                              const serviceDetails = order.heat_insulation_details || {};
-                              const serviceTechs = order.service_technicians || {};
-                              const assignedTechId = serviceTechs[key];
-                              
-                              const isTechMatch = (targetId, u) => {
-                                if (!targetId || !u) return false;
-                                const target = String(targetId).trim().toLowerCase();
-                                const idStr = u.id ? String(u.id).trim().toLowerCase() : '';
-                                const uuidStr = u.uuid ? String(u.uuid).trim().toLowerCase() : '';
-                                const nameStr = u.full_name ? String(u.full_name).trim().toLowerCase() : '';
-                                return target === idStr || target === uuidStr || target === nameStr;
-                              };
-
-                              const isAssignedToMe = assignedTechId
-                                ? isTechMatch(assignedTechId, user)
-                                : (
-                                    !order.technician_id && !order.technician_name
-                                      ? true
-                                      : isTechMatch(order.technician_id, user) || isTechMatch(order.technician_name, user)
-                                  );
-
-                              if (!isAssignedToMe) {
-                                return null;
-                              }
-
-                              const validItems = items.filter(x => x !== null && x !== undefined && x !== '' && x !== 'null' && x !== '[]');
-                              const hasItems = validItems.length > 0;
-                              if (!hasItems && !progressItem.completed) {
-                                return null;
-                              }
-
-                              const isMyAssignedService = !assignedTechId || isAssignedToMe;
-                              const isDone = Boolean(progressItem.completed);
-
-                              return (
-                                <div
-                                  key={key}
-                                  className={`p-5 rounded-2xl border transition-all ${
-                                    isDone
-                                      ? 'bg-emerald-500/10 border-emerald-500/30'
-                                      : isMyAssignedService
-                                      ? 'bg-white/[0.04] border-[#5C24EB]/40 hover:border-[#5C24EB]'
-                                      : 'bg-white/[0.02] border-white/10 hover:border-white/20'
-                                  }`}
-                                >
-                                  <div className="flex items-start justify-between gap-4">
-                                    <div className="flex items-start gap-3.5">
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleToggleServiceItem(order, key, isDone);
-                                        }}
-                                        className={`mt-0.5 w-6 h-6 rounded-lg border flex items-center justify-center transition-all cursor-pointer ${
-                                          isDone
-                                            ? 'bg-emerald-500 border-emerald-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-                                            : 'bg-white/5 border-white/20 text-transparent hover:border-[#5C24EB]'
-                                        }`}
-                                      >
-                                        <span className="material-symbols-outlined text-base font-black">check</span>
-                                      </button>
-
-                                      <div className="space-y-1">
-                                        <h4 className={`text-sm font-bold flex flex-wrap items-center gap-2 ${isDone ? 'text-emerald-400 line-through' : 'text-white'}`}>
-                                          <span className="material-symbols-outlined text-sm text-[#8B5CF6]">{icon}</span>
-                                          <span>{isArabic ? titleAr : titleEn}</span>
-                                          {assignedTechId && isAssignedToMe && (
-                                            <span className="px-2 py-0.5 bg-[#5C24EB]/20 border border-[#5C24EB]/40 text-[#8B5CF6] rounded-md text-[10px] font-bold">
-                                              {isArabic ? 'موكل إليك 🛠️' : 'Assigned to you 🛠️'}
-                                            </span>
-                                          )}
-                                        </h4>
-                                        
-                                        {/* List of sub-items */}
-                                        <div className="flex flex-wrap gap-1.5 pt-1">
-                                          {items.map((sub, i) => (
-                                            <span key={i} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-[11px] font-bold text-gray-300">
-                                              {sub}{key === 'heat_insulation' && serviceDetails[sub] ? `: ${isArabic ? 'درجة' : 'shade'} ${serviceDetails[sub]}` : ''}
-                                            </span>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    {progressItem.completed_at && (
-                                      <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 whitespace-nowrap">
-                                        {isArabic ? 'تم:' : 'Done:'} {new Date(progressItem.completed_at).toLocaleTimeString(isArabic ? 'ar-SA' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-
-                        {/* Status Action Buttons */}
-                        <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
-                          {order.status !== 'completed' ? (
-                            <div className="flex items-center gap-3 w-full sm:w-auto">
-                              {order.status === 'pending' && (
-                                <button
-                                  type="button"
-                                  disabled={updateMutation.isPending}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleSetOverallStatus(order, 'in_progress');
-                                  }}
-                                  className="flex-1 sm:flex-none px-6 py-3 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
-                                >
-                                  <span className="material-symbols-outlined text-base">play_arrow</span>
-                                  {isArabic ? 'بدء العمل على السيارة' : 'Start Working'}
-                                </button>
-                              )}
-                              <button
-                                type="button"
-                                disabled={updateMutation.isPending}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleCompleteMyTasks(order);
-                                }}
-                                className="flex-1 sm:flex-none px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-xs rounded-xl shadow-[0_8px_25px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-2 cursor-pointer"
-                              >
-                                <span className="material-symbols-outlined text-base">task_alt</span>
-                                {isArabic ? 'إكمال وتسليم المهام الموكلة إلي ✅' : 'Mark My Tasks Complete ✅'}
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2.5 rounded-xl">
-                              <span className="material-symbols-outlined text-base">verified</span>
-                              <span>{isArabic ? 'تمت عملية الصيانة والتسليم بنجاح' : 'Service Completed & Delivered'}</span>
-                            </div>
-                          )}
-                        </div>
-
+                        <Badge tone={r.status === 'late' ? 'warn' : 'ok'}>
+                          {r.status === 'late' ? (isArabic ? 'متأخر' : 'Late') : (isArabic ? 'حاضر' : 'Present')}
+                        </Badge>
                       </div>
-                    )}
+                    ))}
+                  </div>
+                )}
+              </section>
+            </div>
+          )}
 
-                  </article>
-                );
-              })}
+          {/* ═════════════════════════════════════════════════════════════
+              6. COMMISSIONS (العمولات والأرباح)
+             ═════════════════════════════════════════════════════════════ */}
+          {activeTab === 'commissions' && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setActiveTab('more')} className="lg:hidden text-ink-muted hover:text-ink">
+                  <Arrow className="h-5 w-5 rotate-180" />
+                </button>
+                <div>
+                  <h1 className="text-xl font-bold text-ink">{isArabic ? 'العمولات والمستحقات' : 'Earnings'}</h1>
+                  <p className="text-xs text-ink-muted">{isArabic ? 'الرصيد المكتسب وكشف العمليات المعتمدة' : 'Confirmed commission balance'}</p>
+                </div>
+              </div>
+
+              {/* Gradient Banner matching seeda */}
+              <section className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-700 to-navy-700 p-5 text-white shadow-cta">
+                <p className="text-sm text-white/75">{isArabic ? 'المستحقات المعتمدة القابلة للصرف' : 'Payable Remaining'}</p>
+                <p className="num mt-1 text-3xl font-bold">
+                  {commissionsInfo.total_earned?.toLocaleString()} <span className="text-lg font-normal">{isArabic ? 'ر.س' : 'SAR'}</span>
+                </p>
+                <p className="mt-1 text-xs text-white/70">
+                  {isArabic ? `إجمالي الخدمات المنفذة: ${commissionsInfo.services_count || 0}` : `Total Services: ${commissionsInfo.services_count || 0}`}
+                </p>
+              </section>
+
+              {/* Breakdown Cards */}
+              <div className="grid grid-cols-2 gap-3">
+                <Card className="p-3.5">
+                  <p className="text-xs text-ink-muted">{isArabic ? 'المكتسب' : 'Earned'}</p>
+                  <p className="num mt-1 text-[17px] font-bold text-ink">{commissionsInfo.total_earned?.toLocaleString()} {isArabic ? 'ر.س' : 'SAR'}</p>
+                </Card>
+                <Card className="p-3.5">
+                  <p className="text-xs text-ink-muted">{isArabic ? 'المعتمد' : 'Confirmed'}</p>
+                  <p className="num mt-1 text-[17px] font-bold text-ok-700">{commissionsInfo.total_earned?.toLocaleString()} {isArabic ? 'ر.س' : 'SAR'}</p>
+                </Card>
+              </div>
+
+              {/* Commission Ledger */}
+              <section className="space-y-2">
+                <h2 className="text-sm font-bold text-ink">{isArabic ? 'سجل العمليات والعمولات' : 'Commission Ledger'}</h2>
+                {commissionsList.length === 0 ? (
+                  <EmptyState title={isArabic ? 'لا توجد عمولات مسجلة بعد' : 'No commission records'} />
+                ) : (
+                  <div className="card divide-y divide-line-soft overflow-hidden">
+                    {commissionsList.map((comm) => (
+                      <div key={comm.id || comm.uuid} className="p-3.5 flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="font-semibold text-sm text-ink truncate">{comm.service_name}</p>
+                          <p className="num text-xs text-ink-muted truncate mt-0.5">
+                            {formatDate(comm.created_at)} · #{comm.work_order_number || 'WO'}
+                          </p>
+                          <p className="text-xs text-ink-muted truncate mt-0.5">
+                            {comm.vehicle_info || 'سيارة'} · <span className="font-mono font-semibold">{comm.vehicle_plate || '—'}</span>
+                          </p>
+                        </div>
+                        <div className="text-end shrink-0">
+                          <p className="num text-base font-bold text-ok-700">
+                            +{comm.amount?.toLocaleString()} <span className="text-xs font-normal">{comm.currency || 'SAR'}</span>
+                          </p>
+                          <Badge tone="ok" className="mt-1">
+                            {isArabic ? 'معتمد' : 'Confirmed'}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
             </div>
           )}
+
+          {/* ═════════════════════════════════════════════════════════════
+              7. TASK HISTORY (سجل العمليات)
+             ═════════════════════════════════════════════════════════════ */}
+          {activeTab === 'history' && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setActiveTab('more')} className="lg:hidden text-ink-muted hover:text-ink">
+                  <Arrow className="h-5 w-5 rotate-180" />
+                </button>
+                <div>
+                  <h1 className="text-xl font-bold text-ink">{isArabic ? 'سجل العمليات السابقة' : 'Task History'}</h1>
+                  <p className="text-xs text-ink-muted">{isArabic ? 'أرشيف كافة أوامر العمل المكتملة' : 'Completed work orders archive'}</p>
+                </div>
+              </div>
+
+              {historyOrders.length === 0 ? (
+                <EmptyState title={isArabic ? 'لا توجد عمليات مكتملة سابقة' : 'No completed tasks'} />
+              ) : (
+                <div className="card divide-y divide-line-soft overflow-hidden">
+                  {historyOrders.map((task) => (
+                    <div
+                      key={task.id || task.uuid}
+                      onClick={() => setSelectedTask(task)}
+                      className="flex items-center gap-3 px-4 py-3 cursor-pointer transition hover:bg-surface-subtle"
+                    >
+                      <VehicleThumb color={task.vehicle_color} className="h-11 w-14 rounded-lg shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-ink">{getPrimaryServiceName(task)}</p>
+                        <p className="truncate text-xs text-ink-muted">
+                          {task.vehicle_model || 'سيارة'} · {task.vehicle_plate || '—'} · {task.client_name || 'العميل'}
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <span className="num text-xs font-medium text-ink-soft">{formatDate(task.completed_at || task.created_at)}</span>
+                        <Badge tone="ok">{isArabic ? 'مكتمل' : 'Completed'}</Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
-        </div>
+
+          {/* ═════════════════════════════════════════════════════════════
+              8. NOTIFICATIONS (الإشعارات)
+             ═════════════════════════════════════════════════════════════ */}
+          {activeTab === 'notifications' && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => setActiveTab('home')} className="lg:hidden text-ink-muted hover:text-ink">
+                  <Arrow className="h-5 w-5 rotate-180" />
+                </button>
+                <div>
+                  <h1 className="text-xl font-bold text-ink">{isArabic ? 'الإشعارات' : 'Notifications'}</h1>
+                  <p className="text-xs text-ink-muted">{isArabic ? 'تحديثات المهام والمهام الجديدة' : 'Task alerts and updates'}</p>
+                </div>
+              </div>
+
+              <div className="card divide-y divide-line-soft overflow-hidden">
+                {counts.available > 0 && (
+                  <div 
+                    onClick={() => { setActiveTab('tasks'); setTaskFilter('available'); }}
+                    className="flex items-start gap-3 px-4 py-3.5 hover:bg-surface-subtle cursor-pointer"
+                  >
+                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-600" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-ink">
+                        {isArabic ? `يوجد ${counts.available} مهمة جديدة متاحة للاستلام الآن` : `${counts.available} new tasks available`}
+                      </p>
+                      <p className="num text-xs text-ink-faint mt-0.5">{isArabic ? 'اليوم' : 'Today'}</p>
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-start gap-3 px-4 py-3.5 hover:bg-surface-subtle">
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-line" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-ink-soft">
+                      {isArabic ? 'مرحباً بك في منصة سيدا للفنيين' : 'Welcome to SEEDA technician platform'}
+                    </p>
+                    <p className="num text-xs text-ink-faint mt-0.5">{isArabic ? 'النظام' : 'System'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
       </div>
+
+      {/* Mobile Bottom Navigation (4 primary items matching seeda) */}
+      <TechBottomNav
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        isArabic={isArabic}
+        unreadCount={counts.available}
+      />
+
+      {/* ═════════════════════════════════════════════════════════════
+          TASK DETAILS & EXECUTION MODAL
+         ═════════════════════════════════════════════════════════════ */}
+      {selectedTask && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full sm:max-w-xl max-h-[90vh] flex flex-col rounded-t-3xl sm:rounded-2xl bg-white shadow-2xl overflow-hidden animate-slideUp">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-line px-5 py-4">
+              <div>
+                <p className="text-2xs font-bold text-brand-700 uppercase">
+                  #{selectedTask.work_order_number || selectedTask.id}
+                </p>
+                <h2 className="text-base font-bold text-ink mt-0.5">
+                  {getPrimaryServiceName(selectedTask)}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedTask(null)}
+                className="grid h-8 w-8 place-items-center rounded-full text-ink-muted hover:bg-surface-sunken hover:text-ink transition"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+              {/* Vehicle Art Banner */}
+              <div className="rounded-2xl overflow-hidden border border-line">
+                <VehicleThumb color={selectedTask.vehicle_color} className="h-28 w-full" />
+                <div className="p-3 bg-surface-subtle flex items-center justify-between text-xs">
+                  <div>
+                    <span className="font-bold text-ink">{selectedTask.vehicle_model || 'سيارة'} {selectedTask.vehicle_year || ''}</span>
+                    <span className="text-ink-muted ms-1.5">({selectedTask.vehicle_color || (isArabic ? 'أبيض' : 'White')})</span>
+                  </div>
+                  <span className="font-mono font-bold bg-white px-2 py-0.5 rounded border border-line text-ink">
+                    {selectedTask.vehicle_plate || '—'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Client Info */}
+              <div className="rounded-xl border border-line p-3 text-xs space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-ink-muted">{isArabic ? 'العميل:' : 'Client:'}</span>
+                  <span className="font-bold text-ink">{selectedTask.client_name || '—'}</span>
+                </div>
+                {selectedTask.client_phone && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-ink-muted">{isArabic ? 'رقم الهاتف:' : 'Phone:'}</span>
+                    <a href={`tel:${selectedTask.client_phone}`} className="font-mono text-brand-700 font-bold hover:underline flex items-center gap-1">
+                      <Phone className="h-3 w-3" />
+                      <span>{selectedTask.client_phone}</span>
+                    </a>
+                  </div>
+                )}
+                <div className="flex items-center justify-between">
+                  <span className="text-ink-muted">{isArabic ? 'الفرع:' : 'Branch:'}</span>
+                  <span className="text-ink font-semibold">{selectedTask.branch_name || (isArabic ? 'فرع جدة' : 'Jeddah')}</span>
+                </div>
+              </div>
+
+              {/* Services Checklist */}
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-ink-muted mb-2">
+                  {isArabic ? 'قائمة الخدمات المطلوبة (أشّر لإنجاز الخدمة)' : 'Required Services Checklist'}
+                </h3>
+                <div className="space-y-2">
+                  {SERVICE_KEYS.map(({ key, titleAr, titleEn }) => {
+                    const rawVal = selectedTask[key];
+                    const hasItems = (Array.isArray(rawVal) && rawVal.length > 0) || (typeof rawVal === 'string' && rawVal.trim().length > 0);
+                    if (!hasItems) return null;
+
+                    const progress = selectedTask.service_progress || {};
+                    const isDone = Boolean(progress[key]?.completed);
+
+                    return (
+                      <div
+                        key={key}
+                        onClick={() => handleToggleService(selectedTask, key, isDone)}
+                        className={`flex items-center justify-between p-3 rounded-xl border transition cursor-pointer select-none ${
+                          isDone 
+                            ? 'border-ok-200 bg-ok-50/50' 
+                            : 'border-line bg-white hover:border-brand-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          {isDone ? (
+                            <CheckCircle2 className="h-5 w-5 text-ok-600 shrink-0" />
+                          ) : (
+                            <Circle className="h-5 w-5 text-ink-muted shrink-0" />
+                          )}
+                          <span className={`text-sm font-semibold ${isDone ? 'text-ok-800 line-through' : 'text-ink'}`}>
+                            {isArabic ? titleAr : titleEn}
+                          </span>
+                        </div>
+                        <Badge tone={isDone ? 'ok' : 'neutral'}>
+                          {isDone ? (isArabic ? 'مكتملة' : 'Done') : (isArabic ? 'قيد التنفيذ' : 'Pending')}
+                        </Badge>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Inspection Notes */}
+              {selectedTask.inspection_notes && (
+                <div className="rounded-xl bg-surface-subtle p-3 text-xs">
+                  <p className="font-semibold text-ink-soft mb-1">{isArabic ? 'ملاحظات الفحص:' : 'Inspection Notes:'}</p>
+                  <p className="text-ink-muted">{selectedTask.inspection_notes}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="border-t border-line p-4 bg-surface-subtle flex items-center justify-between gap-3">
+              {isAvailable(selectedTask) ? (
+                <button
+                  type="button"
+                  disabled={claimMutation.isPending}
+                  onClick={() => claimMutation.mutate(selectedTask.id || selectedTask.uuid)}
+                  className="w-full h-11 rounded-xl bg-brand-700 text-white font-bold text-sm hover:bg-brand-800 transition flex items-center justify-center gap-2 shadow-cta"
+                >
+                  {claimMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <PackagePlus className="h-4 w-4" />}
+                  <span>{isArabic ? 'استلام هذه المهمة الآن' : 'Claim Task Now'}</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setSelectedTask(null)}
+                  className="w-full h-11 rounded-xl bg-brand-700 text-white font-bold text-sm hover:bg-brand-800 transition flex items-center justify-center gap-2 shadow-cta"
+                >
+                  <CheckCheck className="h-4 w-4" />
+                  <span>{isArabic ? 'حفظ وإغلاق' : 'Save & Close'}</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-});
-
-export default TechnicianDashboard;
+}
