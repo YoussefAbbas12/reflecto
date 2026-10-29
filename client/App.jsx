@@ -62,16 +62,16 @@ const App = () => {
   // 2. TECHNICAL PORTAL (technical.reflecto.com.sa / tech.reflecto.com.sa)
   if (portal === 'technical') {
     if (!user) {
-      // If not authenticated, ONLY tech login is allowed
-      if (pathname !== '/technical/login' && pathname !== '/tech/login' && pathname !== '/login' && pathname !== '/') {
-        return (typeof window !== "undefined" ? (window.location.href = "https://seeda.reflecto.com.sa/#login", null) : null);
+      // Unauthenticated visitors can view the SEEDA portal and login directly
+      if (pathname === '/technician') {
+        return <Navigate to="/login" replace />;
       }
     } else {
       if (!isTechUser(user)) {
-        return <Navigate to="/technical/login" replace />;
+        return <Navigate to="/login" replace />;
       }
-      // If already logged in and visiting login or root, redirect to /technician
-      if (pathname === '/technical/login' || pathname === '/tech/login' || pathname === '/' || pathname === '/login') {
+      // If already logged in as technician and visiting login, direct to technician hub
+      if (pathname === '/technical/login' || pathname === '/tech/login' || pathname === '/login') {
         return <Navigate to="/technician" replace />;
       }
     }

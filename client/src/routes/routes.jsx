@@ -64,6 +64,7 @@ const PayRemainingBalance = lazy(() => import('../pages/PayRemainingBalance'));
 const AdminLoginView = lazy(() => import('../pages/AdminLoginView'));
 const TechLoginView = lazy(() => import('../pages/TechLoginView'));
 const AboutSeeda = lazy(() => import('../pages/AboutSeeda'));
+const SeedaPortal = lazy(() => import('../pages/SeedaPortal'));
 const NotFound = lazy(() => import('../error-page/notFound'));
 
 const PageFallback = () => (
@@ -136,8 +137,8 @@ const AppRoutes = () => {
           <Route path="/pay-balance" element={<AnimatedRoute><PayRemainingBalance /></AnimatedRoute>} />
           <Route path="/pay-remaining" element={<AnimatedRoute><PayRemainingBalance /></AnimatedRoute>} />
           <Route path="/checkout/pay-remaining" element={<AnimatedRoute><PayRemainingBalance /></AnimatedRoute>} />
-          <Route path="/about-seeda" element={<AnimatedRoute><AboutSeeda /></AnimatedRoute>} />
-          <Route path="/seeda" element={<AnimatedRoute><AboutSeeda /></AnimatedRoute>} />
+          <Route path="/about-seeda" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
+          <Route path="/seeda" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
           
           {/* Explicitly block and 404 all admin and technician endpoints on client portal */}
           <Route path="/admin/*" element={<AnimatedRoute><NotFound /></AnimatedRoute>} />
@@ -155,10 +156,15 @@ const AppRoutes = () => {
     return (
       <Suspense fallback={<PageFallback />}>
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
-          <Route path="/login" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
-          <Route path="/technical/login" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
-          <Route path="/tech/login" element={<AnimatedRoute><TechLoginView /></AnimatedRoute>} />
+          <Route path="/" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
+          <Route path="/login" element={<AnimatedRoute><SeedaPortal initialLoginOpen={true} /></AnimatedRoute>} />
+          <Route path="/technical/login" element={<AnimatedRoute><SeedaPortal initialLoginOpen={true} /></AnimatedRoute>} />
+          <Route path="/tech/login" element={<AnimatedRoute><SeedaPortal initialLoginOpen={true} /></AnimatedRoute>} />
+          <Route path="/about-seeda" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
+          <Route path="/seeda" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
+          <Route path="/solutions" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
+          <Route path="/industries" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
+          <Route path="/contact" element={<AnimatedRoute><SeedaPortal /></AnimatedRoute>} />
           <Route path="/technician" element={
             <AnimatedRoute>
               <ProtectedRoute requiredRole={['technician', 'admin']}>
